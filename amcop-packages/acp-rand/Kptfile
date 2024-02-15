@@ -8,9 +8,6 @@ info:
   description: sample description
 pipeline:
   mutators:
-  - image: gcr.io/kpt-fn/set-namespace:v0.4.1
-    configMap:
-      namespace: amcop-system
   - image: gcr.io/kpt-fn/set-image:v0.1.1
     configMap:
       name: amcopnightly/aarna-ran-acp
