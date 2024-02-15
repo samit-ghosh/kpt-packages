@@ -1,0 +1,37 @@
+apiVersion: fabric.equinix.jet.crossplane.io/v1alpha1
+kind: RoutingProtocol
+metadata:
+  labels:
+    testing.upbound.io/example-name: routing-protocal-direct-azure
+  annotations:
+    meta.upbound.io/example-id: RoutingProtocol/v1alpha1
+  name: routing-protocal-direct-azure
+spec:
+  forProvider:
+    directIpv4:
+    - equinixIfaceIp: 172.23.20.1/30
+    type: DIRECT
+    connectionUuid: fcr-azure-connection-uuid
+  providerConfigRef:
+    name: default
+---
+apiVersion: fabric.equinix.jet.crossplane.io/v1alpha1
+kind: RoutingProtocol
+metadata:
+  labels:
+    testing.upbound.io/example-name: routing-protocal-bgp-azure
+  annotations:
+    meta.upbound.io/example-id: RoutingProtocol/v1alpha1
+  name: routing-protocal-bgp-azure
+spec:
+  forProvider:
+    bgpAuthKey: secretkey
+    bgpIpv4:
+    - customerPeerIp: 172.23.20.2
+      enabled: true
+    connectionUuid: fcr-azure-connection-uuid
+    customerAsn: 12076
+    type: BGP
+    name: routing-bgp-azure
+  providerConfigRef:
+    name: equinix

@@ -1,0 +1,45 @@
+# NetworkInterface creation
+apiVersion: network.azure.upbound.io/v1beta1
+kind: NetworkInterface
+metadata:
+  name: example-nic
+spec:
+  forProvider:
+    ipConfiguration:
+      - name: testconfiguration1
+        publicIpAddressId: /subscriptions/08f4b432-73a9-48f4-a33c-c550d6057857/resourceGroups/aes-rg-001/providers/Microsoft.Network/publicIPAddresses/vm-pub-ip
+        privateIpAddressAllocation: Dynamic
+        subnetIdSelector:
+          matchLabels:
+            testing.upbound.io/example-name: aws-vm-sub-001
+    location: West us
+    resourceGroupNameRef:
+      name: aes-rg-001
+---
+# vm creation
+apiVersion: compute.azure.upbound.io/v1beta1
+kind: LinuxVirtualMachine
+metadata:
+  name: az-linux-vm
+spec:
+  forProvider:
+    adminSshKey:
+    - publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDignTRQbIkjm/aSXadJ25ORGmgu7SY7elhbOaQYSFp2+RBXDTjd5CAsg9hkFT2uoqPfTkRe2O3eOYfWp/PnPayI8l2riQYIzDkpmuxONJfuOvOkJq/ZFYslx9PzWykUHuhrE1bCkZP4GrgDmQSOtHoSP1khMDQEWRdlwXn38vmAGPhBwhdJWC84wO4jrWE/zuWC4qE+WuJSllU1hqg01KYH5LP9CMg6hZxaR9O5CI83rc36shVPxH+d50uqL4zQ+orkYerV4cfjuFW2ammWOS4q1lbXHKNajgNIc+3N/P+Z2q/jhk46qY40AMxxJNK39pusoNNo67Ek4gI8qnHawlVTSt5NS3C6Qfh7P7RGRHKDN9du/uYyVgpVpo//voKh0qOkN1Gp7pf3fnvWIRkdA8mhOzMc3uFxN7yoGwEzIM/StAAexX//I1Nq8GMHUwRraUXq5TWV8DOc4ije+czZ7YqTqbyG+Sm+rZgWAKVMiIzvsucTicpS2OMlrzsIIfBtjM= durga@durga-Vostro-3420
+      username: aesvmuser
+    adminUsername: aesvmuser
+    computerName: vm-001
+    location: West us
+    osDisk:
+    - caching: ReadWrite
+      storageAccountType: Premium_LRS
+    resourceGroupName: aes-rg-001
+    size: Standard_DS1_v2
+    sourceImageReference:
+    - offer: 0001-com-ubuntu-server-jammy
+      publisher: canonical
+      sku: 22_04-lts-gen2
+      version: latest
+    networkInterfaceIdsRefs:
+    - name: example-nic
+  providerConfigRef:
+    name: default

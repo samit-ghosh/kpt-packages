@@ -1,0 +1,37 @@
+apiVersion: fabric.equinix.jet.crossplane.io/v1alpha1
+kind: RoutingProtocol
+metadata:
+  labels:
+    testing.upbound.io/example-name: routing-protocal-direct-aws
+  annotations:
+    meta.upbound.io/example-id: RoutingProtocol/v1alpha1
+  name: routing-protocal-direct-aws
+spec:
+  forProvider:
+    directIpv4:
+    - equinixIfaceIp: 172.20.2.1/30
+    type: DIRECT
+    connectionUuid: fcr-aws-connection-uuid
+  providerConfigRef:
+    name: default
+---
+apiVersion: fabric.equinix.jet.crossplane.io/v1alpha1
+kind: RoutingProtocol
+metadata:
+  labels:
+    testing.upbound.io/example-name: routing-protocal-bgp-aws
+  annotations:
+    meta.upbound.io/example-id: RoutingProtocol/v1alpha1
+  name: routing-protocal-bgp-aws
+spec:
+  forProvider:
+    bgpAuthKey: secretkey
+    bgpIpv4:
+    - customerPeerIp: 172.20.2.2
+      enabled: true
+    connectionUuid: fcr-aws-connection-uuid
+    customerAsn: 64512
+    type: BGP
+    name: routing-bgp-aws
+  providerConfigRef:
+    name: equinix

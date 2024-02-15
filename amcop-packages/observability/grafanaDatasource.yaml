@@ -1,0 +1,23 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: amcop-grafana-datasource
+  namespace: tenant
+spec:
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+  datasource:
+    name: amcop-cortex
+    type: prometheus
+    access: proxy
+    url: http://cortex-query-frontend.amcop-system:8080/api/prom
+    isDefault: false
+    jsonData:
+      'tlsSkipVerify': true
+      'timeInterval': "5s"
+      #      header for selecting the tenant bucket for cortex
+      'httpHeaderName1': "X-Scope-OrgID"
+    secureJsonData:
+      'httpHeaderValue1': tenant
+    editable: true

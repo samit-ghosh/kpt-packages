@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: observability-stack-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: observability-stack
+    revision: main
+  downstream:
+    repo: deployments
+    package: observability-stack
+  annotations:
+    approval.nephio.org/policy: initial

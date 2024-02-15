@@ -1,0 +1,115 @@
+# Source: onap/charts/roles-wrapper/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dev-nothing
+  namespace: amcop-system
+rules:
+# if you don't match read or create, then you're not allowed to use API
+# except to see basic information about yourself
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - selfsubjectaccessreviews
+  - selfsubjectrulesreviews
+  verbs:
+  - create
+---
+# Source: onap/charts/roles-wrapper/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dev-read
+  namespace: amcop-system
+rules:
+- apiGroups:
+  - "" # "" indicates the core API group
+  - apps
+  - batch
+  - extensions
+  resources:
+  - pods
+  - deployments
+  - deployments/status
+  - jobs
+  - jobs/status
+  - statefulsets
+  - replicasets
+  - replicasets/status
+  - daemonsets
+  verbs:
+  - get
+  - watch
+  - list
+---
+# Source: onap/charts/roles-wrapper/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dev-create
+  namespace: amcop-system
+rules:
+- apiGroups:
+  - "" # "" indicates the core API group
+  - apps
+  - batch
+  - extensions
+  resources:
+  - pods
+  - deployments
+  - deployments/status
+  - jobs
+  - jobs/status
+  - statefulsets
+  - replicasets
+  - replicasets/status
+  - daemonsets
+  - secrets
+  - services
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - "" # "" indicates the core API group
+  - apps
+  resources:
+  - statefulsets
+  - configmaps
+  verbs:
+  - patch
+- apiGroups:
+  - "" # "" indicates the core API group
+  - apps
+  resources:
+  - deployments
+  - secrets
+  - services
+  - pods
+  verbs:
+  - create
+- apiGroups:
+  - "" # "" indicates the core API group
+  - apps
+  resources:
+  - pods
+  - persistentvolumeclaims
+  - secrets
+  - deployments
+  - services
+  verbs:
+  - delete
+- apiGroups:
+  - "" # "" indicates the core API group
+  - apps
+  resources:
+  - pods/exec
+  verbs:
+  - create
+- apiGroups:
+  - cert-manager.io
+  resources:
+  - certificates
+  verbs:
+  - create
+  - delete

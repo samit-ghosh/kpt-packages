@@ -1,0 +1,19 @@
+# Source: kube-prometheus-stack/templates/prometheus-operator/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-prometheus-operator
+  labels:
+    app: kube-prometheus-stack-operator
+    app.kubernetes.io/name: kube-prometheus-stack-prometheus-operator
+    app.kubernetes.io/component: prometheus-operator
+    app.kubernetes.io/version: 45.9.1
+    app.kubernetes.io/part-of: kube-prometheus-stack
+subjects:
+  - kind: ServiceAccount
+    name: kube-prometheus-operator
+    namespace: amcop-system
+roleRef:
+  kind: ClusterRole
+  name: kube-prometheus-operator
+  apiGroup: rbac.authorization.k8s.io

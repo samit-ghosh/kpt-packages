@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: inframgr-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: inframgr
+    revision: main
+  downstream:
+    repo: deployments
+    package: inframgr
+  annotations:
+    approval.nephio.org/policy: initial

@@ -1,0 +1,220 @@
+# vpc
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  name: cr-vpc-001
+  labels:
+    testing.upbound.io/example-name: cr-vpc-001
+spec:
+  forProvider:
+    region: us-west-1
+    cidrBlock: 10.2.0.0/16
+    tags:
+      Name: cr-vpc-001
+  providerConfigRef:
+    name: aws
+---
+# subnet
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-vpc-subnet-001
+  name: cr-vpc-subnet-001
+spec:
+  forProvider:
+    region: us-west-1
+    availabilityZone: us-west-1b
+    cidrBlock: 10.2.0.0/24
+    vpcIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpc-001
+  providerConfigRef:
+    name: aws
+---
+# internet gateway
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: InternetGateway
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-routegw-001
+  name: cr-routegw-001
+spec:
+  forProvider:
+    region: us-west-1
+    tags:
+      Name: cr-routegw-001
+    vpcIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpc-001
+  providerConfigRef:
+    name: aws
+---
+# Route table
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTable
+metadata:
+  name: cr-route-table-001
+  labels:
+    testing.upbound.io/example-name: cr-route-table-001
+spec:
+  forProvider:
+    region: us-west-1
+    tags:
+      Name: cr-route-table-001
+    vpcIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpc-001
+  providerConfigRef:
+    name: aws
+---
+# Route
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Route
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-route-001
+  name: cr-route-001
+spec:
+  forProvider:
+    region: us-west-1
+    destinationCidrBlock: 0.0.0.0/0
+    gatewayIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-routegw-001    
+    routeTableIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-route-table-001
+  providerConfigRef:
+    name: aws
+---
+# Route Table association
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTableAssociation
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-route-associate-001
+  name: cr-route-associate-001
+spec:
+  forProvider:
+    region: us-west-1
+    routeTableIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-route-table-001
+    subnetIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpc-subnet-001
+  providerConfigRef:
+    name: aws
+---
+# virtual private gateway
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPNGateway
+metadata:
+  annotations:
+    meta.upbound.io/example-id: ec2/v1beta1/vpngateway
+  labels:
+    testing.upbound.io/example-name: cr-vpn-gw-001
+  name: cr-vpn-gw-001
+spec:
+  forProvider:
+    region: us-west-1
+    tags:
+      Name: cr-vpn-gw-001
+    vpcIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpc-001
+  providerConfigRef:
+    name: aws
+---
+# customer gateway
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: CustomerGateway
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-customer-gw-001
+  name: cr-customer-gw-001
+spec:
+  forProvider:
+    bgpAsn: "65000"
+    # public ip of AZURE ang
+    ipAddress: 20.121.244.102
+    region: us-west-1
+    tags:
+      Name: cr-customer-gw-001
+    type: ipsec.1
+  providerConfigRef:
+    name: aws
+---
+#  site to site vpn connection
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPNConnection
+metadata:
+  annotations:
+    meta.upbound.io/example-id: ec2/v1beta1/vpnconnectionroute
+  labels:
+    testing.upbound.io/example-name: cr-vpn-con-001
+  name: cr-vpn-con-001
+spec:
+  forProvider:
+    customerGatewayIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-customer-gw-001
+    region: us-west-1
+    staticRoutesOnly: true
+    type: ipsec.1
+    vpnGatewayIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpn-gw-001
+    tunnel1PresharedKeySecretRef:
+      key: sharedKey
+      name: aws-tunnel1-sharedkey
+      namespace: default
+  providerConfigRef:
+    name: aws
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPNConnectionRoute
+metadata:
+  annotations:
+    meta.upbound.io/example-id: ec2/v1beta1/vpnconnectionroute
+  labels:
+    testing.upbound.io/example-name: cr-vpn-connection-rw-001
+  name: cr-vpn-connection-rw-001
+spec:
+  forProvider:
+    # Azure vent subnet CIDR
+    destinationCidrBlock: 10.1.0.0/16
+    region: us-west-1
+    vpnConnectionIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpn-con-001
+  providerConfigRef:
+    name: aws
+---
+# vpngatewaypropagation mainly for the static routes with vgw
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPNGatewayRoutePropagation
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-vpn-route-propgation-001
+  name: cr-vpn-route-propgation-001
+spec:
+  forProvider:
+    region: us-west-1
+    routeTableIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-route-table-001
+    vpnGatewayIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vpn-gw-001
+  providerConfigRef:
+    name: aws
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-tunnel1-sharedkey
+type: Opaque
+stringData:
+  sharedKey: "I2aP7UMQSb9KK4UySOEFIe61d08ulrqQ"

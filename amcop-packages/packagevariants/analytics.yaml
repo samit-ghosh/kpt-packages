@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: analytics-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: analytics
+    revision: main
+  downstream:
+    repo: deployments
+    package: analytics
+  annotations:
+    approval.nephio.org/policy: initial

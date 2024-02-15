@@ -1,0 +1,91 @@
+# Source: aes-backend/templates/service.yaml
+# aes-frontend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: aes-frontend
+  namespace: amcop-system
+  labels:
+    app: aes-frontend
+spec:
+  selector:
+    app: aes-frontend
+  type: ClusterIP
+  ports:
+    - name: aes
+      port: 80
+      targetPort: 80
+      protocol: TCP
+---
+# Source: aes-backend/templates/deployment.yaml
+#frontend deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aes-frontend
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aes-frontend
+  template:
+    metadata:
+      labels:
+        app: aes-frontend
+    spec:
+      initContainers:                           
+        - name: saas-init      
+          image: jacobaarna/saasinit:latest
+          imagePullPolicy: Always
+      containers:
+        - name: aes-frontend
+          image: amcopnightly/aes-frontend:tcl-master-v4.0-2024-01-23
+          imagePullPolicy: Always
+          env:
+            - name: REACT_APP_MAPBOX_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aes-secret
+                  key: mapbox_access_token
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              readOnly: true
+              name: config
+            - mountPath: /etc/ssl
+              readOnly: true
+              name: cacert
+      volumes:
+        - name: config
+          configMap:
+            name: aes-frontend-config
+        - name: cacert
+          secret:
+            secretName: aes-ca-secret
+---
+# Source: aes-backend/templates/configmap.yaml
+# aes-frontend config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aes-frontend-config
+  namespace: amcop-system
+data:
+  my-nginx-config.conf: |
+    server {
+      listen              80;
+      server_name         localhost;
+
+      rewrite ^/app/(.*) /$1  break;
+      location / {
+          root   /usr/share/nginx/html;
+          index  index.html;
+          try_files $uri $uri/ /index.html;
+      }
+      error_page   500 502 503 504  /50x.html;
+      location = /50x.html {
+          root   /usr/share/nginx/html;
+      }
+    }

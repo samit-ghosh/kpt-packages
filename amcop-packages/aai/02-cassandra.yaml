@@ -1,0 +1,351 @@
+# Source: cassandra/charts/serviceAccount/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cassandra-nothing
+  namespace: amcop-system
+---
+# Source: cassandra/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cassandra-entrypoint
+  namespace: amcop-system
+  labels:
+    app: cassandra
+    chart: cassandra-11.0.0
+    release: dev
+    heritage: Helm
+data:
+  docker-entrypoint.sh: |
+    #!/bin/sh
+
+    set -e
+
+    # first arg is `-f` or `--some-option`
+    # or there are no args
+    if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ]; then
+            set -- cassandra -f "$@"
+    fi
+
+    # allow the container to be started with `--user`
+    if [ "$1" = 'cassandra' -a "$(id -u)" = '0' ]; then
+            find /var/lib/cassandra /var/log/cassandra "$CASSANDRA_CONFIG" \
+                    \! -user cassandra -exec chown cassandra '{}' +
+            exec gosu cassandra "$0" "$@"
+    fi
+
+    _ip_address() {
+            # scrape the first non-localhost IP address of the container
+            # in Swarm Mode, we often get two IPs -- the container IP, and the (shared) VIP, and the container IP should always be first
+            ip address | awk '
+                    $1 == "inet" && $NF != "lo" {
+                            gsub(/\/.+$/, "", $2)
+                            print $2
+                            exit
+                    }
+            '
+    }
+
+    # "sed -i", but without "mv" (which doesn't work on a bind-mounted file, for example)
+    _sed_in_place() {
+            local filename
+            filename="$1"; shift
+            local tempFile
+            tempFile="$(mktemp)"
+            sed "$@" "$filename" > "$tempFile"
+            cat "$tempFile" > "$filename"
+            rm "$tempFile"
+    }
+
+    if [ "$1" = 'cassandra' ]; then
+            : ${CASSANDRA_RPC_ADDRESS='0.0.0.0'}
+
+            : ${CASSANDRA_LISTEN_ADDRESS='auto'}
+            if [ "$CASSANDRA_LISTEN_ADDRESS" = 'auto' ]; then
+                    CASSANDRA_LISTEN_ADDRESS="$(_ip_address)"
+            fi
+
+            : ${CASSANDRA_BROADCAST_ADDRESS="$CASSANDRA_LISTEN_ADDRESS"}
+
+            if [ "$CASSANDRA_BROADCAST_ADDRESS" = 'auto' ]; then
+                    CASSANDRA_BROADCAST_ADDRESS="$(_ip_address)"
+            fi
+            : ${CASSANDRA_BROADCAST_RPC_ADDRESS:=$CASSANDRA_BROADCAST_ADDRESS}
+
+            if [ -n "${CASSANDRA_NAME:+1}" ]; then
+                    : ${CASSANDRA_SEEDS:="cassandra"}
+            fi
+            : ${CASSANDRA_SEEDS:="$CASSANDRA_BROADCAST_ADDRESS"}
+
+            _sed_in_place "$CASSANDRA_CONFIG/cassandra.yaml" \
+                    -r 's/(- seeds:).*/\1 "'"$CASSANDRA_SEEDS"'"/'
+
+            for yaml in \
+                    broadcast_address \
+                    broadcast_rpc_address \
+                    cluster_name \
+                    endpoint_snitch \
+                    listen_address \
+                    num_tokens \
+                    rpc_address \
+                    start_rpc \
+                    authenticator \
+            ; do
+                    var="CASSANDRA_$(echo $yaml | tr '[:lower:]' '[:upper:]')"
+                    # eval presents no security issue here because of limited possible values of var
+                    eval val=\$$var
+                    if [ "$val" ]; then
+                            _sed_in_place "$CASSANDRA_CONFIG/cassandra.yaml" \
+                                    -r 's/^(# )?('"$yaml"':).*/\2 '"$val"'/'
+                    fi
+            done
+
+            for rackdc in dc rack; do
+                    var="CASSANDRA_$(echo $rackdc | tr '[:lower:]' '[:upper:]')"
+                    # eval presents no security issue here because of limited possible values of var
+                    eval val=\$$var
+                    if [ "$val" ]; then
+                            _sed_in_place "$CASSANDRA_CONFIG/cassandra-rackdc.properties" \
+                                    -r 's/^('"$rackdc"'=).*/\1 '"$val"'/'
+                    fi
+            done
+    fi
+
+    exec "$@"
+---
+# Source: cassandra/charts/serviceAccount/templates/role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
+kind: RoleBinding
+metadata:
+  name: cassandra-nothing
+  namespace: amcop-system
+subjects:
+- kind: ServiceAccount
+  name: cassandra-nothing
+roleRef:
+  kind: Role
+  name: dev-nothing
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: cassandra/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: cassandra
+  namespace: amcop-system
+  labels:
+    app.kubernetes.io/name: cassandra
+    helm.sh/chart: cassandra-11.0.0
+    app.kubernetes.io/instance: dev
+    app.kubernetes.io/managed-by: Helm
+spec:
+  clusterIP: None
+  ports:
+  - port: 7000
+    targetPort: tcp-intra
+    protocol: TCP
+    name: tcp-intra
+  - port: 7001
+    targetPort: tls
+    protocol: TCP
+    name: tls
+  - port: 7199
+    targetPort: tcp-jmx
+    protocol: TCP
+    name: tcp-jmx
+  - port: 9042
+    targetPort: tcp-cql
+    protocol: TCP
+    name: tcp-cql
+  - port: 9160
+    targetPort: tcp-thrift
+    protocol: TCP
+    name: tcp-thrift
+  - port: 61621
+    targetPort: tcp-agent
+    protocol: TCP
+    name: tcp-agent
+  - port: 8080
+    targetPort: tcp-metrics
+    protocol: TCP
+    name: tcp-metrics
+  ipFamilyPolicy: PreferDualStack
+  publishNotReadyAddresses: true
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: cassandra
+    app.kubernetes.io/instance: dev
+  sessionAffinity: None
+---
+# Source: cassandra/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cassandra
+  namespace: amcop-system
+  labels:
+    app.kubernetes.io/name: cassandra
+    helm.sh/chart: cassandra-11.0.0
+    app.kubernetes.io/instance: dev
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cassandra
+      app.kubernetes.io/instance: dev
+  serviceName: cassandra
+  replicas: 1
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        traffic.sidecar.istio.io/excludeInboundPorts: 7000,7001
+        traffic.sidecar.istio.io/excludeOutboundPorts: 7000,7001
+        traffic.sidecar.istio.io/includeInboundPorts: '*'
+      labels:
+        app.kubernetes.io/name: cassandra
+        helm.sh/chart: cassandra-11.0.0
+        app.kubernetes.io/instance: dev
+        app.kubernetes.io/managed-by: Helm
+      name: cassandra
+    spec:
+      hostNetwork: false
+      containers:
+      - name: cassandra
+        image: docker.io/cassandra:3.11.4
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7000
+          name: tcp-intra
+        - containerPort: 7001
+          name: tls
+        - containerPort: 7199
+          name: tcp-jmx
+        - containerPort: 9042
+          name: tcp-cql
+        - containerPort: 9160
+          name: tcp-thrift
+        - containerPort: 61621
+          name: tcp-agent
+        volumeMounts:
+        - name: cassandra-data
+          mountPath: /var/lib/cassandra
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: cassandra-entrypoint
+          mountPath: /docker-entrypoint.sh
+          subPath: docker-entrypoint.sh
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - nodetool status | grep $POD_IP | awk '$1!="UN" { exit 1; }'
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - nodetool status | grep $POD_IP | awk '$1!="UN" { exit 1; }'
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        startupProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - nodetool status | grep $POD_IP | awk '$1!="UN" { exit 1; }'
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 90
+        env:
+        - name: CASSANDRA_SEEDS
+          value: "cassandra-0.cassandra.amcop-system.svc.cluster.local,cassandra-1.cassandra.amcop-system.svc.cluster.local,cassandra-2.cassandra.amcop-system.svc.cluster.local"
+        - name: MAX_HEAP_SIZE
+          value: 4096M
+        - name: HEAP_NEWSIZE
+          value: 200M
+        - name: JVM_OPTS
+          value: "-Dcassandra.consistent.rangemovement=false"
+        - name: CASSANDRA_CLUSTER_NAME
+          value: "cassandra"
+        - name: CASSANDRA_DC
+          value: "Pod"
+        - name: CASSANDRA_RACK
+          value: "Rack"
+        - name: CASSANDRA_AUTO_BOOTSTRAP
+          value: "true"
+        - name: CASSANDRA_START_RPC
+          value: "true"
+        - name: CASSANDRA_ENDPOINT_SNITCH
+          value: "GossipingPropertyFileSnitch"
+        - name: CASSANDRA_AUTHENTICATOR
+          value: "PasswordAuthenticator"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "PID=$(pidof java) && kill $PID && while ps -p $PID > /dev/null; do sleep 1; done"]
+        resources:
+          limits:
+            cpu: 3
+            memory: 6Gi
+          requests:
+            cpu: 2
+            memory: 4Gi
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: cassandra
+                  app.kubernetes.io/instance: dev
+              namespaces:
+              - "amcop-system"
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      serviceAccountName: cassandra-nothing
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: cassandra-entrypoint
+        configMap:
+          name: cassandra-entrypoint
+          defaultMode: 0755
+  volumeClaimTemplates:
+  - metadata:
+      name: cassandra-data
+      labels:
+        name: cassandra
+        chart: "cassandra-11.0.0"
+        release: "dev"
+        heritage: "Helm"
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: amcop-local-path
+      resources:
+        requests:
+          storage: "10Gi"

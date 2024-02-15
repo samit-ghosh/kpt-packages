@@ -1,0 +1,37 @@
+apiVersion: fabric.equinix.jet.crossplane.io/v1alpha1
+kind: Connection
+metadata:
+  labels:
+    testing.upbound.io/example-name: aes-fcr-aws-con
+  annotations:
+    meta.upbound.io/example-id: Connection/v1alpha1
+  name: aes-fcr-aws-con
+spec:
+  forProvider:
+    type: IP_VC
+    name: aes-fcr-aws-con
+    bandwidth: 50
+    aSide:
+      - accessPoint:
+          - router:
+              - uuid: eqx-cloud-router-uuid
+            type: CLOUD_ROUTER
+    zSide:
+      - accessPoint:
+          - location:
+              - metroCode: SV
+            authenticationKey: 'aws-account-id'
+            profile:
+              - type: L2_PROFILE
+                uuid: 69ee618d-be52-468d-bc99-00566f2dd2b9
+            sellerRegion: us-west-1
+            type: SP
+    notifications:
+      - emails:
+          - tamilselvan@aarnanetworks.com
+          - premkumar@aarnanetworks.com
+          - mohanrajd@aarnanetworks.com
+          - durgadevis@aarnanetworks.com
+        type: ALL
+  providerConfigRef:
+    name: equinix

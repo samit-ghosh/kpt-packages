@@ -1,0 +1,43 @@
+# adding the virtual gateway to the default route
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Route
+metadata:
+  name: route-002
+spec:
+  forProvider:
+    destinationCidrBlock: 172.20.2.0/30
+    gatewayId: vgw-022520aba12d77ef6
+    region: us-west-1
+    routeTableId: rtb-0c0107e4167f437c2
+  providerConfigRef:
+    name: aws
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Route
+metadata:
+  name: route-003
+spec:
+  forProvider:
+    destinationCidrBlock: 10.0.0.0/16
+    gatewayId: vgw-022520aba12d77ef6
+    region: us-west-1
+    routeTableId: rtb-0c0107e4167f437c2
+  providerConfigRef:
+    name: aws
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Route
+metadata:
+  name: route-004
+spec:
+  forProvider:
+    destinationCidrBlock: 172.23.20.0/30
+    gatewayId: vgw-022520aba12d77ef6
+    region: us-west-1
+    routeTableId: rtb-0c0107e4167f437c2
+  providerConfigRef:
+    name: aws

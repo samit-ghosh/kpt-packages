@@ -1,0 +1,84 @@
+# Source: kube-prometheus-stack/templates/prometheus-operator/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-prometheus-operator
+  labels:
+    app: kube-prometheus-stack-operator
+    app.kubernetes.io/name: kube-prometheus-stack-prometheus-operator
+    app.kubernetes.io/component: prometheus-operator
+    app.kubernetes.io/version: 45.9.1
+    app.kubernetes.io/part-of: kube-prometheus-stack
+rules:
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - alertmanagers
+      - alertmanagers/status
+      - alertmanagers/finalizers
+      - alertmanagerconfigs
+      - prometheuses
+      - prometheuses/status
+      - prometheuses/finalizers
+      - thanosrulers
+      - thanosrulers/finalizers
+      - servicemonitors
+      - podmonitors
+      - probes
+      - prometheusrules
+    verbs:
+      - '*'
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - '*'
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - secrets
+    verbs:
+      - '*'
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - list
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - services/finalizers
+      - endpoints
+    verbs:
+      - get
+      - create
+      - update
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch

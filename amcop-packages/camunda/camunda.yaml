@@ -1,0 +1,275 @@
+# Source: camunda/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: camunda-so-bpmn-infra-db-user-creds
+  namespace: tenant
+  labels:
+    app: camunda
+    chart: camunda-8.0.0
+type: Opaque
+stringData:
+  login: "camunda"
+  password: "camunda"
+---
+# Source: camunda/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: camunda-camunda-mariadb-sh
+  namespace: tenant
+  labels:
+    app: camunda
+    chart: camunda-8.0.0
+data:
+  create-camundadb.sh: |
+    #!/bin/sh
+    echo "Creating camundabpmn database . . ." 1>/tmp/mariadb-camundabpmn.log 2>&1
+
+    DB_NAME=${DB_NAME:-camunda}
+    mysql -h ${DB_HOST} -P ${DB_PORT} -uroot -p$MYSQL_ROOT_PASSWORD << EOF || exit 1
+    CREATE DATABASE IF NOT EXISTS ${DB_NAME};
+    CREATE USER IF NOT EXISTS '${CAMUNDA_DB_USER}';
+    GRANT ALL on ${DB_NAME}.* to '${CAMUNDA_DB_USER}' identified by '${CAMUNDA_DB_PASSWORD}' with GRANT OPTION;
+    FLUSH PRIVILEGES;
+    commit;
+    EOF
+---
+# Source: camunda/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: camunda-config-web-xml
+  namespace: tenant
+  labels:
+    app: camunda
+    chart: camunda-8.0.0
+data:
+  web.xml: |
+    <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee    http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+      <!-- Fetch And Lock Handler (long polling): Unique Worker Request (default value: false) -->
+      <context-param>
+        <param-name>fetch-and-lock-unique-worker-request</param-name>
+        <param-value>true</param-value>
+      </context-param>
+
+      <!-- rest bootstrap listener -->
+      <listener>
+        <listener-class>org.camunda.bpm.engine.rest.impl.web.bootstrap.RestContainerBootstrap</listener-class>
+      </listener>
+
+      <listener>
+        <listener-class>org.camunda.bpm.engine.rest.impl.FetchAndLockContextListener</listener-class>
+      </listener>
+
+      <filter>
+        <filter-name>EmptyBodyFilter</filter-name>
+        <filter-class>org.camunda.bpm.engine.rest.filter.EmptyBodyFilter</filter-class>
+        <async-supported>true</async-supported>
+      </filter>
+      <filter-mapping>
+        <filter-name>EmptyBodyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+      </filter-mapping>
+
+      <filter>
+        <filter-name>CacheControlFilter</filter-name>
+        <filter-class>org.camunda.bpm.engine.rest.filter.CacheControlFilter</filter-class>
+        <async-supported>true</async-supported>
+      </filter>
+      <filter-mapping>
+        <filter-name>CacheControlFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+      </filter-mapping>
+
+      <!-- Http Basic Authentication Filter -->
+      <!-- <filter>
+        <filter-name>camunda-auth</filter-name>
+        <filter-class>
+          org.camunda.bpm.engine.rest.security.auth.ProcessEngineAuthenticationFilter
+        </filter-class>
+        <async-supported>true</async-supported>
+        <init-param>
+          <param-name>authentication-provider</param-name>
+          <param-value>org.camunda.bpm.engine.rest.security.auth.impl.HttpBasicAuthenticationProvider</param-value>
+        </init-param>
+        <init-param>
+            <param-name>rest-url-pattern-prefix</param-name>
+            <param-value></param-value>
+          </init-param>
+      </filter>
+
+      <filter-mapping>
+        <filter-name>camunda-auth</filter-name>
+        <url-pattern>/*</url-pattern>
+      </filter-mapping> -->
+
+      <servlet>
+        <servlet-name>Resteasy</servlet-name>
+        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher</servlet-class>
+        <init-param>
+          <param-name>javax.ws.rs.Application</param-name>
+          <param-value>org.camunda.bpm.engine.rest.impl.application.DefaultApplication</param-value>
+        </init-param>
+        <async-supported>true</async-supported>
+      </servlet>
+
+      <servlet-mapping>
+        <servlet-name>Resteasy</servlet-name>
+        <url-pattern>/*</url-pattern>
+      </servlet-mapping>
+    </web-app>
+---
+# Source: camunda/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: camunda
+  namespace: tenant
+  labels:
+    app: camunda
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8443
+      name: bpmn-port
+  selector:
+    app: camunda
+---
+# Source: camunda/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camunda-camunda
+  namespace: tenant
+  labels:
+    app: camunda-camunda
+spec:
+  selector:
+    matchLabels:
+      app: camunda
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: camunda
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - camunda
+            topologyKey: kubernetes.io/hostname
+      securityContext:
+        fsGroup: 1000
+      serviceAccountName: dev-camunda-read
+      initContainers:
+      - name: camunda-readiness
+        image: nexus3.onap.org:10001/onap/oom/readiness:3.0.1
+        imagePullPolicy: Always
+        securityContext:
+          runAsUser: 100
+          runAsGroup: 65533
+        command:
+        - /app/ready.py
+        args:
+        - --container-name
+        - mariadb-galera
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 3m
+            memory: 20Mi
+      - name: camunda-config
+        image: nexus3.onap.org:10001/mariadb:10.1.38
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/bash
+        - /config/mariadb/create-camundadb.sh
+        env:
+        - name: DB_HOST
+          value: mariadb-galera
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: camunda
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-galera-credentials
+              key: mariadb-root-password
+        - name: CAMUNDA_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: camunda-so-bpmn-infra-db-user-creds
+              key: login
+        - name: CAMUNDA_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: camunda-so-bpmn-infra-db-user-creds
+              key: password
+        volumeMounts:
+        - name: mariadb-scripts
+          mountPath: "/config/mariadb"
+      containers:
+      - name: camunda
+        image: docker.io/amcop/camunda-bpmn:7.15-latest
+        resources: null
+        env:
+        - name: DB_DRIVER
+          value: org.mariadb.jdbc.Driver
+        - name: DB_URL
+          value: jdbc:mariadb://mariadb-galera:3306/camunda
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: camunda-so-bpmn-infra-db-user-creds
+              key: login
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: camunda-so-bpmn-infra-db-user-creds
+              key: password
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: logs
+          mountPath: /camunda/logs/
+        - name: camunda-config-web-xml
+          mountPath: /camunda/webapps/engine-rest/WEB-INF/web.xml
+          subPath: web.xml
+        ports:
+        - containerPort: 8443
+          name: bpmn-port
+          protocol: TCP
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: mariadb-scripts
+        configMap:
+          name: camunda-camunda-mariadb-sh
+      - name: camunda-config-web-xml
+        configMap:
+          name: camunda-config-web-xml
+      imagePullSecrets:
+      - name: "amcop-system-docker-registry-key"

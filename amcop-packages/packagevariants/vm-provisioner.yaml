@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: vm-provisioner-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: vm-provisioner
+    revision: main
+  downstream:
+    repo: deployments
+    package: vm-provisioner
+  annotations:
+    approval.nephio.org/policy: initial

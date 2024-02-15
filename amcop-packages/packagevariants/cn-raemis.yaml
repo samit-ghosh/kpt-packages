@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: cn-raemis-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: cn-raemis
+    revision: main
+  downstream:
+    repo: deployments
+    package: cn-raemis
+  annotations:
+    approval.nephio.org/policy: initial

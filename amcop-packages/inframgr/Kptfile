@@ -1,0 +1,20 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: inframgr
+  annotations:
+    config.kubernetes.io/local-config: "true"
+info:
+  description: infra-manager package
+pipeline:
+  mutators:
+    - name: Set namespace
+      image: gcr.io/kpt-fn/set-namespace:v0.4.1
+      configMap:
+        namespace: amcop-system
+    - name: Set image
+      image: gcr.io/kpt-fn/set-image:v0.1.1
+      configMap:
+        name: amcopnightly/infra-manager
+        newName: amcopnightly/infra-manager
+        newTag: main-v4.0-2024-01-23

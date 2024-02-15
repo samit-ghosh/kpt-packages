@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: tenant
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: prometheus
+  namespace: tenant
+rules:
+  - apiGroups: [""]
+    resources:
+      - services
+      - endpoints
+      - pods
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources:
+      - configmaps
+    verbs: ["get"]
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prometheus
+  namespace: tenant
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: tenant
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: amcop-service-monitor
+  namespace: tenant
+  labels:
+    app: amcop-service-monitor
+spec:
+  namespaceSelector:
+    any: false
+    matchNames: [tenant] # TODO : remove this hardcode value
+  selector:
+    matchExpressions:
+      - key: app
+        operator: Exists
+  endpoints:
+    - port: http
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: additional-scrape-configs
+  namespace: tenant
+data:
+  #  TODO : how to remove this hard coding ?
+  prometheus-additional.yaml: LSBqb2JfbmFtZTogZm1wbQogIHN0YXRpY19jb25maWdzOgogIC0gdGFyZ2V0czogWydmbXBtOjIxMTInXQoKLSBqb2JfbmFtZTogc21vLWhhbmRsZXIKICBtZXRyaWNzX3BhdGg6ICcvYWN0dWF0b3IvcHJvbWV0aGV1cycKICBzdGF0aWNfY29uZmlnczoKICAtIHRhcmdldHM6IFsnc21vLWhhbmRsZXI6ODA4MCdd
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus-amcop-prometheus
+  namespace: tenant
+spec:
+  additionalScrapeConfigs:
+    key: prometheus-additional.yaml
+    name: additional-scrape-configs
+  remoteWrite:
+    - headers:
+        X-Scope-OrgID: tenant
+      url: http://cortex-distributor.amcop-system:8080/api/prom/push
+  scrapeInterval: 30s
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      app: amcop-service-monitor
+  podMonitorSelector: {}
+  resources:
+    requests:
+      memory: 400Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: amcop-prometheus-service
+  namespace: tenant
+  labels:
+    prometheus: prometheus-amcop-prometheus
+spec:
+  type: ClusterIP
+  selector:
+    prometheus: prometheus-amcop-prometheus
+  ports:
+    - name: port-1
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    - name: port-2
+      port: 8080
+      protocol: TCP
+      targetPort: 8080

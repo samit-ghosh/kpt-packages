@@ -1,0 +1,64 @@
+# Depended on AWS
+# Localnetworkgateway creation 
+# Depended on resourcegroup, AWS vpc cidr and AWS Tunnel Public IP
+apiVersion: network.azure.upbound.io/v1beta1
+kind: LocalNetworkGateway
+metadata:
+  labels:
+    testing.upbound.io/example-name:  cr-local-network-001
+  name:  cr-local-network-001
+spec:
+  forProvider:
+    addressSpace:
+    # AWS vpc cidr 
+    - 10.2.0.0/16
+    # AWS Tunnel Public IP
+    gatewayAddress: 50.18.192.119
+    location: West Europe
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-rg-001
+  providerConfigRef:
+    name: azure
+---
+# Depended on AWS Tunnel sharedKey
+# Store the aws sharedKey in the secret  
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: aws-tunnel1-sharedkey
+#type: Opaque
+#stringData:
+  # download the configuration file copy paste the tunnel1 sharedKey
+#  sharedKey: "I2aP7UMQSb9KK4UySOEFIe61d08ulrqQ"
+
+---
+# Depended AWS
+# VirtualNetworkGatewayConnection Creation
+# Depended on resourcegroup, Localnetworkgateway , virtualnetworkgateway and
+# secret which will hold the aws tunnel sharedKey information 
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetworkGatewayConnection
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-vnetgw-connection-001
+  name: cr-vnetgw-connection-001
+spec:
+  forProvider:
+    localNetworkGatewayIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-local-network-001
+    location: West Europe
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-rg-001
+    sharedKeySecretRef:
+        key: sharedKey
+        name: aws-tunnel1-sharedkey
+        namespace: default
+    type: IPsec
+    virtualNetworkGatewayIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-vnet-gateway-001
+  providerConfigRef:
+    name: azure

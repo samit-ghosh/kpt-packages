@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: acp-rand-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: acp-rand
+    revision: main
+  downstream:
+    repo: deployments
+    package: acp-rand
+  annotations:
+    approval.nephio.org/policy: initial

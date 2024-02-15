@@ -1,0 +1,6 @@
+# Source: onap/charts/aai/charts/aai-graphadmin/charts/serviceAccount/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dev-aai-graphadmin-read
+  namespace: amcop-system

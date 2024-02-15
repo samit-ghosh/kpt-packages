@@ -1,0 +1,76 @@
+# ingress security-group
+# Allow ssh
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroupIngressRule
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-sg-ssh-001
+  name: cr-sg-ssh-001
+spec:
+  forProvider:
+    cidrIpv4: 0.0.0.0/0
+    fromPort: 22
+    ipProtocol: 'tcp'
+    region: us-west-1
+    # While creating the VPC default security group will created 
+    # We need pass that security group ID
+    securityGroupId: sg-0db55084d814f4475
+    toPort: 22
+  providerConfigRef:
+    name: aws
+---
+# Allow Ping
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroupIngressRule
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-sg-icmp-001
+  name: cr-sg-icmp-001
+spec:
+  forProvider:
+    cidrIpv4: 0.0.0.0/0
+    fromPort: -1
+    ipProtocol: 'icmp'
+    region: us-west-1
+    # While creating the VPC default security group will created
+    # We need pass that security group ID
+    securityGroupId: sg-0db55084d814f4475
+    toPort: -1
+  providerConfigRef:
+    name: aws
+---
+# Creating the keypair
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: KeyPair
+metadata:
+  name: premcr
+spec:
+  forProvider:
+    publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFYPj3SM4SUQadeWaoQE9YCR9GvUDFzc+f2edc/ycDUPc5tJXbCURwEi228k8Aa0vNL7A37ex4VRFoAeT/HVIMja2q93QuvE5UvJYG5erPapjBfoRpIzfw2QQ9bnAuJ2CRArER1lcogPP8OVPJ9os7nkHQlAn9Qq9I2aqnsGpb5peUgXBYGnHRCIZtol+1WlqCvPtLdoE4xWpc4frM8xvV1LbZ4kKsWNUtYcRPk/nOe8ZoJd9AF/KBOwHhydCk2Ic6OcISmsCZWCd3B8hHZSVCq7CpqCtrPw/ckw+7d+bl2sSrpe/yr9AE7x59gJN56om9J9/i1s1F6+lQTRAUDDz2z0FYY0rihB67lQw9+SLYXePEO7fvhVvkGKTJz3F7QF4FPmfg+8Z5ebY0qYimfnBs/4YfYEWekRPEk6QMFzJWVzvdV06nHUmIe1QI/LAvpqL2KVUACquxFz18/+yvKK7CigwZmiHuswWtR/Wso2yY1riVvPRf/cPEZpV0zOG4NGk= prem@DESKTOP-6FF9ECJ
+    region: us-west-1
+  providerConfigRef:
+    name: aws
+---
+# AWS instance creation
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Instance
+metadata:
+  labels:
+    testing.upbound.io/example-name: aws-instance
+  name: aws-instance
+spec:
+  forProvider:
+    region: us-west-1
+    ami: ami-0ce2cb35386fc22e9
+    associatePublicIpAddress: true
+    instanceType: t2.micro
+    creditSpecification:
+      - cpuCredits: unlimited
+    # created key pair name
+    keyName: premcr
+    subnetIdSelector:
+      matchLabels:
+        # Created the Subnet name
+        testing.upbound.io/example-name: cr-vpc-subnet-001
+  providerConfigRef:
+    name: aws

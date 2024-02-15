@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: saasui-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: saasui
+    revision: main
+  downstream:
+    repo: deployments
+    package: saasui
+  annotations:
+    approval.nephio.org/policy: initial

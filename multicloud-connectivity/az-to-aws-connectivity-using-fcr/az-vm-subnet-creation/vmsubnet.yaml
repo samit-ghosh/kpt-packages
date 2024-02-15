@@ -1,0 +1,37 @@
+# Vm subnet creation
+apiVersion: network.azure.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1beta1/subnetnatgatewayassociation
+  labels:
+    testing.upbound.io/example-name: aws-vm-sub-001
+  name: aws-vm-sub-001
+spec:
+  forProvider:
+    addressPrefixes:
+      - 10.0.3.0/24
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-rg-001
+    virtualNetworkNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-vnet-001
+  providerConfigRef:
+    name: default
+---
+# vm public ip
+apiVersion: network.azure.upbound.io/v1beta1
+kind: PublicIP
+metadata:
+  labels:
+    testing.upbound.io/example-name: vm-pub-ip
+  name: vm-pub-ip
+spec:
+  forProvider:
+    allocationMethod: Static
+    location: West us
+    resourceGroupName: aes-rg-001
+    sku: Basic
+  providerConfigRef:
+    name: default

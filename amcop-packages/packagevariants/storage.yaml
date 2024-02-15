@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: storage-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: storage
+    revision: main
+  downstream:
+    repo: deployments
+    package: storage
+  annotations:
+    approval.nephio.org/policy: initial

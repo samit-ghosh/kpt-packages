@@ -1,0 +1,30 @@
+apiVersion: fabric.equinix.jet.crossplane.io/v1alpha1
+kind: CloudRouter
+metadata:
+  labels:
+    testing.upbound.io/example-name: fabric-cloud-router
+  annotations:
+    meta.upbound.io/example-id: CloudRouter/v1alpha1
+  name: fabric-cloud-router
+spec:
+  forProvider:
+    account:
+    - accountNumber: 123456
+    description: aes-fcr
+    location:
+    - metroCode: SV
+    name: aes-cloud-router
+    notifications:
+    - emails:
+      - tamilselvan@aarnanetworks.com
+      - premkumar@aarnanetworks.com
+      - mohanrajd@aarnanetworks.com
+      - durgadevis@aarnanetworks.com
+      type: ALL
+    package:
+    - code: LAB
+    project:
+    - projectId: 'eqx-fabric-project-id'
+    type: XF_ROUTER
+  providerConfigRef:
+    name: equinix

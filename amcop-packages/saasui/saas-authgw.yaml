@@ -1,0 +1,121 @@
+# Source: aes-backend/templates/configmap.yaml
+# auth-gateway config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-gateway-configmap
+  namespace: amcop-system
+data:
+  mongodb_host: mongo.amcop-system:27017
+  db_name: auth
+  aai_host: aai.amcop-system:8443
+  node_env: production
+  smtp_host: smtp.mailgun.org
+  smtp_port: "587"
+---
+# Source: aes-backend/templates/service.yaml
+#auth-gateway service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-gateway
+  namespace: amcop-system
+  labels:
+    app: auth-gateway
+spec:
+  selector:
+    app: auth-gateway
+  type: NodePort
+  ports:
+    - name: auth-gateway
+      port: 5000
+      nodePort: 30680
+      targetPort: 443
+      protocol: TCP
+---
+# Source: aes-backend/templates/deployment.yaml
+#auth-gateway deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-gateway
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-gateway
+  template:
+    metadata:
+      labels:
+        app: auth-gateway
+    spec:
+      containers:
+        - name: auth-gateway
+          image: amcopnightly/auth-gateway:main-v4.0-2024-01-23
+          imagePullPolicy: Always
+          env:
+            - name: APP_URL
+              value: http://aes-frontend.amcop-system
+            - name: API_V1_URL
+              value: http://aes-backend.amcop-system
+            - name: API_INFRA_URL
+              value: http://infra-manager.amcop-system:9051
+            - name: MONGODB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-gateway-configmap
+                  key: mongodb_host
+            - name: AAI_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-gateway-configmap
+                  key: aai_host
+            - name: AAI_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-gateway-secret
+                  key: aai_user
+            - name: AAI_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-gateway-secret
+                  key: aai_user_password
+            - name: SMTP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-gateway-configmap
+                  key: smtp_host
+            - name: SMTP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-gateway-configmap
+                  key: smtp_port
+            - name: SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-gateway-secret
+                  key: smtp_user
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-gateway-secret
+                  key: smtp_password
+            - name: DB_NAME
+              value: auth
+            - name: APP_PORT
+              value: "443"
+            - name: GRAFANA_HOST
+              value: amcop-grafana-service
+            - name: GRAFANA_PORT
+              value: "3000"
+          ports:
+            - containerPort: 443
+          volumeMounts:
+            - mountPath: /etc/ssl
+              readOnly: true
+              name: cacert
+      volumes:
+        - name: cacert
+          secret:
+            secretName: aes-ca-secret

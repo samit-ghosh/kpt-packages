@@ -1,0 +1,130 @@
+# Source: aes-backend/templates/service.yaml
+#aes-backend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: aes-backend
+  namespace: amcop-system
+  labels:
+    app: aes-backend
+spec:
+  selector:
+    app: aes-backend
+  type: ClusterIP
+  ports:
+    - name: aes
+      port: 5000
+      targetPort: 3000
+      protocol: TCP
+---
+# Source: aes-backend/templates/configmap.yaml
+# aes-backend config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aes-configmap
+  namespace: amcop-system
+data:
+  mongodb_host: mongo.amcop-system:27017
+  camunda_host: camunda.amcop-system:8443
+  aai_host: aai.amcop-system:8443
+  aes_region_name: aes-sv
+  aes_cloud_owner: aes
+  aes_tenant_name: default
+  aes_user_name: admin
+  aes_global_user: global-test1
+  node_env: production
+---
+# Source: aes-backend/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aes-backend
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aes-backend
+  template:
+    metadata:
+      labels:
+        app: aes-backend
+    spec:
+      containers:
+        - name: aes-backend
+          image: amcopnightly/aes-backend:tcl-master-v4.0-2024-01-23
+          imagePullPolicy: Always
+          env:
+            - name: MONGODB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: mongodb_host
+            - name: CAMUNDA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: camunda_host
+            - name: CAMUNDA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: aes-secret
+                  key: camunda_user
+            - name: CAMUNDA_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: aes-secret
+                  key: camunda_user_password
+            - name: AAI_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: aai_host
+            - name: AAI_USER
+              valueFrom:
+                secretKeyRef:
+                  name: aes-secret
+                  key: aai_user
+            - name: AAI_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: aes-secret
+                  key: aai_user_password
+            - name: AES_REGION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: aes_region_name
+            - name: AES_CLOUD_OWNER
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: aes_cloud_owner
+            - name: AES_TENANT_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: aes_tenant_name
+            - name: AES_USER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: aes_user_name
+            - name: AES_GLOBAL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: aes-configmap
+                  key: aes_global_user
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aes-secret
+                  key: encryption_key
+            - name: ENCRYPTION_IV
+              valueFrom:
+                secretKeyRef:
+                  name: aes-secret
+                  key: encryption_iv
+          ports:
+            - containerPort: 3000

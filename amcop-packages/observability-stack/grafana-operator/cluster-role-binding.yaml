@@ -1,0 +1,13 @@
+# Source: grafana-operator/templates/rbac-clusterscope.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: grafana-operator
+subjects:
+  - kind: ServiceAccount
+    name: grafana-operator
+    namespace: amcop-system
+roleRef:
+  kind: ClusterRole
+  name: grafana-operator
+  apiGroup: rbac.authorization.k8s.io

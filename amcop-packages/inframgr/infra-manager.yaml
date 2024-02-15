@@ -1,0 +1,199 @@
+# Source: infra-manager/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: infra-manager
+  namespace: amcop-system
+---
+# Source: infra-manager/templates/configmap.yaml
+# infra-manager config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: infra-manager-config
+  namespace: amcop-system
+data:
+  infra-manager-config.json: |-
+    {
+      "databaseHost":   "postgres-postgresql",
+      "databasePort":   "5432",
+      "databaseType":   "postgres",
+      "databaseName" :  "infra",
+      "logLevel":       "info",
+      "port":           "9051",
+      "ironicImageDir": "/opt/metal3-dev-env/ironic/html/images",
+      "ironicHost":     "ironic:80",
+      "aaiAddress":     "http://aai:8443/aai/v23",
+      "aaiUsername":    "AAI",
+      "aaiPassword":    "AAI",
+      "camundaAddress": "camunda:8443",
+      "camundaUserName": "souser",
+      "camundaPassword": "mypassword",
+      "kafkaServiceName": "kafka1",
+      "kafkaServicePort": "9092",
+      "RobinPackageS3Path": "robin/software"
+    }
+---
+# Source: infra-manager/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: infra-manager
+  # namespace: amcop-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  - endpoints
+  - persistentvolumeclaims
+  - events
+  - configmaps
+  - secrets
+  - namespaces
+  - serviceaccounts
+  verbs:
+  - '*'
+- apiGroups:
+  - policy.aarna.com
+  resources:
+  - topology5gs
+  verbs:
+  - '*'
+- apiGroups:
+  - config.porch.kpt.dev
+  resources:
+  - packagevariants
+  - packagevariantsets
+  - repositories
+  verbs:
+  - '*'
+- apiGroups:
+  - porch.kpt.dev
+  resources:
+  - functions
+  - packagerevisionresources
+  - packagerevisions
+  - packages
+  verbs:
+  - '*'
+- apiGroups:
+  - amcop.aarnanetworks.com
+  resources:
+  - installers
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - daemonsets
+  - replicasets
+  - statefulsets
+  verbs:
+  - '*'
+- apiGroups:
+  - k8splugin.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - batch
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - extensions
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - metal3.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - config.porch.kpt.dev
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+# Source: infra-manager/templates/clusterrolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: infra-manager-rolebinding
+  # namespace: amcop-system
+subjects:
+- kind: ServiceAccount
+  name: infra-manager
+  namespace: amcop-system
+roleRef:
+  kind: ClusterRole
+  name: infra-manager
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: infra-manager/templates/service.yaml
+# infra-manager Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: infra-manager
+  namespace: amcop-system
+  labels:
+    app: infra-manager
+spec:
+  selector:
+    app: infra-manager
+  type: ClusterIP
+  ports:
+  - name: infra-manager
+    port: 9051
+    protocol: TCP
+---
+# Source: infra-manager/templates/deployment.yaml
+# infra-manager Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infra-manager
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: infra-manager
+  template:
+    metadata:
+      labels:
+        app: infra-manager
+    spec:
+      serviceAccountName: infra-manager
+      containers:
+        - name: infra-manager
+          image: jacobaarna/infra-manager:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DB_POSTGRES_USERNAME
+              value: postgres
+            - name: DB_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-postgresql
+                  key: postgres-password
+          ports:
+            - containerPort: 9051
+          volumeMounts:
+            - mountPath: /opt/aes/config
+              readOnly: true
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: infra-manager-config

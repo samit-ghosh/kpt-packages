@@ -1,0 +1,172 @@
+# create the secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sharedkey
+type: Opaque
+stringData:
+  sharedKey: "secretkey"
+---
+# for resource group creation
+apiVersion: azure.upbound.io/v1beta1
+kind: ResourceGroup
+metadata:
+  annotations:
+    meta.upbound.io/example-id: resources/v1beta1/resourcegrouptemplatedeployment
+  name: aes-rg-001
+  labels:
+    testing.upbound.io/example-name: aes-rg-001
+spec:
+  forProvider:
+    location: "West us"
+  providerConfigRef:
+    name: default
+---
+# express route creation
+apiVersion: network.azure.upbound.io/v1beta1
+kind: ExpressRouteCircuit
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1beta1/expressroutecircuitpeering
+  labels:
+    testing.upbound.io/example-name: aes-exp-001
+  name: aes-exp-001
+spec:
+  forProvider:
+    allowClassicOperations: false
+    bandwidthInMbps: 50
+    location: West us
+    peeringLocation: Silicon Valley
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-rg-001
+    serviceProviderName: Equinix
+    sku:
+      - family: UnlimitedData
+        tier: Premium
+    tags:
+      environment: Production
+  providerConfigRef:
+    name: default
+---
+# virtual network creation
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetwork
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1beta1/virtualnetwork
+  labels:
+    testing.upbound.io/example-name: aes-vnet-001
+  name: aes-vnet-001
+spec:
+  forProvider:
+    addressSpace:
+      - 10.0.0.0/16
+    location: West us
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-rg-001
+  providerConfigRef:
+    name: default
+---
+# peering creation
+apiVersion: network.azure.upbound.io/v1beta1
+kind: ExpressRouteCircuitPeering
+metadata:
+  annotations:
+    crossplane.io/external-name: AzurePrivatePeering
+    meta.upbound.io/example-id: network/v1beta1/expressroutecircuitpeering
+  labels:
+    testing.upbound.io/example-name: aes-peer-001
+  name: aes-peer-001
+spec:
+  forProvider:
+    expressRouteCircuitNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-exp-001
+    peerAsn: 25658
+    primaryPeerAddressPrefix: 172.23.20.0/30
+    sharedKeySecretRef:
+      key: sharedKey
+      name: sharedkey
+      namespace: default
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-rg-001
+    secondaryPeerAddressPrefix: 172.23.21.0/30
+    vlanId: 200
+  providerConfigRef:
+    name: default
+---
+# Gateway subnet
+
+apiVersion: network.azure.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1beta1/subnetnatgatewayassociation
+  labels:
+    crossplane.io/external-name: GatewaySubnet
+    testing.upbound.io/example-name: GatewaySubnet
+  name: gatewaysubnet
+spec:
+  forProvider:
+    addressPrefixes:
+    - 10.0.4.0/27
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-rg-001
+    virtualNetworkNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-vnet-001
+  providerConfigRef:
+    name: default
+---
+# gateway public ip
+apiVersion: network.azure.upbound.io/v1beta1
+kind: PublicIP
+metadata:
+  labels:
+    testing.upbound.io/example-name: gat-pub-ip
+  name: gat-pub-ip
+spec:
+  forProvider:
+    allocationMethod: Static
+    location: West us
+    resourceGroupName: aes-rg-001
+    sku: Standard
+  providerConfigRef:
+    name: default
+---
+# vnet gateway
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetworkGateway
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1beta1/virtualnetworkgateway
+    upjet.upbound.io/manual-intervention: This resource needs a valid public key.
+  labels:
+    testing.upbound.io/example-name: aes-vnet-gw-1
+  name: aes-vnet-gw-1
+spec:
+  forProvider:
+    activeActive: false
+    enableBgp: false # Enabling BGP is common for ExpressRoute
+    ipConfiguration:
+      - name: vnetGatewayConfig
+        privateIpAddressAllocation: Dynamic
+        publicIpAddressIdSelector:
+          matchLabels:
+            testing.upbound.io/example-name: gat-pub-ip
+        subnetIdSelector:
+          matchLabels:
+            testing.upbound.io/example-name: GatewaySubnet
+    location: West us
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-rg-001
+    sku: HighPerformance
+    type: ExpressRoute # Change this line to set the type to ExpressRoute
+    vpnType: PolicyBased
+  providerConfigRef:
+    name: default

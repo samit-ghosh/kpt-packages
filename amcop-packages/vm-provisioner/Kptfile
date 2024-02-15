@@ -1,0 +1,16 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: vm-provisioner
+  annotations:
+    config.kubernetes.io/local-config: "true"
+info:
+  description: vm-provisioner package
+pipeline:
+  mutators:
+    - name: Set image
+      image: gcr.io/kpt-fn/set-image:v0.1.1
+      configMap:
+        name: amcopnightly/vm-provisioner
+        newName: amcopnightly/vm-provisioner
+        newTag: main-v4.0-2024-01-23

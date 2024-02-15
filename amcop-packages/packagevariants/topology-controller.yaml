@@ -1,0 +1,20 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: topology-controller-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: topology-controller
+    revision: main
+  downstream:
+    repo: deployments
+    package: topology-controller
+  annotations:
+    approval.nephio.org/policy: initial
+  pipeline:
+    mutators:
+      - name: Set namespace
+        image: gcr.io/kpt-fn/set-namespace:v0.4.1
+        configMap:
+          namespace: tenant-test

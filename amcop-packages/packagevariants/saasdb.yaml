@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: saasdb-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: saasdb
+    revision: main
+  downstream:
+    repo: deployments
+    package: saasdb
+  annotations:
+    approval.nephio.org/policy: initial

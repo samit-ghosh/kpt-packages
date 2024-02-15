@@ -1,0 +1,19 @@
+# VirtualNetworkGatewayConnection creation
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetworkGatewayConnection
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1beta1/virtualnetworkgatewayconnection
+    upjet.upbound.io/manual-intervention: The resource needs valid kubernetes secret.
+  labels:
+    testing.upbound.io/example-name: onpremise
+  name: onpremise
+spec:
+  forProvider:
+    expressRouteCircuitId: /subscriptions/08f4b432-73a9-48f4-a33c-c550d6057857/resourceGroups/aes-rg-001/providers/Microsoft.Network/expressRouteCircuits/aes-exp-001
+    location: West us
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: aes-rg-001
+    type: ExpressRoute
+    virtualNetworkGatewayId: /subscriptions/08f4b432-73a9-48f4-a33c-c550d6057857/resourceGroups/aes-rg-001/providers/Microsoft.Network/virtualNetworkGateways/aes-vnet-gw-1

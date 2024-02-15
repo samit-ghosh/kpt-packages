@@ -1,0 +1,15 @@
+# Public Ip address creation
+apiVersion: network.azure.upbound.io/v1beta1
+kind: PublicIP
+metadata:
+  labels:
+    testing.upbound.io/example-name: vm-pub-ip
+  name: vm-pub-ip
+spec:
+  forProvider:
+    allocationMethod: Dynamic
+    location: West Europe
+    resourceGroupName: cr-rg-001
+  providerConfigRef:
+    name: azure
+

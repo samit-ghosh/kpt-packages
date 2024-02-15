@@ -1,0 +1,139 @@
+# ResourceGroup Creation 
+apiVersion: azure.upbound.io/v1beta1
+kind: ResourceGroup
+metadata:
+  name: cr-rg-001
+  labels:
+    testing.upbound.io/example-name: cr-rg-001
+spec:
+  forProvider:
+    location: "West Europe"
+  providerConfigRef:
+    name: azure
+---
+
+# Virtual Network creation 
+# Depended on the resource group
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetwork
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-vnet001
+  name: cr-vnet001
+spec:
+  forProvider:
+    addressSpace:
+      - 10.1.0.0/16
+    location: West Europe
+
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: cr-rg-001
+  providerConfigRef:
+    name: azure
+
+---
+
+# subent creation for the created virtual network 
+# Depended on resourcegroup and virtual network
+apiVersion: network.azure.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-subnet01
+  name: cr-subnet01
+spec:
+  forProvider:
+    addressPrefixes:
+    - 10.1.0.0/24
+    resourceGroupNameSelector:
+      matchLabels:
+        # we need pass the resourcegroup name
+        testing.upbound.io/example-name: cr-rg-001
+    virtualNetworkNameSelector:
+      matchLabels:
+        # we need pass the virtualnetwork name 	  
+        testing.upbound.io/example-name: cr-vnet001
+  providerConfigRef:
+    name: azure
+
+---
+
+# GatewaySubnet creation 
+# Depended on the resourcegroup and virtaul network
+apiVersion: network.azure.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  annotations:
+    crossplane.io/external-name: GatewaySubnet
+  labels:
+    testing.upbound.io/example-name: cr-gatewaysubnet-001
+  name: cr-gatewaysubnet-001
+spec:
+  forProvider:
+    addressPrefixes:
+    - 10.1.1.0/24
+    resourceGroupNameSelector:
+      matchLabels:
+       # we need pass the resourcegroup name
+        testing.upbound.io/example-name: cr-rg-001
+    virtualNetworkNameSelector:
+      matchLabels:
+        # we need pass the virtualnetwork name 	 
+        testing.upbound.io/example-name: cr-vnet001
+  providerConfigRef:
+    name: azure
+
+---
+# Virtual network gateway creation 
+# Depended on GatewaySubnet and resourcegroup
+apiVersion: network.azure.upbound.io/v1beta1
+kind: VirtualNetworkGateway
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-vnet-gateway-001
+  name: cr-vnet-gateway-001
+spec:
+  forProvider:
+    activeActive: false
+    enableBgp: false
+    ipConfiguration:
+    - name: vnetGatewayConfig
+      privateIpAddressAllocation: Dynamic
+      publicIpAddressIdSelector:
+        matchLabels:
+          testing.upbound.io/example-name: cr-network-gateway-pub-ip-001
+      subnetIdSelector:
+        matchLabels:
+          # we need pass the GatewaySubnet Label Name
+          testing.upbound.io/example-name: cr-gatewaysubnet-001
+    location: West Europe
+    resourceGroupNameSelector:
+      matchLabels:
+        # we need pass the resourcegroup name
+        testing.upbound.io/example-name: cr-rg-001
+    sku: Basic
+    type: Vpn
+    vpnType: RouteBased
+  providerConfigRef:
+    name: azure
+
+---
+# public ip
+# Depended on resourcegroup
+apiVersion: network.azure.upbound.io/v1beta1
+kind: PublicIP
+metadata:
+  labels:
+    testing.upbound.io/example-name: cr-network-gateway-pub-ip-001
+  name: cr-network-gateway-pub-ip-001
+spec:
+  forProvider:
+    allocationMethod: Dynamic
+    location: West Europe
+    resourceGroupNameSelector:
+      matchLabels:
+        # we need pass the resourcegroup name
+        testing.upbound.io/example-name: cr-rg-001
+  providerConfigRef:
+    name: azure

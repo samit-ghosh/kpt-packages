@@ -1,0 +1,235 @@
+# AWS VPC
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  annotations:
+    meta.upbound.io/example-id: ec2/v1beta1/defaultroutetable
+  labels:
+    testing.upbound.io/example-name: sample-vpc-001
+  name: sample-vpc-001
+spec:
+  forProvider:
+    cidrBlock: 172.16.0.0/16
+    region: us-west-1
+    tags:
+      Name: test-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# vpn-Gateway
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPNGateway
+metadata:
+  annotations:
+    meta.upbound.io/example-id: ec2/v1beta1/vpngateway
+  labels:
+    testing.upbound.io/example-name: vpn-gw-001
+  name: vpn-gw-001
+spec:
+  forProvider:
+    region: us-west-1
+    tags:
+      Name: vpn-gw-001
+    vpcIdRef:
+      name: sample-vpc-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# internet gateway which we need to attached into the vpc
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: InternetGateway
+metadata:
+  name: igw-001
+spec:
+  forProvider:
+    region: us-west-1
+    tags:
+      Name: igw-001
+    vpcIdRef:
+      name: sample-vpc-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# update the default security group
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: DefaultSecurityGroup
+metadata:
+  annotations:
+    meta.upbound.io/example-id: ec2/v1beta1/defaultsecuritygroup
+  name: securitygroup-001
+spec:
+  forProvider:
+    egress:
+      - cidrBlocks:
+          - 0.0.0.0/0
+        fromPort: 0
+        protocol: "-1"
+        toPort: 0
+      - cidrBlocks:
+          - 0.0.0.0/0
+        fromPort: 0
+        protocol: "icmp"
+        toPort: 0
+    ingress:
+      - fromPort: 22
+        cidrBlocks:
+          - 0.0.0.0/0
+        protocol: "tcp"
+        toPort: 22
+      - fromPort: 0
+        self: true
+        protocol: "-1"
+        toPort: 0
+      - cidrBlocks:
+          - 0.0.0.0/0
+        fromPort: -1
+        protocol: "icmp"
+        toPort: -1
+    region: us-west-1
+    vpcIdRef:
+      name: sample-vpc-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# RouteTable
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTable
+metadata:
+  labels:
+    testing.upbound.io/example-name: sample-route-table-001
+  name: sample-route-table-001
+spec:
+  forProvider:
+    region: us-west-1
+    tags:
+      Name: sample-route-table-001
+    vpcIdRef:
+      name: sample-vpc-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# Adding the new route to the RouteTable
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Route
+metadata:
+  name: route-001
+spec:
+  forProvider:
+    destinationCidrBlock: 0.0.0.0/0
+    gatewayIdRef:
+      name: igw-001
+    region: us-west-1
+    routeTableIdRef:
+      name: sample-route-table-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# VPC Subnet
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  name: sample-subnet-001
+spec:
+  forProvider:
+    availabilityZone: us-west-1b
+    cidrBlock: 172.16.10.0/24
+    region: us-west-1
+    vpcIdRef:
+      name: sample-vpc-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# Associate the RouteTable with Subnet
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTableAssociation
+metadata:
+  labels:
+    testing.upbound.io/example-name: rt-association-001
+  name: rt-association-001
+spec:
+  forProvider:
+    region: us-west-1
+    routeTableIdRef:
+      name: sample-route-table-001
+    subnetIdRef:
+      name: sample-subnet-001
+  providerConfigRef:
+    name: aws
+
+---
+
+# key-pair
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: KeyPair
+metadata:
+  annotations:
+    upjet.upbound.io/manual-intervention: Requires a valid public key.
+  name: aws-instance-key-pair
+spec:
+  forProvider:
+    publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPnW3ViV8pfb4VHZabGJLQIz9mv6S40V1ko3gmsFq6WnVFrf94J1X/i/C34QdRaHLeafmjJbBkiqWKGebonhSkblUq6pi0QvBXy+geC/FDYZAv/38YSr6NJrqsXOMtrMr7y38L2fWMZvpwRAc34bsj2gKKDgf+3Z6Dlmf9rwovX9Jy4GKof3SBctYcjqklzdSIQrydWSsY/H1qKGN0ldb+vLiGzGH8s46aalLlsHjjlXUdW8j965o+4cKv8PXbjOXeXfjPHAjvGV7V6M3DaUQL1e+o0QGCSXweDn6FXeoJ0MuVsJkg9DF3LICuZ/TszAg33dBPemL+5DngdvGH9IU3P17MPaBsUXuylk4f29r6pdE6YvE569jfFbbTnkZwhYn1zHKkM+OBYe74X1WdXIw/eNOZGlSXg3LO4x1d6DyUhqtrgWEXjONlrYnxvasatm7+8ysrjf2pzFK8nApNM+DutZz1vF6LW/FJY8L3fxwmblUN5au3kXGsEkCKlDq/nZs= mohanraj@Mohan
+    region: us-west-1
+  providerConfigRef:
+    name: aws
+
+---
+
+# instance
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Instance
+metadata:
+  name: sample-instance-001
+spec:
+  forProvider:
+    keyName: aws-instance-key-pair
+    ami: ami-0ce2cb35386fc22e9
+    instanceType: t2.micro
+    region: us-west-1
+    tags:
+      type: sample-instance-001
+    subnetIdRef:
+      name: sample-subnet-001
+    associatePublicIpAddress: true #this will assign the public IP for the instance
+  providerConfigRef:
+    name: aws
+
+---
+
+# Virtual private interface
+apiVersion: directconnect.aws.upbound.io/v1beta1
+kind: PrivateVirtualInterface
+metadata:
+  annotations:
+    meta.upbound.io/example-id: directconnect/v1beta1/bgppeer
+  labels:
+    testing.upbound.io/example-name: vif-example-1
+  name: vif-example-1
+spec:
+  forProvider:
+    addressFamily: ipv4
+    bgpAsn: 25658
+    connectionId: dxcon-ffxbm9w3
+    bgpAuthKey: secretkey
+    name: vif-example-1
+    amazonAddress: 172.20.2.2/30
+    customerAddress: 172.20.2.1/30
+    region: us-west-1
+    vlan: 343
+    vpnGatewayIdRef:
+      name: vpn-gw-001
+  providerConfigRef:
+    name: aws

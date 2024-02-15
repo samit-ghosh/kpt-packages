@@ -1,0 +1,54 @@
+# Networkinterface creation 
+apiVersion: network.azure.upbound.io/v1beta1
+kind: NetworkInterface
+metadata:
+  labels:
+    testing.upbound.io/example-name: az-vm-network-iface
+  name: az-vm-network-iface
+spec:
+  forProvider:
+    ipConfiguration:
+      - name: vm-nic
+        privateIpAddressAllocation: Dynamic
+        subnetIdSelector:
+          matchLabels:
+            testing.upbound.io/example-name: cr-subnet01
+        # We need to get this information from the create public ip address 
+        # get publicIpAddressId value
+        publicIpAddressId: /subscriptions/08f4b432-73a9-48f4-a33c-c550d6057857/resourceGroups/cr-rg-003/providers/Microsoft.Network/publicIPAddresses/vm-pub-ip
+    location: West Europe
+    resourceGroupName: cr-rg-001
+  providerConfigRef:
+    name: azure
+
+---
+# Virtual machine creation 
+apiVersion: compute.azure.upbound.io/v1beta1
+kind: LinuxVirtualMachine
+metadata:
+  name: az-linux-vm
+spec:
+  forProvider:
+    adminSshKey:
+      - publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFYPj3SM4SUQadeWaoQE9YCR9GvUDFzc+f2edc/ycDUPc5tJXbCURwEi228k8Aa0vNL7A37ex4VRFoAeT/HVIMja2q93QuvE5UvJYG5erPapjBfoRpIzfw2QQ9bnAuJ2CRArER1lcogPP8OVPJ9os7nkHQlAn9Qq9I2aqnsGpb5peUgXBYGnHRCIZtol+1WlqCvPtLdoE4xWpc4frM8xvV1LbZ4kKsWNUtYcRPk/nOe8ZoJd9AF/KBOwHhydCk2Ic6OcISmsCZWCd3B8hHZSVCq7CpqCtrPw/ckw+7d+bl2sSrpe/yr9AE7x59gJN56om9J9/i1s1F6+lQTRAUDDz2z0FYY0rihB67lQw9+SLYXePEO7fvhVvkGKTJz3F7QF4FPmfg+8Z5ebY0qYimfnBs/4YfYEWekRPEk6QMFzJWVzvdV06nHUmIe1QI/LAvpqL2KVUACquxFz18/+yvKK7CigwZmiHuswWtR/Wso2yY1riVvPRf/cPEZpV0zOG4NGk= prem@DESKTOP-6FF9ECJ
+        username: azcruser
+    adminUsername: azcruser
+    computerName: vm-001
+    location: West Europe
+    osDisk:
+      - caching: ReadWrite
+        storageAccountType: Premium_LRS
+    resourceGroupName: cr-rg-001
+    size: Standard_DS1_v2
+    sourceImageReference:
+      - offer: 0001-com-ubuntu-server-jammy
+        publisher: canonical
+        sku: 22_04-lts-gen2
+        version: latest
+    networkInterfaceIdsSelector:
+      matchLabels:
+        # Created network interface name we need pass 
+        testing.upbound.io/example-name: az-vm-network-iface
+  providerConfigRef:
+    name: azure
+

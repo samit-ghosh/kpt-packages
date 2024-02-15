@@ -1,0 +1,69 @@
+# Source: onap/charts/roles-wrapper/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dev-camunda-read
+  namespace: tenant
+rules:
+  - apiGroups:
+      - "" # "" indicates the core API group
+      - apps
+      - batch
+      - extensions
+    resources:
+      - pods
+      - deployments
+      - deployments/status
+      - jobs
+      - jobs/status
+      - statefulsets
+      - replicasets
+      - replicasets/status
+      - daemonsets
+    verbs:
+      - get
+      - watch
+      - list
+---
+# Source: mariadb-galera/charts/serviceAccount/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mariadb-galera-read
+  namespace: tenant
+---
+# Source: mariadb-galera/charts/serviceAccount/templates/role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
+kind: RoleBinding
+metadata:
+  name: mariadb-galera-read
+  namespace: tenant
+subjects:
+- kind: ServiceAccount
+  name: mariadb-galera-read
+roleRef:
+  kind: Role
+  name: dev-camunda-read
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dev-camunda-read
+  namespace: tenant
+---
+# Source: mariadb-galera/charts/serviceAccount/templates/role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
+kind: RoleBinding
+metadata:
+  name: dev-camunda-read
+  namespace: tenant
+subjects:
+  - kind: ServiceAccount
+    name: dev-camunda-read
+roleRef:
+  kind: Role
+  name: dev-camunda-read
+  apiGroup: rbac.authorization.k8s.io

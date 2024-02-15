@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: holmes-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: holmes
+    revision: main
+  downstream:
+    repo: deployments
+    package: holmes
+  annotations:
+    approval.nephio.org/policy: initial

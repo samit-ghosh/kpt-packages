@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: aai-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: aai
+    revision: main
+  downstream:
+    repo: deployments
+    package: aai
+  annotations:
+    approval.nephio.org/policy: initial

@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: camunda-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: camunda
+    revision: main
+  downstream:
+    repo: deployments
+    package: camunda
+  annotations:
+    approval.nephio.org/policy: initial

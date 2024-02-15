@@ -1,0 +1,14 @@
+apiVersion: config.porch.kpt.dev/v1alpha1
+kind: PackageVariant
+metadata:
+  name: fmpm-pkg-variant
+spec:
+  upstream:
+    repo: amcoppackages
+    package: fmpm
+    revision: main
+  downstream:
+    repo: deployments
+    package: fmpm
+  annotations:
+    approval.nephio.org/policy: initial
