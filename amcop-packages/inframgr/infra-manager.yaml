@@ -31,7 +31,9 @@ data:
       "camundaPassword": "mypassword",
       "kafkaServiceName": "kafka1",
       "kafkaServicePort": "9092",
-      "RobinPackageS3Path": "robin/software"
+      "RobinPackageS3Path": "robin/software",
+      "gitHost": "http://gitea.gitea.svc.cluster.local",
+      "gitPort": "3000"
     }
 ---
 # Source: infra-manager/templates/clusterrole.yaml
@@ -180,6 +182,10 @@ spec:
           image: jacobaarna/infra-manager:latest
           imagePullPolicy: IfNotPresent
           env:
+            - name : GIT_NAMESPACE
+              value : gitea
+            - name : GIT_SECRET_NAME
+              value: git-user-secret
             - name: DB_POSTGRES_USERNAME
               value: postgres
             - name: DB_POSTGRES_PASSWORD
