@@ -1,4 +1,3 @@
----
 # sdnr Config Map
 kind: ConfigMap
 apiVersion: v1
@@ -8,8 +7,8 @@ metadata:
   labels:
     app: smo-handler
 data:
-# TODO(prabhjot) need to take this as input along with default value
-  ODL_ADMIN_PASSWORD: "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U"
+  # TODO(prabhjot) need to take this as input along with default value
+  ODL_ADMIN_PASSWORD: Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U
 ---
 apiVersion: v1
 kind: Service
@@ -47,42 +46,45 @@ spec:
       - name: wait-for-secret
         image: alpine:latest
         imagePullPolicy: Always
-        command: ["/bin/sh", "-c", "timeout 180s sh -c 'until [ -e /mnt/secret/oauth-config-data ]; do sleep 1; done'"]
+        command:
+        - /bin/sh
+        - -c
+        - timeout 180s sh -c 'until [ -e /mnt/secret/oauth-config-data ]; do sleep 1; done'
         volumeMounts:
         - name: oauth-config-secret
           mountPath: /mnt/secret
       containers:
-        - name: smo-handler
-          image: "amcopnightly/smo-handler:master-v4.0-2024-01-23"
-          imagePullPolicy: IfNotPresent
-          ports:
-          - containerPort: 8080
-          env:
-            - name: SMO_HANDLER_ENABLED
-              value: "true"
-            - name: CONNECTION_STATUS_UPDATE_TASK_ENABLED
-              value: "false"
-            - name: CONNECTION_STATUS_UPDATE_TASK_INTERVAL
-              value: "180000"
-            - name: SDNR_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: ODL_ADMIN_PASSWORD
-                  name: smo-handler-configmap
-            - name: DR_DEPLOYMENT_NAME
-              value: dmaap-dr-prov
-            - name: DR_DEPLOYMENT_PORT      
-              value: "8480"
-            - name: PMDATA_CLEAR_INTERVAL
-              value: "90000"
-            - name: PMDATA_CLEAR_ENABLED
-              value: "false"
-            - name: PMDATA_KPI_FILTERS_ENABLED
-              value: "true"
-          volumeMounts:
-          - name: oauth-config-secret
-            mountPath: /mnt/secret
-      volumes: 
+      - name: smo-handler
+        image: amcopnightly/smo-handler:v4.0-2024-02-19
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SMO_HANDLER_ENABLED
+          value: "true"
+        - name: CONNECTION_STATUS_UPDATE_TASK_ENABLED
+          value: "false"
+        - name: CONNECTION_STATUS_UPDATE_TASK_INTERVAL
+          value: "180000"
+        - name: SDNR_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: ODL_ADMIN_PASSWORD
+              name: smo-handler-configmap
+        - name: DR_DEPLOYMENT_NAME
+          value: dmaap-dr-prov
+        - name: DR_DEPLOYMENT_PORT
+          value: "8480"
+        - name: PMDATA_CLEAR_INTERVAL
+          value: "90000"
+        - name: PMDATA_CLEAR_ENABLED
+          value: "false"
+        - name: PMDATA_KPI_FILTERS_ENABLED
+          value: "true"
+        volumeMounts:
         - name: oauth-config-secret
-          secret:
-            secretName: oauth-config-secret
+          mountPath: /mnt/secret
+      volumes:
+      - name: oauth-config-secret
+        secret:
+          secretName: oauth-config-secret

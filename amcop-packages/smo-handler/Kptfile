@@ -12,4 +12,4 @@ pipeline:
       configMap:
         name: amcopnightly/smo-handler
         newName: amcopnightly/smo-handler
-        newTag: master-v4.0-2024-01-23
+        newTag: v4.0-2024-02-19

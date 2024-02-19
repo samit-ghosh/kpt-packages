@@ -12,4 +12,4 @@ pipeline:
       configMap:
         name: amcopnightly/fm-pm
         newName: amcopnightly/fm-pm
-        newTag: master-v4.0-2024-01-18
+        newTag: v4.0-2024-02-19

@@ -179,12 +179,12 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: amcopnightly/infra-manager:main-v4.0-2024-02-18
+          image: amcopnightly/infra-manager:v4.0-2024-02-19
           imagePullPolicy: IfNotPresent
           env:
-            - name : GIT_NAMESPACE
-              value : gitea
-            - name : GIT_SECRET_NAME
+            - name: GIT_NAMESPACE
+              value: gitea
+            - name: GIT_SECRET_NAME
               value: git-user-secret
             - name: DB_POSTGRES_USERNAME
               value: postgres

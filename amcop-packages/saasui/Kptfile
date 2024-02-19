@@ -17,16 +17,16 @@ pipeline:
       configMap:
         name: amcopnightly/auth-gateway
         newName: amcopnightly/auth-gateway
-        newTag: main-v4.0-2024-01-23
+        newTag: v4.0-2024-02-19
     - name: Set auth-gateway image
       image: gcr.io/kpt-fn/set-image:v0.1.1
       configMap:
         name: amcopnightly/aes-backend
         newName: amcopnightly/aes-backend
-        newTag: tcl-master-v4.0-2024-01-23
+        newTag: v4.0-2024-02-19
     - name: Set auth-gateway image
       image: gcr.io/kpt-fn/set-image:v0.1.1
       configMap:
         name: amcopnightly/aes-frontend
         newName: amcopnightly/aes-frontend
-        newTag: tcl-master-v4.0-2024-01-23
+        newTag: v4.0-2024-02-19

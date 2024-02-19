@@ -13,5 +13,5 @@ pipeline:
       configMap:
         name: amcopnightly/topology5g
         newName: amcopnightly/topology5g
-        newTag: master-v4.0-2024-01-23
+        newTag: v4.0-2024-02-19
   

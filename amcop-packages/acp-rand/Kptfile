@@ -12,4 +12,4 @@ pipeline:
     configMap:
       name: amcopnightly/aarna-ran-acp
       newName: amcopnightly/aarna-ran-acp
-      newTag: dev-0.0.12
+      newTag: v4.0-2024-02-19

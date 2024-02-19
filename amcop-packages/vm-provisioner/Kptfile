@@ -13,4 +13,4 @@ pipeline:
       configMap:
         name: amcopnightly/vm-provisioner
         newName: amcopnightly/vm-provisioner
-        newTag: main-v4.0-2024-01-23
+        newTag: v4.0-2024-02-19
