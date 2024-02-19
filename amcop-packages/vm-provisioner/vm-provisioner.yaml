@@ -128,7 +128,7 @@ spec:
       serviceAccountName: vm-provisioner
       containers:
         - name: vm-provisioner
-          image: amcopnightly/vm-provisioner:main-v4.0-2024-01-23
+          image: amcopnightly/vm-provisioner:v4.0-2024-02-19
           imagePullPolicy: Always
           env: null
           ports:

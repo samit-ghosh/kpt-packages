@@ -12,4 +12,4 @@ pipeline:
       configMap:
         name: amcopnightly/cn-raemis
         newName: amcopnightly/cn-raemis
-        newTag: tcl_dev-v4.0-2024-01-18
+        newTag: v4.0-2024-02-19

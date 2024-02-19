@@ -107,7 +107,7 @@ spec:
     spec:
       containers:
         - name: fmpm
-          image: amcopnightly/fm-pm:master-v4.0-2024-01-18
+          image: amcopnightly/fm-pm:v4.0-2024-02-19
           imagePullPolicy: Always
           ports:
             - containerPort: 2112

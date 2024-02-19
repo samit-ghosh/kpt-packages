@@ -35,7 +35,7 @@ spec:
       #hostNetwork: true
       containers:
         - name: cn-raemis
-          image: amcopnightly/cn-raemis:tcl_dev-v4.0-2024-01-18
+          image: amcopnightly/cn-raemis:v4.0-2024-02-19
           imagePullPolicy: IfNotPresent
           env:
             - name: CN_LOG_LEVEL

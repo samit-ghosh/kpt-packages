@@ -17,4 +17,4 @@ pipeline:
       configMap:
         name: amcopnightly/infra-manager
         newName: amcopnightly/infra-manager
-        newTag: main-v4.0-2024-01-23
+        newTag: v4.0-2024-02-19
