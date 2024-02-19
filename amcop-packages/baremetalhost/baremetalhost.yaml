@@ -1,0 +1,24 @@
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  finalizers:
+  - baremetalhost.metal3.io
+  generation: 3
+  name: server01
+  namespace: testbm
+spec:
+  bmc:
+    address: redfish+https://192.168.0.120/redfish/v1/Systems/System.Embedded.1
+    credentialsName: server01-bmc-secret
+    disableCertificateVerification: true
+  online: true
+  bootMACAddress: F8:BC:12:51:C4:C0
+  bootMode: UEFI
+  description: rocky server
+  image:
+    checksum: http://192.168.0.237:6180/images/modrocky3.md5sum
+    checksumType: md5
+    format: raw
+    url: http://192.168.0.237:6180/images/modrocky3.img
+
+
