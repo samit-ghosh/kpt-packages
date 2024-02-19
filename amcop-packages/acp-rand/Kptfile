@@ -10,6 +10,6 @@ pipeline:
   mutators:
   - image: gcr.io/kpt-fn/set-image:v0.1.1
     configMap:
-      name: amcopnightly/aarna-ran-acp
-      newName: amcopnightly/aarna-ran-acp
+      name: amcopnightly/aarna-rand-acp
+      newName: amcopnightly/aarna-rand-acp
       newTag: v4.0-2024-02-19
