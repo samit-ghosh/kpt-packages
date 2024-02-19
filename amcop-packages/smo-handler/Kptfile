@@ -6,3 +6,10 @@ metadata:
     config.kubernetes.io/local-config: "true"
 info:
   description: sample description
+pipeline:
+  mutators:
+    - image: gcr.io/kpt-fn/set-image:v0.1.1
+      configMap:
+        name: amcopnightly/smo-handler
+        newName: amcopnightly/smo-handler
+        newTag: master-v4.0-2024-01-23

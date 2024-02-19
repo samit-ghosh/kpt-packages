@@ -179,7 +179,7 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: jacobaarna/infra-manager:latest
+          image: amcopnightly/infra-manager:main-v4.0-2024-02-18
           imagePullPolicy: IfNotPresent
           env:
             - name : GIT_NAMESPACE
