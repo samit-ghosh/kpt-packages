@@ -6,7 +6,7 @@ spec:
   upstream:
     repo: amcoppackages
     package: analytics
-    revision: main
+    revision: v1
   downstream:
     repo: mgmt
     package: analytics
