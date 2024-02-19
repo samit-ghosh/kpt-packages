@@ -8,7 +8,7 @@ spec:
     package: saasdb
     revision: main
   downstream:
-    repo: deployments
+    repo: mgmt
     package: saasdb
   annotations:
     approval.nephio.org/policy: initial

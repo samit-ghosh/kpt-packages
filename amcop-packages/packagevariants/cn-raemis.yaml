@@ -8,7 +8,7 @@ spec:
     package: cn-raemis
     revision: main
   downstream:
-    repo: deployments
+    repo: mgmt
     package: cn-raemis
   annotations:
     approval.nephio.org/policy: initial

@@ -8,7 +8,7 @@ spec:
     package: aai
     revision: main
   downstream:
-    repo: deployments
+    repo: mgmt
     package: aai
   annotations:
     approval.nephio.org/policy: initial
