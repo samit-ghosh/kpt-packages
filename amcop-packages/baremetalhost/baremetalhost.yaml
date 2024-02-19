@@ -1,9 +1,6 @@
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  finalizers:
-  - baremetalhost.metal3.io
-  generation: 3
   name: server01
   namespace: testbm
 spec:
