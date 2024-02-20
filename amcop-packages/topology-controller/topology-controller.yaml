@@ -351,7 +351,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: topology-cluster-role
-
+rules:
 - apiGroups:
   - config.porch.kpt.dev
   resources:
