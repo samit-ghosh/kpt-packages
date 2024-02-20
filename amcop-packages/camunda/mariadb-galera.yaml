@@ -366,7 +366,7 @@ spec:
       spec:
         accessModes:
           - "ReadWriteOnce"
-        storageClassName: amcop-local-path
+        storageClassName: local-path
         resources:
           requests:
             storage: "8Gi"
