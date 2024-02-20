@@ -14,4 +14,3 @@ pipeline:
         name: amcopnightly/topology5g
         newName: amcopnightly/topology5g
         newTag: v4.0-2024-02-19
-  
