@@ -3794,7 +3794,7 @@ spec:
   type: ClusterIP
   selector:
     app: aai
-  clusterIP:
+  clusterIP: null
   sessionAffinity: None
 ---
 # Source: aai/templates/service.yaml
@@ -3888,7 +3888,7 @@ spec:
         name: aai-graphadmin-readiness
       containers:
       - name: aai-graphadmin
-        image: "amcopnightly/aai-graphadmin:aarna-master-v4.0-2024-01-18"
+        image: amcopnightly/aai-graphadmin:v4.0-2024-02-21
         imagePullPolicy: Always
         env:
         - name: LOCAL_USER_ID
@@ -4051,7 +4051,7 @@ spec:
         imagePullPolicy: Always
       containers:
       - name: aai-resources
-        image: "amcopnightly/aai-resources:aarna-master-v4.0-2024-01-18"
+        image: amcopnightly/aai-resources:v4.0-2024-02-21
         imagePullPolicy: Always
         command:
         - sh
@@ -4068,7 +4068,7 @@ spec:
         - name: LOCAL_GROUP_ID
           value: "1000"
         - name: POST_JAVA_OPTS
-          value: '-Djavax.net.ssl.trustStore=/opt/app/osaaf/local/truststoreONAPall.jks -Djavax.net.ssl.trustStorePassword=changeit'
+          value: -Djavax.net.ssl.trustStore=/opt/app/osaaf/local/truststoreONAPall.jks -Djavax.net.ssl.trustStorePassword=changeit
         - name: TRUSTORE_ALL_PASSWORD
           value: changeit
         - name: INTERNAL_PORT_1
@@ -4182,7 +4182,7 @@ spec:
           secretName: dev-aai-resources-aaf-keys
       restartPolicy: Always
       imagePullSecrets:
-      - name: "onap-docker-registry-key"
+      - name: onap-docker-registry-key
 ---
 # Source: aai/charts/aai-schema-service/templates/deployment.yaml
 apiVersion: apps/v1
@@ -4216,7 +4216,7 @@ spec:
     spec:
       containers:
       - name: aai-schema-service
-        image: "amcopnightly/aai-schema-service:aarna-master-v4.0-2024-01-18"
+        image: amcopnightly/aai-schema-service:v4.0-2024-02-21
         imagePullPolicy: Always
         env:
         - name: LOCAL_USER_ID
@@ -4312,7 +4312,7 @@ spec:
           name: dev-aai-schema-service-realm
       restartPolicy: Always
       imagePullSecrets:
-      - name: "onap-docker-registry-key"
+      - name: onap-docker-registry-key
 ---
 # Source: aai/charts/aai-traversal/templates/deployment.yaml
 apiVersion: apps/v1
@@ -4365,7 +4365,7 @@ spec:
         name: aai-traversal-readiness
       containers:
       - name: aai-traversal
-        image: "amcopnightly/aai-traversal:aarna-master-v4.0-2024-01-18"
+        image: amcopnightly/aai-traversal:v4.0-2024-02-21
         imagePullPolicy: Always
         command:
         - sh
@@ -4503,7 +4503,7 @@ spec:
           secretName: aai-common-aai-auth
       restartPolicy: Always
       imagePullSecrets:
-      - name: "onap-docker-registry-key"
+      - name: onap-docker-registry-key
 ---
 # Source: aai/templates/deployment.yaml
 apiVersion: apps/v1
@@ -4535,7 +4535,7 @@ spec:
       annotations:
         checksum/config: f064f819dcd17643de9abe64d1bd67f1fefc03b578b133bf0349cd5bd455fabd
     spec:
-      terminationGracePeriodSeconds:
+      terminationGracePeriodSeconds: null
       initContainers:
       - command:
         - /app/ready.py
@@ -4564,7 +4564,7 @@ spec:
             cpu: 50m
       containers:
       - name: aai
-        image: "amcopnightly/aai-haproxy:aarna-master-v4.0-2024-01-18"
+        image: amcopnightly/aai-haproxy:v4.0-2024-02-21
         imagePullPolicy: Always
         volumeMounts:
         - mountPath: /etc/localtime
@@ -4616,12 +4616,12 @@ spec:
           path: /etc/localtime
       - name: aai-service-log
         hostPath:
-          path: "/dev/log"
+          path: /dev/log
       - name: haproxy-cfg
         configMap:
           name: aai-deployment-configmap
       imagePullSecrets:
-      - name: "onap-docker-registry-key"
+      - name: onap-docker-registry-key
 ---
 # Source: aai/charts/aai-graphadmin/templates/job-create-db.yaml
 apiVersion: batch/v1
@@ -4668,7 +4668,7 @@ spec:
         name: aai-graphadmin-readiness
       containers:
       - name: aai-graphadmin-job
-        image: "amcopnightly/aai-graphadmin:aarna-master-v4.0-2024-01-18"
+        image: amcopnightly/aai-graphadmin:v4.0-2024-02-21
         imagePullPolicy: Always
         command:
         - sh
@@ -4791,11 +4791,11 @@ spec:
         name: aai-traversal-readiness
       containers:
       - name: aai-traversal-job
-        image: "amcopnightly/aai-traversal:aarna-master-v4.0-2024-01-18"
+        image: amcopnightly/aai-traversal:v4.0-2024-02-21
         imagePullPolicy: Always
         command:
         - bash
-        - "-c"
+        - -c
         - |
           set -x
           if [ ! -d /opt/aai/logroot/AAI-GQ/misc ]; then mkdir -p /opt/aai/logroot/AAI-GQ/misc; fi
@@ -4854,4 +4854,4 @@ spec:
           name: dev-aai-traversal
       restartPolicy: OnFailure
       imagePullSecrets:
-      - name: "onap-docker-registry-key"
+      - name: onap-docker-registry-key
