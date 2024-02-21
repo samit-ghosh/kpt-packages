@@ -277,27 +277,27 @@ spec:
           failureThreshold: 90
         env:
         - name: CASSANDRA_SEEDS
-          value: "cassandra-0.cassandra.amcop-system.svc.cluster.local,cassandra-1.cassandra.amcop-system.svc.cluster.local,cassandra-2.cassandra.amcop-system.svc.cluster.local"
+          value: cassandra-0.cassandra.amcop-system.svc.cluster.local,cassandra-1.cassandra.amcop-system.svc.cluster.local,cassandra-2.cassandra.amcop-system.svc.cluster.local
         - name: MAX_HEAP_SIZE
           value: 4096M
         - name: HEAP_NEWSIZE
           value: 200M
         - name: JVM_OPTS
-          value: "-Dcassandra.consistent.rangemovement=false"
+          value: -Dcassandra.consistent.rangemovement=false
         - name: CASSANDRA_CLUSTER_NAME
-          value: "cassandra"
+          value: cassandra
         - name: CASSANDRA_DC
-          value: "Pod"
+          value: Pod
         - name: CASSANDRA_RACK
-          value: "Rack"
+          value: Rack
         - name: CASSANDRA_AUTO_BOOTSTRAP
           value: "true"
         - name: CASSANDRA_START_RPC
           value: "true"
         - name: CASSANDRA_ENDPOINT_SNITCH
-          value: "GossipingPropertyFileSnitch"
+          value: GossipingPropertyFileSnitch
         - name: CASSANDRA_AUTHENTICATOR
-          value: "PasswordAuthenticator"
+          value: PasswordAuthenticator
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -305,7 +305,10 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/sh", "-c", "PID=$(pidof java) && kill $PID && while ps -p $PID > /dev/null; do sleep 1; done"]
+              command:
+              - /bin/sh
+              - -c
+              - PID=$(pidof java) && kill $PID && while ps -p $PID > /dev/null; do sleep 1; done
         resources:
           limits:
             cpu: 3
@@ -322,7 +325,7 @@ spec:
                   app.kubernetes.io/name: cassandra
                   app.kubernetes.io/instance: dev
               namespaces:
-              - "amcop-system"
+              - amcop-system
               topologyKey: kubernetes.io/hostname
             weight: 1
       serviceAccountName: cassandra-nothing
@@ -333,19 +336,19 @@ spec:
       - name: cassandra-entrypoint
         configMap:
           name: cassandra-entrypoint
-          defaultMode: 0755
+          defaultMode: 493
   volumeClaimTemplates:
   - metadata:
       name: cassandra-data
       labels:
         name: cassandra
-        chart: "cassandra-11.0.0"
-        release: "dev"
-        heritage: "Helm"
+        chart: cassandra-11.0.0
+        release: dev
+        heritage: Helm
     spec:
       accessModes:
       - ReadWriteOnce
       storageClassName: local-path
       resources:
         requests:
-          storage: "10Gi"
+          storage: 10Gi

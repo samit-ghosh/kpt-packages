@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
         - name: aes-backend
-          image: amcopnightly/aes-backend:v4.0-2024-02-19
+          image: amcopnightly/aes-backend:v4.0-2024-02-21
           imagePullPolicy: Always
           env:
             - name: MONGODB_HOST
