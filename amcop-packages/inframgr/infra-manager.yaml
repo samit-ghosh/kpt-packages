@@ -22,7 +22,7 @@ data:
       "logLevel":       "info",
       "port":           "9051",
       "ironicImageDir": "/opt/metal3-dev-env/ironic/html/images",
-      "ironicHost":     "192.168.0.237:6180",
+      "ironicHost":     "http://192.168.0.237:6180",
       "aaiAddress":     "http://aai:8443/aai/v23",
       "aaiUsername":    "AAI",
       "aaiPassword":    "AAI",
