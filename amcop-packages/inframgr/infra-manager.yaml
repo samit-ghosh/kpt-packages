@@ -180,7 +180,7 @@ spec:
       containers:
         - name: infra-manager
           image: amcopnightly/infra-managertag
-          tag: xyx # kpt-set: ${imagetag}
+          tag: xydd # kpt-set: ${image-tag}
           imagePullPolicy: Always
           env:
             - name: GIT_NAMESPACE
