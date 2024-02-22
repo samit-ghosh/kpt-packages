@@ -3888,7 +3888,8 @@ spec:
         name: aai-graphadmin-readiness
       containers:
       - name: aai-graphadmin
-        image: amcopnightly/aai-graphadmin:v4.0-2024-02-21
+        image: amcopnightly/aai-graphadmin
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: Always
         env:
         - name: LOCAL_USER_ID
@@ -4051,7 +4052,8 @@ spec:
         imagePullPolicy: Always
       containers:
       - name: aai-resources
-        image: amcopnightly/aai-resources:v4.0-2024-02-21
+        image: amcopnightly/aai-resources
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: Always
         command:
         - sh
@@ -4216,7 +4218,8 @@ spec:
     spec:
       containers:
       - name: aai-schema-service
-        image: amcopnightly/aai-schema-service:v4.0-2024-02-21
+        image: amcopnightly/aai-schema-service
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: Always
         env:
         - name: LOCAL_USER_ID
@@ -4365,7 +4368,8 @@ spec:
         name: aai-traversal-readiness
       containers:
       - name: aai-traversal
-        image: amcopnightly/aai-traversal:v4.0-2024-02-21
+        image: amcopnightly/aai-traversal
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: Always
         command:
         - sh
@@ -4564,7 +4568,8 @@ spec:
             cpu: 50m
       containers:
       - name: aai
-        image: amcopnightly/aai-haproxy:v4.0-2024-02-21
+        image: amcopnightly/aai-haproxy
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: Always
         volumeMounts:
         - mountPath: /etc/localtime
@@ -4668,7 +4673,8 @@ spec:
         name: aai-graphadmin-readiness
       containers:
       - name: aai-graphadmin-job
-        image: amcopnightly/aai-graphadmin:v4.0-2024-02-21
+        image: amcopnightly/aai-graphadmin
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: Always
         command:
         - sh
@@ -4791,7 +4797,8 @@ spec:
         name: aai-traversal-readiness
       containers:
       - name: aai-traversal-job
-        image: amcopnightly/aai-traversal:v4.0-2024-02-21
+        image: amcopnightly/aai-traversal
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: Always
         command:
         - bash

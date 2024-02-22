@@ -179,8 +179,9 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: amcopnightly/infra-manager:v4.0-2024-02-21
-          imagePullPolicy: IfNotPresent
+          image: amcopnightly/infra-managertag
+          tag: xyx # kpt-set: ${imagetag}
+          imagePullPolicy: Always
           env:
             - name: GIT_NAMESPACE
               value: gitea

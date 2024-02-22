@@ -40,7 +40,8 @@ spec:
           imagePullPolicy: Always
       containers:
         - name: aes-frontend
-          image: amcopnightly/aes-frontend:v4.0-2024-02-21
+          image: amcopnightly/aes-frontend
+          tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
           imagePullPolicy: Always
           env:
             - name: REACT_APP_MAPBOX_ACCESS_TOKEN
