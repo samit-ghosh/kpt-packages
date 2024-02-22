@@ -128,7 +128,8 @@ spec:
       serviceAccountName: vm-provisioner
       containers:
         - name: vm-provisioner
-          image: amcopnightly/vm-provisioner:v4.0-2024-02-21
+          image: amcopnightly/vm-provisioner
+          tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
           imagePullPolicy: Always
           env: null
           ports:

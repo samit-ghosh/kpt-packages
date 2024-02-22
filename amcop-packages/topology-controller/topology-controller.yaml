@@ -266,7 +266,8 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: amcopnightly/topology5g:v4.0-2024-02-21
+        image: amcopnightly/topology5g
+        tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
         env:
         - name: AAIADDRESS
           valueFrom:

@@ -6,30 +6,3 @@ metadata:
     config.kubernetes.io/local-config: "true"
 info:
   description: sample description
-pipeline:
-  mutators:
-  - image: gcr.io/kpt-fn/set-image:v0.1.1
-    configMap:
-      name: amcopnightly/aai-schema-service
-      newName: amcopnightly/aai-schema-service
-      newTag: v4.0-2024-02-21
-  - image: gcr.io/kpt-fn/set-image:v0.1.1
-    configMap:
-      name: amcopnightly/aai-resources
-      newName: amcopnightly/aai-resources
-      newTag: v4.0-2024-02-21
-  - image: gcr.io/kpt-fn/set-image:v0.1.1
-    configMap:
-      name: amcopnightly/aai-traversal
-      newName: amcopnightly/aai-traversal
-      newTag: v4.0-2024-02-21
-  - image: gcr.io/kpt-fn/set-image:v0.1.1
-    configMap:
-      name: amcopnightly/aai-graphadmin
-      newName: amcopnightly/aai-graphadmin
-      newTag: v4.0-2024-02-21
-  - image: gcr.io/kpt-fn/set-image:v0.1.1
-    configMap:
-      name: amcopnightly/aai-haproxy
-      newName: amcopnightly/aai-haproxy
-      newTag: v4.0-2024-02-21

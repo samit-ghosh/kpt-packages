@@ -53,7 +53,8 @@ spec:
     spec:
       containers:
         - name: aes-backend
-          image: amcopnightly/aes-backend:v4.0-2024-02-21
+          image: amcopnightly/aes-backend
+          tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
           imagePullPolicy: Always
           env:
             - name: MONGODB_HOST

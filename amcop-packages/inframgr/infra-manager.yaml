@@ -179,7 +179,8 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: amcopnightly/infra-manager:v4.0-2024-02-21
+          image: amcopnightly/infra-manager
+          tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
           imagePullPolicy: IfNotPresent
           env:
             - name: GIT_NAMESPACE
