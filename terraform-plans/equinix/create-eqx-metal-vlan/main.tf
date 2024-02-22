@@ -12,25 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-terraform {
-  required_providers {
-    equinix = {
-      source = "equinix/equinix"
-      version = "1.13.0"
-    }
-    metal = {
-      source = "equinix/metal"
-    }
-  }
-}
-
-# For metal we should export the following
-# ENV variable
-# export METAL_AUTH_TOKEN=""
-
-provider "equinix" {
-  auth_token = var.eqx_metal_client_secret
-}
 
 # Create Metal VLAN resource
 resource "equinix_metal_vlan" "vlan1" {
