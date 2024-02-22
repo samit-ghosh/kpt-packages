@@ -56,7 +56,7 @@ spec:
       containers:
       - name: smo-handler
         image: amcopnightly/smo-handler
-        tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
+        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

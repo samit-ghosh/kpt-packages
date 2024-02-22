@@ -36,7 +36,7 @@ spec:
       containers:
         - name: cn-raemis
           image: amcopnightly/cn-raemis
-          tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
+          tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
           imagePullPolicy: IfNotPresent
           env:
             - name: CN_LOG_LEVEL

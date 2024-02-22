@@ -53,7 +53,7 @@ spec:
       containers:
         - name: auth-gateway
           image: amcopnightly/auth-gateway
-          tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
+          tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
           imagePullPolicy: Always
           env:
             - name: APP_URL

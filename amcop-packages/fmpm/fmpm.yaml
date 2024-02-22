@@ -108,7 +108,7 @@ spec:
       containers:
         - name: fmpm
           image: amcopnightly/fm-pm
-          tag: v4.0-2024-02-21 "# kpt-set: ${image-tag}"
+          tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
           imagePullPolicy: Always
           ports:
             - containerPort: 2112
