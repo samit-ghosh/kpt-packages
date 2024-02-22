@@ -12,10 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-provider "azurerm" {
-  features {}
-}
-
 resource "azurerm_resource_group" "demo" {
   name     = var.az_rg_name
   location = var.az_region
