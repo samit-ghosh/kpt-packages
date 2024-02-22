@@ -179,10 +179,12 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: amcopnightly/infra-managertag
+          image: amcopnightly/infra-manager
           tag: xydd # kpt-set: ${image-tag}
           imagePullPolicy: Always
           env:
+            - name: IMAGE_TAG
+              value: xydd # kpt-set: ${image-tag}
             - name: GIT_NAMESPACE
               value: gitea
             - name: GIT_SECRET_NAME
