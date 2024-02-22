@@ -346,15 +346,3 @@ spec:
             memory: 64Mi
       serviceAccountName: topology-controller
       terminationGracePeriodSeconds: 10
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: topology-cluster-role
-rules:
-- apiGroups:
-  - config.porch.kpt.dev
-  resources:
-  - '*'
-  verbs:
-  - '*'
