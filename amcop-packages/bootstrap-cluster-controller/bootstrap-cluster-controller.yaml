@@ -340,8 +340,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: shashidharpatil/bootstrap-cluster
-        tag: latest # kpt-set: ${image-tag}
+        image: shashidharpatil/bootstrap-cluster:latest
         livenessProbe:
           httpGet:
             path: /healthz

@@ -179,8 +179,7 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: amcopnightly/infra-manager
-          tag: xydd # kpt-set: ${image-tag}
+          image: amcopnightly/infra-manager:AMC
           imagePullPolicy: Always
           env:
             - name: IMAGE_TAG

@@ -35,8 +35,7 @@ spec:
       #hostNetwork: true
       containers:
       - name: rand-acp
-        image: amcopnightly/aarna-ran-acp
-        tag: v4.0-2024-02-21 # kpt-set: ${image-tag}
+        image: amcopnightly/aarna-ran-acp:v4.0-2024-02-21
         imagePullPolicy: IfNotPresent
         env:
         - name: RAND_LOG_LEVEL
