@@ -6,11 +6,3 @@ metadata:
     config.kubernetes.io/local-config: "true"
 info:
   description: kpt pkg for bootstrap-secret-controller
-pipeline:
-  mutators:
-    - name: Set bootstrap-secret-controller image
-      image: gcr.io/kpt-fn/set-image:v0.1.1
-      configMap:
-        name: shashidharpatil/bootstrap-secret
-        newName: shashidharpatil/bootstrap-secret
-        newTag: latest 
