@@ -74,3 +74,16 @@ rules:
   - '*'
   verbs:
   - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: vm-provisioner-clusterrolebinding
+subjects:
+  - kind: ServiceAccount
+    name: vm-provisioner
+    namespace: tenant
+roleRef:
+  kind: ClusterRole
+  name: vm-provisioner
+  apiGroup: rbac.authorization.k8s.io
