@@ -6,7 +6,7 @@ spec:
   upstream:
     repo: amcoppackages
     package: aai
-    revision: v1
+    revision: v1multitenant
   downstream:
     repo: mgmt
     package: aai

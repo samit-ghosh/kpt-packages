@@ -6,7 +6,7 @@ spec:
   upstream:
     repo: amcoppackages
     package: inframgr
-    revision: v1
+    revision: v1multitenant
   downstream:
     repo: mgmt
     package: inframgr
