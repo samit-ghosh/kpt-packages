@@ -24,6 +24,7 @@ data:
       "ironicImageDir": "/opt/metal3-dev-env/ironic/html/images",
       "ironicHost":     "http://192.168.0.237:6180",
       "aaiAddress":     "http://aai:8443/aai/v23",
+      "amcopTag":       "v4.0-2024-02-22",
       "aaiUsername":    "AAI",
       "aaiPassword":    "AAI",
       "camundaAddress": "camunda:8443",
@@ -182,8 +183,6 @@ spec:
           image: amcopnightly/infra-manager:AMC
           imagePullPolicy: Always
           env:
-            - name: IMAGE_TAG
-              value: xydd # kpt-set: ${image-tag}
             - name: GIT_NAMESPACE
               value: gitea
             - name: GIT_SECRET_NAME
