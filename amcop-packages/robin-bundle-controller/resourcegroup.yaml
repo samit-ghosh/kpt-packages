@@ -1,0 +1,7 @@
+apiVersion: kpt.dev/v1alpha1
+kind: ResourceGroup
+metadata:
+  name: inventory-28614333
+  namespace: robin-bundle-operator-system
+  labels:
+    cli-utils.sigs.k8s.io/inventory-id: 006b0f242ed2977f54e2f1fbfdbe6c7655393480-1709031056760884653

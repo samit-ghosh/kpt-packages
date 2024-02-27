@@ -1,0 +1,14 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: robin-bundle-controller
+  annotations:
+    config.kubernetes.io/local-config: "true"
+info:
+  description: This Kpt file is used to deploy the Robin bundle controller
+pipeline:
+  mutators:
+    - name: Set namespace
+      image: gcr.io/kpt-fn/set-namespace:v0.4.1
+      configMap:
+        namespace: robin-bundle-operator-system
