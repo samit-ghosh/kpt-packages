@@ -11,4 +11,4 @@ pipeline:
     - name: Set namespace
       image: gcr.io/kpt-fn/set-namespace:v0.4.1
       configMap:
-        namespace: robin-bundle-operator-system
+        namespace: amcop-system

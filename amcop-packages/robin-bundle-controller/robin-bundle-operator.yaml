@@ -50,7 +50,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: robin-bundle-operator-controller-manager
-  namespace: robin-bundle-operator-system
+  namespace: amcop-system
 ---
 # Source: chart/templates/manager-rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -166,7 +166,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: robin-bundle-operator-controller-manager-leader-election-role
-  namespace: robin-bundle-operator-system
+  namespace: amcop-system
 rules:
 - apiGroups:
   - ""
@@ -205,7 +205,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: robin-bundle-operator-controller-manager-leader-election-rolebinding
-  namespace: robin-bundle-operator-system
+  namespace: amcop-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -220,7 +220,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: robin-bundle-operator-controller-manager-metrics-service
-  namespace: robin-bundle-operator-system
+  namespace: amcop-system
 spec:
   type: ClusterIP
   selector:
@@ -238,7 +238,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: robin-bundle-operator-controller-manager
-  namespace: robin-bundle-operator-system
+  namespace: amcop-system
 spec:
   replicas: 1
   selector:
