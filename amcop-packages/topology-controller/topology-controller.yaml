@@ -166,7 +166,7 @@ metadata:
   name: topology-controller-configmap
   namespace: default
 data:
-  aai_address: http://aai
+  aai_address: http://aai.amcop-system
   aai_port: "8443"
   camunda_address: https://camunda
   camunda_port: "8443"
