@@ -1,0 +1,1220 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 16,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "LKiFAROIz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 17,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "LKiFAROIz"
+          },
+          "editorMode": "code",
+          "expr": "count(alert_severity{alarmState=\"Raised\"}) - count(alert_severity{alarmState=\"Cleared\"})",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Active Alarms",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "LKiFAROIz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 102
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmTypeID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 135
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nodeName"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 239
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 13,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "LKiFAROIz"
+          },
+          "editorMode": "code",
+          "expr": "alert_severity{}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "ACP Alarms -All-Alarms",
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": {
+            "join": [
+              "alarmID",
+              "instance",
+              "job",
+              "alarmType",
+              "nodeName",
+              "sourceName",
+              "alarmTypeID",
+              "alarmChangedTime",
+              "alarmState",
+              "description",
+              "sourceType",
+              "severity",
+              "alarmReportingTime",
+              "sourceRaisedTime",
+              "customer"
+            ],
+            "value": "__name__"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "alarmChangedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmReportingTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmState": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmType": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmTypeID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alert_severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "customer": {
+                "aggregations": []
+              },
+              "description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "nodeName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceRaisedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceType": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "alarmChangedTime": true,
+              "alarmID": false,
+              "alert_severity": true,
+              "instance": true,
+              "job": true,
+              "nodeName": false,
+              "sourceName": true,
+              "sourceType": true
+            },
+            "indexByName": {
+              "alarmChangedTime": 4,
+              "alarmID": 0,
+              "alarmReportingTime": 3,
+              "alarmState": 12,
+              "alarmType": 1,
+              "alarmTypeID": 10,
+              "alert_severity": 11,
+              "customer": 8,
+              "description": 13,
+              "instance": 5,
+              "job": 6,
+              "nodeName": 7,
+              "severity": 2,
+              "sourceName": 9,
+              "sourceRaisedTime": 15,
+              "sourceType": 14
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "LKiFAROIz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 102
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmTypeID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 135
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmState"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 12,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "LKiFAROIz"
+          },
+          "editorMode": "code",
+          "expr": "alert_severity{severity=\"Critical\"}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "ACP Alarms - Critical",
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": {
+            "join": [
+              "alarmID",
+              "instance",
+              "job",
+              "alarmType",
+              "nodeName",
+              "sourceName",
+              "alarmTypeID",
+              "alarmChangedTime",
+              "alarmState",
+              "description",
+              "sourceType",
+              "severity",
+              "alarmReportingTime",
+              "sourceRaisedTime"
+            ],
+            "value": "__name__"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "alarmChangedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmReportingTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmState": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmType": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmTypeID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alert_severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "nodeName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceRaisedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceType": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "alarmChangedTime": true,
+              "alarmID": false,
+              "alert_severity": true,
+              "instance": true,
+              "job": true,
+              "nodeName": false,
+              "sourceName": true,
+              "sourceType": true
+            },
+            "indexByName": {
+              "alarmChangedTime": 4,
+              "alarmID": 0,
+              "alarmReportingTime": 3,
+              "alarmState": 11,
+              "alarmType": 1,
+              "alarmTypeID": 9,
+              "alert_severity": 10,
+              "description": 12,
+              "instance": 5,
+              "job": 6,
+              "nodeName": 7,
+              "severity": 2,
+              "sourceName": 8,
+              "sourceRaisedTime": 14,
+              "sourceType": 13
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "LKiFAROIz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 102
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmTypeID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 135
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 14,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "LKiFAROIz"
+          },
+          "editorMode": "code",
+          "expr": "alert_severity{severity=\"Major\"}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "ACP Alarms -Major-Alarms",
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": {
+            "join": [
+              "alarmID",
+              "instance",
+              "job",
+              "alarmType",
+              "nodeName",
+              "sourceName",
+              "alarmTypeID",
+              "alarmChangedTime",
+              "alarmState",
+              "description",
+              "sourceType",
+              "severity",
+              "alarmReportingTime",
+              "sourceRaisedTime"
+            ],
+            "value": "__name__"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "alarmChangedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmReportingTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmState": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmType": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmTypeID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alert_severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "nodeName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceRaisedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceType": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "alarmChangedTime": true,
+              "alarmID": false,
+              "alert_severity": true,
+              "instance": true,
+              "job": true,
+              "nodeName": false,
+              "sourceName": true,
+              "sourceType": true
+            },
+            "indexByName": {
+              "alarmChangedTime": 4,
+              "alarmID": 0,
+              "alarmReportingTime": 3,
+              "alarmState": 11,
+              "alarmType": 1,
+              "alarmTypeID": 9,
+              "alert_severity": 10,
+              "description": 12,
+              "instance": 5,
+              "job": 6,
+              "nodeName": 7,
+              "severity": 2,
+              "sourceName": 8,
+              "sourceRaisedTime": 14,
+              "sourceType": 13
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "LKiFAROIz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 102
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmTypeID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 135
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "id": 15,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "LKiFAROIz"
+          },
+          "editorMode": "code",
+          "expr": "alert_severity{severity=\"Minor\"}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "ACP Alarms -Minor-Alarms",
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": {
+            "join": [
+              "alarmID",
+              "instance",
+              "job",
+              "alarmType",
+              "nodeName",
+              "sourceName",
+              "alarmTypeID",
+              "alarmChangedTime",
+              "alarmState",
+              "description",
+              "sourceType",
+              "severity",
+              "alarmReportingTime",
+              "sourceRaisedTime"
+            ],
+            "value": "__name__"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "alarmChangedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmReportingTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmState": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmType": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmTypeID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alert_severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "nodeName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceRaisedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceType": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "alarmChangedTime": true,
+              "alarmID": false,
+              "alert_severity": true,
+              "instance": true,
+              "job": true,
+              "nodeName": false,
+              "sourceName": true,
+              "sourceType": true
+            },
+            "indexByName": {
+              "alarmChangedTime": 4,
+              "alarmID": 0,
+              "alarmReportingTime": 3,
+              "alarmState": 11,
+              "alarmType": 1,
+              "alarmTypeID": 9,
+              "alert_severity": 10,
+              "description": 12,
+              "instance": 5,
+              "job": 6,
+              "nodeName": 7,
+              "severity": 2,
+              "sourceName": 8,
+              "sourceRaisedTime": 14,
+              "sourceType": 13
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "LKiFAROIz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 102
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmTypeID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 135
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 50
+      },
+      "id": 16,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "LKiFAROIz"
+          },
+          "editorMode": "code",
+          "expr": "alert_severity{severity=\"Warning\"}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "ACP Alarms -Warning-Alarms",
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": {
+            "join": [
+              "alarmID",
+              "instance",
+              "job",
+              "alarmType",
+              "nodeName",
+              "sourceName",
+              "alarmTypeID",
+              "alarmChangedTime",
+              "alarmState",
+              "description",
+              "sourceType",
+              "severity",
+              "alarmReportingTime",
+              "sourceRaisedTime"
+            ],
+            "value": "__name__"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "alarmChangedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmReportingTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmState": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmType": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmTypeID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alert_severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "nodeName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceRaisedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceType": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "alarmChangedTime": true,
+              "alarmID": false,
+              "alert_severity": true,
+              "instance": true,
+              "job": true,
+              "nodeName": false,
+              "sourceName": true,
+              "sourceType": true
+            },
+            "indexByName": {
+              "alarmChangedTime": 4,
+              "alarmID": 0,
+              "alarmReportingTime": 3,
+              "alarmState": 11,
+              "alarmType": 1,
+              "alarmTypeID": 9,
+              "alert_severity": 10,
+              "description": 12,
+              "instance": 5,
+              "job": 6,
+              "nodeName": 7,
+              "severity": 2,
+              "sourceName": 8,
+              "sourceRaisedTime": 14,
+              "sourceType": 13
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "ACP-Alarm Tables",
+  "uid": "5_DwiyjVz",
+  "version": 3,
+  "weekStart": ""
+}
