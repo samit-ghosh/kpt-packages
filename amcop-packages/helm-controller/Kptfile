@@ -12,3 +12,5 @@ pipeline:
       image: gcr.io/kpt-fn/set-namespace:v0.4.1
       configMap:
         namespace: amcop-system
+      exclude:
+        - kind: CustomResourceDefinition
