@@ -17,7 +17,7 @@ spec:
       'tlsSkipVerify': true
       'timeInterval': "5s"
       #      header for selecting the tenant bucket for cortex
-      'httpHeaderName1': "X-Scope-OrgID"
+      'httpHeaderName1': "X-Scope-OrgID"  # kpt-set: ${orgid}
     secureJsonData:
       'httpHeaderValue1': tenant
     editable: true
