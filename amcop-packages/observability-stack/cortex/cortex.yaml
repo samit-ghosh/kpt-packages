@@ -1233,7 +1233,7 @@ spec:
     - metadata:
         name: storage
       spec:
-        storageClassName: amcop-local-path
+        storageClassName: local-path
         accessModes:
           - ReadWriteOnce
         resources:
@@ -1349,7 +1349,7 @@ spec:
     - metadata:
         name: storage
       spec:
-        storageClassName: amcop-local-path
+        storageClassName: local-path
         accessModes:
           - ReadWriteOnce
         resources:

@@ -22,8 +22,9 @@ data:
       "logLevel":       "info",
       "port":           "9051",
       "ironicImageDir": "/opt/metal3-dev-env/ironic/html/images",
-      "ironicHost":     "ironic:80",
+      "ironicHost":     "http://192.168.0.237:6180",
       "aaiAddress":     "http://aai:8443/aai/v23",
+      "amcopTag":       "v4.0-2024-02-22",
       "aaiUsername":    "AAI",
       "aaiPassword":    "AAI",
       "camundaAddress": "camunda:8443",
@@ -179,8 +180,8 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: amcopnightly/infra-manager:v4.0-2024-02-21
-          imagePullPolicy: IfNotPresent
+          image: amcopnightly/infra-manager:AMC
+          imagePullPolicy: Always
           env:
             - name: GIT_NAMESPACE
               value: gitea

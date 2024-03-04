@@ -35,7 +35,7 @@ spec:
                 claimName: amcop-grafana-pvc
   persistentVolumeClaim:
     spec:
-      storageClassName: amcop-local-path
+      storageClassName: local-path
       volumeMode: Filesystem
       accessModes:
         - ReadWriteOnce

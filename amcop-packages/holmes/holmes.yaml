@@ -690,7 +690,7 @@ spec:
         resources:
           requests:
             storage: "2Gi"
-        storageClassName: amcop-local-path
+        storageClassName: local-path
 ---
 # Source: holmes-engine-managment/templates/job.yaml
 apiVersion: batch/v1
@@ -749,7 +749,7 @@ spec:
   resources:
     requests:
       storage: 100Mi
-  storageClassName: amcop-local-path
+  storageClassName: local-path
   volumeMode: Filesystem
 ---
 # Source: rule-adapter-helm/templates/service.yaml
