@@ -10,14 +10,14 @@ metadata:
     app.kubernetes.io/created-by: topology5g
     app.kubernetes.io/part-of: topology5g
     app.kubernetes.io/managed-by: Helm
-  namespace: tenant
+  namespace: default
 ---
 # Source: topology-controller/templates/rbac/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: topology-manager-role
-  namespace: tenant
+  namespace: default
 rules:
 - apiGroups:
   - policy.aarna.com
@@ -58,7 +58,7 @@ metadata:
     app.kubernetes.io/part-of: topology5g
     app.kubernetes.io/managed-by: Helm
   name: topology-manager-rolebinding
-  namespace: tenant
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -66,7 +66,20 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: topology-controller
-  namespace: tenant
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: default # kpt-set: ${crb-replace}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: topology-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: topology-controller
+  namespace: default
 ---
 # Source: topology-controller/templates/rbac/leader_election_role.yaml
 # permissions to do leader election.
@@ -81,7 +94,7 @@ metadata:
     app.kubernetes.io/part-of: topology5g
     app.kubernetes.io/managed-by: Helm
   name: topology-leader-election-role
-  namespace: tenant
+  namespace: default
 rules:
 - apiGroups:
   - ""
@@ -127,7 +140,7 @@ metadata:
     app.kubernetes.io/part-of: topology5g
     app.kubernetes.io/managed-by: Helm
   name: topology-leader-election-rolebinding
-  namespace: tenant
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -135,7 +148,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: topology-controller
-  namespace: tenant
+  namespace: default
 ---
 # Source: topology-controller/templates/rbac/auth_proxy_service.yaml
 apiVersion: v1
@@ -150,7 +163,7 @@ metadata:
     app.kubernetes.io/part-of: topology5g
     app.kubernetes.io/managed-by: Helm
   name: topology-controller-metrics-service
-  namespace: tenant
+  namespace: default
 spec:
   ports:
   - name: https
@@ -164,9 +177,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: topology-controller-configmap
-  namespace: tenant
+  namespace: default
 data:
-  aai_address: http://aai
+  aai_address: http://aai.amcop-system
   aai_port: "8443"
   camunda_address: https://camunda
   camunda_port: "8443"
@@ -176,7 +189,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: topology-controller-secret
-  namespace: tenant
+  namespace: default
 stringData:
   aai_username: AAI
   aai_password: AAI
@@ -188,7 +201,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: topology-controller
-  namespace: tenant
+  namespace: default
   labels:
     helm.sh/chart: topology-controller-0.1.0
     app.kubernetes.io/name: topology-controller
@@ -211,7 +224,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: topology-controller
-  namespace: tenant
+  namespace: default
   labels:
     control-plane: topology-controller
     app.kubernetes.io/name: deployment
@@ -266,7 +279,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: amcopnightly/topology5g:v4.0-2024-02-21
+        image: amcopnightly/topology5g:v4.0-2024-02-20
         env:
         - name: AAIADDRESS
           valueFrom:
@@ -346,15 +359,3 @@ spec:
             memory: 64Mi
       serviceAccountName: topology-controller
       terminationGracePeriodSeconds: 10
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: topology-cluster-role
-rules:
-- apiGroups:
-  - config.porch.kpt.dev
-  resources:
-  - '*'
-  verbs:
-  - '*'

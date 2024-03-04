@@ -6,9 +6,9 @@ spec:
   upstream:
     repo: amcoppackages
     package: vm-provisioner
-    revision: main
+    revision: v1
   downstream:
-    repo: deployments
+    repo: mgmt
     package: vm-provisioner
   annotations:
     approval.nephio.org/policy: initial

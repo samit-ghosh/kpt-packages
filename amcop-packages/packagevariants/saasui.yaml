@@ -6,9 +6,9 @@ spec:
   upstream:
     repo: amcoppackages
     package: saasui
-    revision: main
+    revision: v1
   downstream:
-    repo: deployments
+    repo: mgmt
     package: saasui
   annotations:
     approval.nephio.org/policy: initial

@@ -6,11 +6,3 @@ metadata:
     config.kubernetes.io/local-config: "true"
 info:
   description: topology controller package
-pipeline:
-  mutators:
-    - name: Set image
-      image: gcr.io/kpt-fn/set-image:v0.1.1
-      configMap:
-        name: amcopnightly/topology5g
-        newName: amcopnightly/topology5g
-        newTag: v4.0-2024-02-21

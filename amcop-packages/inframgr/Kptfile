@@ -12,9 +12,3 @@ pipeline:
       image: gcr.io/kpt-fn/set-namespace:v0.4.1
       configMap:
         namespace: amcop-system
-    - name: Set image
-      image: gcr.io/kpt-fn/set-image:v0.1.1
-      configMap:
-        name: amcopnightly/infra-manager
-        newName: amcopnightly/infra-manager
-        newTag: v4.0-2024-02-21

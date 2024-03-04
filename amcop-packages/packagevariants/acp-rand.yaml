@@ -6,9 +6,9 @@ spec:
   upstream:
     repo: amcoppackages
     package: acp-rand
-    revision: main
+    revision: v1
   downstream:
-    repo: deployments
+    repo: mgmt
     package: acp-rand
   annotations:
     approval.nephio.org/policy: initial

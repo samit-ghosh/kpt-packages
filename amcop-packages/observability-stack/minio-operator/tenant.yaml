@@ -33,7 +33,7 @@ spec:
         metadata:
           name: data
         spec:
-          storageClassName: amcop-local-path
+          storageClassName: local-path
           accessModes:
             - ReadWriteOnce
           resources:

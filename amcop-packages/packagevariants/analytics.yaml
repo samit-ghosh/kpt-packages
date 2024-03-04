@@ -6,9 +6,9 @@ spec:
   upstream:
     repo: amcoppackages
     package: analytics
-    revision: main
+    revision: v1
   downstream:
-    repo: deployments
+    repo: mgmt
     package: analytics
   annotations:
     approval.nephio.org/policy: initial

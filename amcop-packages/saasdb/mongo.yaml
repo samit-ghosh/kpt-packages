@@ -87,7 +87,7 @@ spec:
     spec:
       accessModes: ["ReadWriteOnce"]
       # {{- if ne .STORAGE_CLASS ""}}
-      storageClassName: amcop-local-path
+      storageClassName: local-path
       # {{- end }}
       resources:
         requests:

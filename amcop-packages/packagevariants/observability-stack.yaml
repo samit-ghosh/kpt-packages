@@ -6,9 +6,9 @@ spec:
   upstream:
     repo: amcoppackages
     package: observability-stack
-    revision: main
+    revision: v1
   downstream:
-    repo: deployments
+    repo: mgmt
     package: observability-stack
   annotations:
     approval.nephio.org/policy: initial
