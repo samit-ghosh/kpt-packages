@@ -145,7 +145,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: robin-bundle-operator-controller-manager
-  namespace: 'robin-bundle-operator-system'
+  namespace: amcop-system
 ---
 # Source: chart/templates/proxy-rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -159,7 +159,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: robin-bundle-operator-controller-manager
-  namespace: 'robin-bundle-operator-system'
+  namespace: amcop-system
 ---
 # Source: chart/templates/leader-election-rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -213,7 +213,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: robin-bundle-operator-controller-manager
-  namespace: 'robin-bundle-operator-system'
+  namespace: amcop-system
 ---
 # Source: chart/templates/metrics-service.yaml
 apiVersion: v1
