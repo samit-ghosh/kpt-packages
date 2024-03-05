@@ -55,6 +55,8 @@ spec:
           image: amcopnightly/auth-gateway:v4.0-2024-02-21
           imagePullPolicy: Always
           env:
+            - name: GRPC_SERVICE_URL
+              value: http://aai-grpc:8080
             - name: APP_URL
               value: http://aes-frontend.amcop-system
             - name: API_V1_URL
