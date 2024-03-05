@@ -1,0 +1,26 @@
+apiVersion: helmoperator.example.com/v1alpha1
+kind: HelmOperator
+metadata:
+  labels:
+    app.kubernetes.io/name: helmoperator
+    app.kubernetes.io/instance: helmoperator-sample
+    app.kubernetes.io/part-of: helm-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: helm-operator
+  name: helmoperator-raemis
+spec:
+  meta:
+    context: /opt/ansible/config
+    role: helmoperator
+    chart_release_name: test
+    chart_name: raemispcn
+    chart_version: 0.2.5
+    helm_namespace: raemispcn
+    repo_name: helm-repo
+    repo_url: https://gitlab.com/api/v4/projects/54152051/packages/helm/stable
+    role_path: /opt/ansible
+    kafkaep: http://10.2.0.10:30606
+    kafka_topic: WFTopic
+    policy_name: test1
+    policy_namespace: test-tenant
+    policy_task: cnConfig
