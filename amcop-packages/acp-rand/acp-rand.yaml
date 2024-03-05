@@ -73,7 +73,7 @@ spec:
         - name: WFE_HTTPS
           value: "1"
         - name: MINIO_IP
-          value: "amcop-minio-hl.amcop-system.svc.cluster.local"
+          value: amcop-minio-hl.amcop-system.svc.cluster.local
         - name: MINIO_PORT
           value: "9000"
         ports:
