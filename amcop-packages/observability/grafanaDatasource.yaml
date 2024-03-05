@@ -17,7 +17,22 @@ spec:
       'tlsSkipVerify': true
       'timeInterval': "5s"
       #      header for selecting the tenant bucket for cortex
-      'httpHeaderName1': "X-Scope-OrgID"  # kpt-set: ${orgid}
+      'httpHeaderName1': "X-Scope-OrgID" 
     secureJsonData:
-      'httpHeaderValue1': tenant
+      'httpHeaderValue1': tenant # kpt-set: ${orgid}
     editable: true
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: amcop-grafana-datasource
+  namespace: tenant
+spec:
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+  datasource:
+    name: amcop-robin
+    type: prometheus
+    url: http://10.2.0.50:32240
+    isDefault: false
