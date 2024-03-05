@@ -65,7 +65,7 @@ spec:
         - name: WFE_ASYNC_RESP_TIMEOUT
           value: "1500000"
         - name: KAFKA_IP
-          value: kafka1.amcop-system.svc.cluster.local
+          value: kafka1
         - name: KAFKA_PORT
           value: "9092"
         - name: WFE_STATUS_TOPIC
