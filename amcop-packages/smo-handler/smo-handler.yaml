@@ -42,9 +42,20 @@ spec:
       labels:
         app: smo-handler
     spec:
+      initContainers:
+      - name: wait-for-secret
+        image: alpine:latest
+        imagePullPolicy: Always
+        command:
+        - /bin/sh
+        - -c
+        - timeout 180s sh -c 'until [ -e /mnt/secret/oauth-config-data ]; do sleep 1; done'
+        volumeMounts:
+        - name: oauth-config-secret
+          mountPath: /mnt/secret
       containers:
       - name: smo-handler
-        image: amcopnightly/smo-handler:v4.0-2024-02-26
+        image: amcopnightly/smo-handler:v4.0-2024-02-21
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -70,3 +81,10 @@ spec:
           value: "false"
         - name: PMDATA_KPI_FILTERS_ENABLED
           value: "true"
+        volumeMounts:
+        - name: oauth-config-secret
+          mountPath: /mnt/secret
+      volumes:
+      - name: oauth-config-secret
+        secret:
+          secretName: oauth-config-secret
