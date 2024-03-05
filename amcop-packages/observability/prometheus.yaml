@@ -78,7 +78,7 @@ spec:
     name: additional-scrape-configs
   remoteWrite:
     - headers:
-      X-Scope-OrgID: tenant  # kpt-set: ${orgid}
+        X-Scope-OrgID: tenant  # kpt-set: ${orgid}
       url: http://cortex-distributor.amcop-system:8080/api/prom/push
   scrapeInterval: 30s
   serviceAccountName: prometheus
