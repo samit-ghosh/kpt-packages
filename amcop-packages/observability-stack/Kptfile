@@ -19,7 +19,7 @@ pipeline:
       configMap:
         name: quay.io/grafana-operator/grafana-operator
         newName: quay.io/grafana-operator/grafana-operator
-        newTag: v5.0.0
+        newTag: v5.6.3
     - name: Set prometheus image
       image: gcr.io/kpt-fn/set-image:v0.1.1
       configMap:
