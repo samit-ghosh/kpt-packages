@@ -74,6 +74,12 @@ rules:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - infra.nephio.org
+  resources:
+  - '*'
+  verbs:
+  - '*'
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
