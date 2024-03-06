@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -32,10 +28,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PC368DE250DE41C6D"
-      },
+      "datasource": "amcop-robin",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -46,10 +39,7 @@
       "panels": [],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PC368DE250DE41C6D"
-          },
+          "datasource": "amcop-robin",
           "refId": "A"
         }
       ],
@@ -57,10 +47,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -135,10 +122,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "code",
           "expr": "count(up{job=\"kubernetes-apiservers\"})",
           "format": "time_series",
@@ -153,10 +137,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -221,10 +202,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "code",
           "expr": "count(up{job=\"kubernetes-nodes\"})",
           "format": "time_series",
@@ -239,10 +217,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -290,10 +265,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "code",
           "expr": "kubelet_running_pods",
           "legendFormat": "{{kubernetes_io_hostname}}",
@@ -305,10 +277,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -369,10 +338,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "builder",
           "expr": "count(count by(cpu) (node_cpu_seconds_total{instance=\"10.2.0.50:29457\"}))",
           "hide": false,
@@ -385,10 +351,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -455,10 +418,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "builder",
           "expr": "node_time_seconds{job=\"kubernetes-pods\"} - node_boot_time_seconds{job=~\"$job|kubernetes-pods\"}",
           "instant": true,
@@ -471,10 +431,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -521,10 +478,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum(100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)) / count(node_cpu_seconds_total{mode=\"idle\"})",
           "format": "time_series",
           "intervalFactor": 2,
@@ -537,10 +491,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -604,10 +555,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (container_fs_usage_bytes{device=~\"/dev/mapper/.*\",id=\"/\"}) / sum (container_fs_limit_bytes{device=~\"/dev/mapper/.*\",id=\"/\"}) * 100",
           "format": "time_series",
           "intervalFactor": 2,
@@ -620,10 +568,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -687,10 +632,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "((sum(node_memory_MemTotal_bytes) - sum(node_memory_MemFree_bytes) - sum(node_memory_Buffers_bytes) - sum(node_memory_Cached_bytes)) / sum(node_memory_MemTotal_bytes)) * 100",
           "format": "time_series",
           "intervalFactor": 2,

@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -32,10 +28,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PC368DE250DE41C6D"
-      },
+      "datasource": "amcop-robin",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -46,10 +39,7 @@
       "panels": [],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PC368DE250DE41C6D"
-          },
+          "datasource": "amcop-robin",
           "refId": "A"
         }
       ],
@@ -57,10 +47,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -135,10 +122,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "code",
           "expr": "count(up{job=\"kubernetes-apiservers\"})",
           "format": "time_series",
@@ -153,10 +137,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -221,10 +202,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "code",
           "expr": "count(up{job=\"kubernetes-nodes\"})",
           "format": "time_series",
@@ -239,10 +217,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -290,10 +265,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "code",
           "expr": "kubelet_running_pods",
           "legendFormat": "{{kubernetes_io_hostname}}",
@@ -305,10 +277,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "description": "Total number of CPU cores",
       "fieldConfig": {
         "defaults": {
@@ -369,10 +338,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "builder",
           "expr": "count(count by(cpu) (node_cpu_seconds_total{instance=\"10.2.0.50:29457\"}))",
           "hide": false,
@@ -385,10 +351,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "description": "System uptime",
       "fieldConfig": {
         "defaults": {
@@ -455,10 +418,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "editorMode": "builder",
           "expr": "node_time_seconds{job=\"kubernetes-pods\"} - node_boot_time_seconds{job=~\"$job|kubernetes-pods\"}",
           "instant": true,
@@ -471,10 +431,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -521,10 +478,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum(100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)) / count(node_cpu_seconds_total{mode=\"idle\"})",
           "format": "time_series",
           "intervalFactor": 2,
@@ -537,10 +491,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -604,10 +555,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (container_fs_usage_bytes{device=~\"/dev/mapper/.*\",id=\"/\"}) / sum (container_fs_limit_bytes{device=~\"/dev/mapper/.*\",id=\"/\"}) * 100",
           "format": "time_series",
           "intervalFactor": 2,
@@ -620,10 +568,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -687,10 +632,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "((sum(node_memory_MemTotal_bytes) - sum(node_memory_MemFree_bytes) - sum(node_memory_Buffers_bytes) - sum(node_memory_Cached_bytes)) / sum(node_memory_MemTotal_bytes)) * 100",
           "format": "time_series",
           "intervalFactor": 2,
@@ -704,10 +646,7 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PC368DE250DE41C6D"
-      },
+      "datasource": "amcop-robin",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -718,10 +657,7 @@
       "panels": [],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PC368DE250DE41C6D"
-          },
+          "datasource": "amcop-robin",
           "refId": "A"
         }
       ],
@@ -733,10 +669,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -781,10 +714,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\"}[1m])) by (pod)",
           "instant": false,
           "legendFormat": "{{ pod }}",
@@ -826,10 +756,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -874,10 +801,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (container_memory_working_set_bytes{image!=\"\"}) by (pod)",
           "refId": "A"
         }
@@ -917,10 +841,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "description": "+ve values indicates the receive rate \n- ve value indicates the transmit rate",
       "fieldConfig": {
         "defaults": {
@@ -966,20 +887,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (rate (container_network_receive_bytes_total{image!=\"\",name=~\"^k8s_.*\"}[1m])) by (pod)",
           "instant": false,
           "legendFormat": "{{ pod }}",
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "- sum (rate (container_network_transmit_bytes_total{image!=\"\",name=~\"^k8s_.*\"}[1m])) by (pod)",
           "legendFormat": "{{ pod }}",
           "refId": "B"
@@ -1017,10 +932,7 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PC368DE250DE41C6D"
-      },
+      "datasource": "amcop-robin",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1031,10 +943,7 @@
       "panels": [],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PC368DE250DE41C6D"
-          },
+          "datasource": "amcop-robin",
           "refId": "A"
         }
       ],
@@ -1042,10 +951,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1109,10 +1015,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "(sum(up{job=\"kubernetes-apiservers\"} == 1) / count(up{job=\"kubernetes-apiservers\"})) * 100",
           "format": "time_series",
           "interval": "",
@@ -1126,10 +1029,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1193,10 +1093,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "(count(time() - container_last_seen{pod=~\"coredns.*\",container=\"coredns\"} < 30) /  2) * 100 > 30",
           "format": "time_series",
           "interval": "",
@@ -1210,10 +1107,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1277,10 +1171,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "count(time() - container_last_seen{pod=~\"calico-node.*\", container=~\"calico-node\"} < 30 ) / count(up{job=\"kubernetes-nodes\"}) * 100",
           "format": "time_series",
           "interval": "",
@@ -1298,10 +1189,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -1346,10 +1234,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "up{job=\"kubernetes-nodes\"}",
           "legendFormat": "Node name : {{instance}}",
           "refId": "A"
@@ -1390,10 +1275,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -1436,10 +1318,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "count(up{job=\"kubernetes-apiservers\"})",
           "refId": "A"
         }
@@ -1479,10 +1358,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -1525,10 +1401,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "count(time() - container_last_seen{pod=~\"coredns.*\",container=\"coredns\"} < 30)",
           "refId": "A"
         }
@@ -1568,10 +1441,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -1614,10 +1484,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "count(time() - container_last_seen{pod=~\"calico-node.*\", container=~\"calico-node\"} < 30 )",
           "refId": "A"
         }
@@ -1653,10 +1520,7 @@
       }
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1719,10 +1583,7 @@
       "pluginVersion": "9.2.3",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "(sum(up{job=\"kubernetes-nodes\"} == 1) / count(up{job=\"kubernetes-nodes\"})) * 100",
           "format": "time_series",
           "interval": "",
@@ -1737,10 +1598,7 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PC368DE250DE41C6D"
-      },
+      "datasource": "amcop-robin",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1751,10 +1609,7 @@
       "panels": [],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PC368DE250DE41C6D"
-          },
+          "datasource": "amcop-robin",
           "refId": "A"
         }
       ],
@@ -1766,10 +1621,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "decimals": 2,
       "editable": true,
       "error": false,
@@ -1823,10 +1675,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum by(code) (rate(apiserver_request_total{code!=\"0\"}[5m]))",
           "format": "time_series",
           "interval": "10s",
@@ -1870,10 +1719,7 @@
       }
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1937,10 +1783,7 @@
       "pluginVersion": "9.2.3",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum(rate(apiserver_request_total{code=~\"5..\"}[1h]))",
           "format": "time_series",
           "intervalFactor": 2,
@@ -1957,10 +1800,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "decimals": 2,
       "editable": true,
       "error": false,
@@ -2014,10 +1854,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "max by (resource, verb) (rate(apiserver_request_duration_seconds_sum{verb!~\"WATCH|CONNECT\"}[5m]))  / \nmax by (resource, verb) (rate(apiserver_request_duration_seconds_count{verb!~\"WATCH|CONNECT\"}[5m]))\n",
           "format": "time_series",
           "interval": "10s",
@@ -2061,10 +1898,7 @@
       }
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2128,10 +1962,7 @@
       "pluginVersion": "9.2.3",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "max (rate(apiserver_request_duration_seconds_sum{verb!=\"WATCH\"}[1h]))  / \nmax (rate(apiserver_request_duration_seconds_count{verb!=\"WATCH\"}[1h]))",
           "format": "time_series",
           "intervalFactor": 2,
@@ -2145,10 +1976,7 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PC368DE250DE41C6D"
-      },
+      "datasource": "amcop-robin",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2159,10 +1987,7 @@
       "panels": [],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PC368DE250DE41C6D"
-          },
+          "datasource": "amcop-robin",
           "refId": "A"
         }
       ],
@@ -2174,10 +1999,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -2222,10 +2044,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name!~\"^k8s_.*\"}[1m])) by (name,rnodetype,robinhost)",
           "instant": false,
           "legendFormat": "{{ rnodetype }} - {{ robinhost }} - {{ name }}",
@@ -2267,10 +2086,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -2315,10 +2131,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (container_memory_working_set_bytes{image!=\"\",name!~\"^k8s_.*\"}) by (name,rnodetype,robinhost)",
           "instant": false,
           "legendFormat": "{{ rnodetype }} - {{ robinhost }} -  {{ name }}",
@@ -2360,10 +2173,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-      },
+      "datasource": "amcop-robin",
       "description": "+ve values indicates the receive rate \n- ve value indicates the transmit rate",
       "fieldConfig": {
         "defaults": {
@@ -2409,20 +2219,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "sum (rate (container_network_receive_bytes_total{image!=\"\",name!~\"^k8s_.*\"}[1m])) by (name,rnodetype,robinhost)",
           "instant": false,
           "legendFormat": "{{ rnodetype }} - {{ robinhost }} - {{ name }}",
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "a414b8fc-eac6-4f7e-b4f1-04ba7396f225"
-          },
+          "datasource": "amcop-robin",
           "expr": "- sum (rate (container_network_transmit_bytes_total{image!=\"\",name!~\"^k8s_.*\"}[1m])) by (name,rnodetype,robinhost)",
           "hide": true,
           "legendFormat": "{{ rnodetype }} - {{ robinhost }} - {{ name }}",

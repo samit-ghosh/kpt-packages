@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -29,10 +25,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -88,10 +81,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count(alert_robin{severity=\"Critical\"})",
           "legendFormat": "__auto",
@@ -104,10 +94,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -163,10 +150,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count(alert_robin{severity=\"Major\"})",
           "legendFormat": "__auto",
@@ -179,10 +163,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -238,10 +219,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count(alert_robin{severity=\"Minor\"})",
           "legendFormat": "__auto",
@@ -254,10 +232,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -313,10 +288,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count(alert_robin{severity=\"Warning\"})",
           "legendFormat": "__auto",
@@ -329,10 +301,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -431,10 +400,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "b518cdb1-764d-47b6-9d6d-c968b959df81"
-          },
+          "datasource": "prometheus",
           "editorMode": "builder",
           "expr": "alert_robin",
           "legendFormat": "__auto",
