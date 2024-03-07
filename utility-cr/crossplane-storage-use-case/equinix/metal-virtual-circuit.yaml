@@ -1,0 +1,189 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: virtual-circuit
+  annotations:
+    crossplane.io/external-name: metal-virtual-circuit
+spec:
+    forProvider:
+        module: |
+              data "equinix_metal_vrf" "metal_vrf" {
+                vrf_id = var.eqx_metal_vrf_uuid
+              }
+
+              # The "eqx_metal_dedicated_port_uuid" is the UUID of your 
+              # dedicated port obtained from the Metal Portal
+              data "equinix_metal_connection" "dedicated_port" {
+                  connection_id = var.eqx_metal_connection_uuid
+              }
+
+              resource "equinix_metal_virtual_circuit" "vc_primary" {
+                  name          = var.eqx_metal_port_vc_name
+                  description   = var.eqx_metal_port_vc_description
+                  connection_id = data.equinix_metal_connection.dedicated_port.id
+                  port_id       = data.equinix_metal_connection.dedicated_port.ports[0].id   
+                  project_id    = var.eqx_metal_project_id
+
+                  # Azure side c-tag = 543
+                  # Azure connection a-side VLAN should match this tag
+                  vnid          = 0
+                  nni_vlan      = var.eqx_metal_pcc_nni_vlan
+                  vrf_id        = data.equinix_metal_vrf.metal_vrf.id
+                  peer_asn      = var.eqx_pcc_peer_asn
+
+                  # /30 There may be an issue here.
+                  # /30 Metal VRF to Azure Virtual Circuit 
+                  subnet        = var.bgp_peer_subnet_address
+                  metal_ip      = var.metal_bgp_ip_address
+                  
+                  # /30 Azure side automatic = (172.168.42.0/30) (Auto pic = 172.168.42.2/30)
+                  customer_ip   = var.customer_bgp_ip_address 
+                  md5           = var.eqx_pcc_secret
+              } 
+
+              output "eqx_metal_virtual_circuit_uuid" {
+                  value = equinix_metal_virtual_circuit.vc_primary.id
+              }
+              output "eqx_metal_connection_organization_id" {
+                  value = data.equinix_metal_connection.dedicated_port.organization_id
+              }
+
+              output "eqx_metal_connection_status" {
+                  value = data.equinix_metal_connection.dedicated_port.status
+              }
+
+              output "eqx_metal_connection_ports" {
+                  value = data.equinix_metal_connection.dedicated_port.ports
+              }
+
+              output "eqx_metal_gateway_vrf_uuid" {
+                  value = equinix_metal_virtual_circuit.vc_primary.vrf_id
+              }
+
+              output "eqx_metal_vrf_name" {
+                  value = data.equinix_metal_vrf.metal_vrf.name
+              }
+
+              output "eqx_metal_crf_virtual_circuit_project_id" {
+                  value = equinix_metal_virtual_circuit.vc_primary.project_id
+              }
+
+              output "eqx_metal_vrf_local_asn" {
+                  value = data.equinix_metal_vrf.metal_vrf.local_asn
+              }
+
+              output "eqx_metal_ip_ranges" {
+                  value = data.equinix_metal_vrf.metal_vrf.ip_ranges
+              }
+
+              output "eqx_metal_metro_code" {
+                  value = var.eqx_metal_metro_code
+              }
+
+
+              output "eqx_metal_vrf_virtual_circuit_customer_ip" {
+                  value = equinix_metal_virtual_circuit.vc_primary.customer_ip
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_metal_ip" {
+                  value = equinix_metal_virtual_circuit.vc_primary.metal_ip
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_name" {
+                  value = equinix_metal_virtual_circuit.vc_primary.name
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_nni_vlan" {
+                  value = equinix_metal_virtual_circuit.vc_primary.nni_vlan
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_peer_asn" {
+                  value = equinix_metal_virtual_circuit.vc_primary.peer_asn
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_port_id" {
+                  value = equinix_metal_virtual_circuit.vc_primary.port_id
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_bgp_secret" {
+                  value = var.eqx_pcc_secret
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_status" {
+                  value = equinix_metal_virtual_circuit.vc_primary.status
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_speed" {
+                  value = equinix_metal_virtual_circuit.vc_primary.speed
+              }
+
+              output "eqx_metal_vrf_virtual_circuit_subnet" {
+                  value = equinix_metal_virtual_circuit.vc_primary.subnet
+              }
+
+                # terrafrom variables
+
+                variable "eqx_metal_project_id" {
+                  type        = string
+                }
+                  variable "eqx_metal_metro_code" {
+                  type        = string
+                }
+                  variable "eqx_metal_vrf_uuid" {
+                  type        = string
+                }
+                  variable "eqx_metal_connection_uuid" {
+                  type        = string
+                }
+                variable "eqx_metal_port_vc_name" {
+                  type        = string
+                }
+                variable "eqx_metal_port_vc_description" {
+                  type        = string
+                }
+                variable "bgp_peer_subnet_address" {
+                  type        = string
+                }
+                variable "metal_bgp_ip_address" {
+                  type        = string
+                }
+                variable "customer_bgp_ip_address" {
+                  type        = string
+                }
+                  variable "eqx_pcc_secret" {
+                  type        = string
+                }
+                variable "eqx_metal_pcc_nni_vlan" {
+                  type        = number
+                } 
+                variable "eqx_pcc_peer_asn" {
+                  type        = string
+                }  
+        vars:
+            - key: eqx_metal_project_id
+              value: "2dbed96e-8240-4c9d-a6ad-d0e33fc56971"
+            - key: eqx_metal_metro_code
+              value: "da"
+            - key: eqx_metal_vrf_uuid
+              value: "386d5f6f-48d4-4632-8b6f-2165c944f0b6"
+            - key: eqx_metal_connection_uuid
+              value: "ea7c3935-3bf6-4ebe-9b1a-922d6fdf1fe5"
+            - key: eqx_pcc_secret
+              value: "secretkey"
+            - key: eqx_pcc_peer_asn
+              value: "12076"
+            - key: eqx_metal_pcc_nni_vlan
+              value: "543"
+            - key: eqx_metal_port_vc_name
+              value: "aes-test-vc-01"
+            - key: eqx_metal_port_vc_description
+              value: "AES metal virtual circuit"
+            - key: bgp_peer_subnet_address
+              value: "172.16.2.0/30"
+            - key: metal_bgp_ip_address
+              value: "172.16.2.1/30"
+            - key: customer_bgp_ip_address
+              value: "172.16.2.2/30"
+        source: Inline
+    providerConfigRef:
+        name: terraform-eqx

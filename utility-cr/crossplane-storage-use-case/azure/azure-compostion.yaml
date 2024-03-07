@@ -1,0 +1,1158 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+    name: azure-resources
+    annotations: 
+        crossplane.io/external-name: azure-resources
+spec:
+    compositeTypeRef:
+        apiVersion: aarnanetworks.com/v1alpha1
+        kind: AzureTerraform
+    patchSets:
+        - name: resource-group-name
+          patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.resourcegroupname
+                toFieldPath: spec.forProvider.vars[0].value
+        - name: region-name
+          patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.regionname
+                toFieldPath: spec.forProvider.vars[1].value
+    resources:
+        - name: resource-group
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: resource-group
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                          resource "azurerm_resource_group" "demo" {
+                            name     = var.az_rg_name
+                            location = var.az_region
+                          }
+
+                          output "az_resource_group_name" {
+                            value = azurerm_resource_group.demo.name
+                          }
+
+                          output "az_resource_group_id" {
+                            value = azurerm_resource_group.demo.id
+                          }
+
+                          output "az_resource_group_location" {
+                            value = azurerm_resource_group.demo.location
+                          }
+
+                          output "az_resource_group_tags" {
+                            value = azurerm_resource_group.demo.tags
+                          }
+
+                            # terrafrom variables
+
+                            variable "az_rg_name" {
+                              type        = string
+                            }
+                              variable "az_region" {
+                              type        = string
+                            }
+                      vars:
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: az_region
+                            value: "user-input"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: PatchSet
+                patchSetName: region-name
+        - name: express-route
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: express-route
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name = var.az_rg_name
+                                 } 
+
+                                resource "azurerm_express_route_circuit" "demo" {
+                                  name                  = var.az_exp_route_name
+                                  resource_group_name   = data.azurerm_resource_group.demo.name
+                                  location              = data.azurerm_resource_group.demo.location
+                                  service_provider_name = var.az_exp_route_service_provider_name
+                                  peering_location      = var.az_exp_route_peering_location
+                                  bandwidth_in_mbps     = var.az_exp_route_bandwidth_mbps
+                                  sku {
+                                    tier   = var.az_exp_route_sku_tier
+                                    family = var.az_exp_route_sku_family
+                                  }
+                                  allow_classic_operations = var.az_exp_route_allow_classic_operations
+                                }
+
+                                output "az_exp_route_name" {
+                                    value = azurerm_express_route_circuit.demo.name
+                                }
+
+                                output "az_exp_route_id" {
+                                    value = azurerm_express_route_circuit.demo.id
+                                }
+
+                                output "az_exp_route_service_key" {
+                                  value = nonsensitive(azurerm_express_route_circuit.demo.service_key)
+                                }
+
+                                output "az_exp_route_service_provider_name" {
+                                    value = var.az_exp_route_service_provider_name
+                                }
+
+                                output "az_exp_route_location" {
+                                    value = azurerm_express_route_circuit.demo.location
+                                }
+
+                                output "az_exp_route_service_location" {
+                                    value = azurerm_express_route_circuit.demo.location
+                                }
+
+                                output "az_exp_route_sku" {
+                                    value = azurerm_express_route_circuit.demo.sku
+                                }
+
+                                output "az_exp_route_bandwidth_mbps" {
+                                    value = var.az_exp_route_bandwidth_mbps
+                                }
+
+                                output "az_exp_route_allow_classic_operations" {
+                                    value = var.az_exp_route_allow_classic_operations
+                                }
+
+                                # Possible values are NotProvisioned, 
+                                # Provisioning, Provisioned, and Deprovisioning
+                                output "az_exp_route_service_provider_provisioning_state" {
+                                    value = azurerm_express_route_circuit.demo.service_provider_provisioning_state
+                                }
+
+
+                                # terrafrom variables
+
+                                variable "az_rg_name" {
+                                  type        = string
+                                }
+                                  variable "az_exp_route_name" {
+                                  type        = string
+                                }
+                                  variable "az_exp_route_service_provider_name" {
+                                  type        = string
+                                }
+                                  variable "az_exp_route_peering_location" {
+                                  type        = string
+                                }
+                                  variable "az_exp_route_bandwidth_mbps" {
+                                  type        = number
+                                }
+                                  variable "az_exp_route_sku_tier" {
+                                  type        = string
+                                }
+                                variable "az_exp_route_sku_family" {
+                                  type        = string
+                                }
+                                variable "az_exp_route_allow_classic_operations" {
+                                  type        = string
+                                }
+                      vars:
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: az_exp_route_name
+                            value: "user-input"
+                          - key: az_exp_route_service_provider_name
+                            value: "equinix"
+                          - key: az_exp_route_peering_location
+                            value: "dallas"
+                          - key: az_exp_route_bandwidth_mbps
+                            value: "50"
+                          - key: az_exp_route_sku_tier
+                            value: "Premium"
+                          - key: az_exp_route_sku_family
+                            value: "UnlimitedData"
+                          - key: az_exp_route_allow_classic_operations
+                            value: "false"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: ToCompositeFieldPath
+                fromFieldPath: status.atProvider.outputs.az_exp_route_service_key
+                toFieldPath: spec.servicekey
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.expressroutename
+                toFieldPath: spec.forProvider.vars[1].value   
+        - name: peering
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: peering
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name = var.az_rg_name
+                                }
+                                resource "azurerm_express_route_circuit_peering" "demo" {
+                                  peering_type                  = var.az_exp_route_peering_type
+                                  express_route_circuit_name    = var.az_exp_route_name
+                                  resource_group_name           = data.azurerm_resource_group.demo.name
+                                  peer_asn                      = var.az_exp_route_peer_asn
+                                  primary_peer_address_prefix   = var.az_exp_route_primary_peer_address_prefix
+                                  secondary_peer_address_prefix = var.az_exp_route_secondary_peer_address_prefix
+                                  vlan_id                       = var.az_exp_route_vlan_id
+                                  shared_key			              = var.az_exp_route_shared_key
+                                }
+
+                                # terrafrom  output declaration
+
+                                output "az_exp_route_azure_asn" {
+                                    value = azurerm_express_route_circuit_peering.demo.azure_asn
+                                }
+
+                                output "az_exp_route_primary_port" {
+                                    value = azurerm_express_route_circuit_peering.demo.primary_azure_port
+                                }
+
+                                output "az_exp_route_secondary_port" {
+                                    value = azurerm_express_route_circuit_peering.demo.secondary_azure_port
+                                }
+
+                                output "primary_peer_address_prefix" {
+                                    value = var.az_exp_route_primary_peer_address_prefix
+                                }
+
+                                output "secondary_peer_address_prefix" {
+                                    value = var.az_exp_route_secondary_peer_address_prefix
+                                }
+
+
+                                # terrafrom variable declaration
+
+                                variable "az_rg_name" {
+                                    type        = string
+                                }
+                                variable "az_exp_route_peering_type" {
+                                    type        = string
+                                }
+                                variable "az_exp_route_name" {
+                                    type        = string
+                                }
+                                variable "az_exp_route_peer_asn" {
+                                    type        = number
+                                }
+                                variable "az_exp_route_primary_peer_address_prefix" {
+                                    type        = string
+                                }
+                                variable "az_exp_route_secondary_peer_address_prefix" {
+                                    type        = string
+                                }
+                                variable "az_exp_route_vlan_id" {
+                                    type        = number
+                                }
+                                variable "az_exp_route_shared_key" {
+                                    type        = string
+                                }
+                      vars:
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: az_exp_route_name
+                            value: "user-input"
+                          - key: az_exp_route_peering_type
+                            value: "AzurePrivatePeering"
+                          - key: az_exp_route_peer_asn
+                            value: "user-input"
+                          - key: az_exp_route_primary_peer_address_prefix
+                            value: "172.22.0.0/30"
+                          - key: az_exp_route_secondary_peer_address_prefix
+                            value: "172.23.0.0/30"
+                          - key: az_exp_route_vlan_id
+                            value: "543"
+                          - key: az_exp_route_shared_key
+                            value: "secretkey"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.expressroutename
+                toFieldPath: spec.forProvider.vars[1].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.peerasn
+                toFieldPath: spec.forProvider.vars[3].value
+        - name: azure-vnet
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: azure-vnet
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name     = var.az_rg_name
+                                }
+                                resource "azurerm_virtual_network" "vnet" {
+                                  name                = var.azure_virtual_network_name
+                                  address_space       = var.azure_virtual_network_address_space
+                                  location            = data.azurerm_resource_group.demo.location
+                                  resource_group_name = data.azurerm_resource_group.demo.name
+                                }
+
+
+
+                                output "azure_virtual_network_name" {
+                                  value = azurerm_virtual_network.vnet.name
+                                }
+
+                                output "azure_virtual_network_uuid" {
+                                  value = azurerm_virtual_network.vnet.id
+                                }
+
+                                output "azure_vnet_address_spaces" {
+                                  value = azurerm_virtual_network.vnet.address_space
+                                }
+
+                                output "azure_vnet_guid" {
+                                  value = azurerm_virtual_network.vnet.guid
+                                }
+
+                                output "azure_vnet_location" {
+                                  value = azurerm_virtual_network.vnet.location
+                                }
+
+                                variable "az_rg_name" {
+                                    type        = string
+                                }
+                                variable "azure_virtual_network_name" {
+                                    type        = string
+                                }
+                                variable "azure_virtual_network_address_space" {
+                                    type        = list(string)
+                                }
+                      vars: 
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: azure_virtual_network_name
+                            value: "user-input"
+                          - key: azure_virtual_network_address_space
+                            value: |-
+                                ["10.105.0.0/16"]
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurevnetname
+                toFieldPath: spec.forProvider.vars[1].value
+        - name: azure-subnet
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: azure-subnet
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name     = var.az_rg_name
+                                }
+                                resource "azurerm_subnet" "subnet" {
+                                  name                 = var.azure_subnet_name
+                                  resource_group_name  = data.azurerm_resource_group.demo.name
+                                  virtual_network_name = var.azure_virtual_network_name
+                                  address_prefixes     = var.azure_vnet_subnet_address_space
+                                }
+
+                                output "azure_virtual_network_name" {
+                                  value = azurerm_subnet.subnet.virtual_network_name
+                                }
+
+                                output "azure_vnet_subnet_name" {
+                                  value = azurerm_subnet.subnet.name
+                                }
+
+                                output "azure_vnet_subnet_address_prefixes" {
+                                  value = azurerm_subnet.subnet.address_prefixes
+                                }
+
+                                output "azure_vnet_subnet_id" {
+                                  value = azurerm_subnet.subnet.id
+                                }
+
+                                output "azure_vnet_subnet_location" {
+                                  value = data.azurerm_resource_group.demo.location
+                                }
+
+                                variable "az_rg_name" {
+                                    type        = string
+                                }
+                                variable "azure_virtual_network_name" {
+                                    type        = string
+                                }
+                                variable "azure_subnet_name" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_subnet_address_space" {
+                                    type        = list(string)
+                                }
+
+                      vars: 
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: azure_virtual_network_name
+                            value: "user-input"
+                          - key: azure_subnet_name
+                            value: "user-input"
+                          - key: azure_vnet_subnet_address_space
+                            value: |-
+                                ["10.105.1.0/24"]
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurevnetname
+                toFieldPath: spec.forProvider.vars[1].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azuresubnetname
+                toFieldPath: spec.forProvider.vars[2].value
+        - name: azure-gateway-subnet
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: azure-gateway-subnet
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name     = var.az_rg_name
+                                }
+                                resource "azurerm_subnet" "subnet" {
+                                  name                 = var.azure_subnet_name
+                                  resource_group_name  = data.azurerm_resource_group.demo.name
+                                  virtual_network_name = var.azure_virtual_network_name
+                                  address_prefixes     = var.azure_vnet_subnet_address_space
+                                }
+
+                                output "azure_virtual_network_name" {
+                                  value = azurerm_subnet.subnet.virtual_network_name
+                                }
+
+                                output "azure_vnet_subnet_name" {
+                                  value = azurerm_subnet.subnet.name
+                                }
+
+                                output "azure_vnet_subnet_address_prefixes" {
+                                  value = azurerm_subnet.subnet.address_prefixes
+                                }
+
+                                output "azure_vnet_subnet_id" {
+                                  value = azurerm_subnet.subnet.id
+                                }
+
+                                output "azure_vnet_subnet_location" {
+                                  value = data.azurerm_resource_group.demo.location
+                                }
+
+                                variable "az_rg_name" {
+                                    type        = string
+                                }
+                                variable "azure_virtual_network_name" {
+                                    type        = string
+                                }
+                                variable "azure_subnet_name" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_subnet_address_space" {
+                                    type        = list(string)
+                                }
+
+                      vars: 
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: azure_virtual_network_name
+                            value: "user-input"
+                          - key: azure_subnet_name
+                            value: "user-input"
+                          - key: azure_vnet_subnet_address_space
+                            value: |-
+                                ["10.105.2.0/24"]
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurevnetname
+                toFieldPath: spec.forProvider.vars[1].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azuregatewaysubnetname
+                toFieldPath: spec.forProvider.vars[2].value
+        - name: azure-gateway
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: azure-gateway
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name     = var.az_rg_name
+                                }
+
+                                data "azurerm_subnet" "subnet" {
+                                  name     = var.azure_subnet_name
+                                  virtual_network_name = var.azure_virtual_network_name
+                                  resource_group_name = data.azurerm_resource_group.demo.name
+                                }
+
+                                resource "azurerm_public_ip" "public_ip" {
+                                  name                = var.azure_public_ip_name
+                                  location            = data.azurerm_resource_group.demo.location
+                                  resource_group_name = data.azurerm_resource_group.demo.name
+                                  sku                 = var.azure_public_ip_sku
+                                  
+                                  # allocation method static or dynamic
+                                  allocation_method   = var.azure_public_ip_allocated_method
+                                }
+
+                                resource "azurerm_virtual_network_gateway" "vnet_gateway" {
+  
+                                  name                = var.azure_virtual_network_gateway_name
+                                  location            = data.azurerm_resource_group.demo.location
+                                  resource_group_name = data.azurerm_resource_group.demo.name
+                                  sku                 = var.azure_vnet_gateway_sku
+                                  # There are two types vpn and ExpressRoute
+                                  # use expressRoute as type to expresscircuit
+                                  type                    = var.azure_vnet_gateway_type
+
+
+                                # ip configuration
+                                ip_configuration {
+                                    name                          = var.azure_vnet_gateway_config_name
+                                    public_ip_address_id          = azurerm_public_ip.public_ip.id
+                                    private_ip_address_allocation = "Dynamic"
+                                    subnet_id                     = data.azurerm_subnet.subnet.id
+                                  }
+
+                                }
+
+                                output "azure_public_ip_name" {
+                                  value = azurerm_public_ip.public_ip.name
+                                }
+
+                                output "azure_azure_virtual_gateway_name" {
+                                  value = azurerm_virtual_network_gateway.vnet_gateway.name
+                                }
+
+                                output "azure_azure_virtual_gateway_type" {
+                                  value = azurerm_virtual_network_gateway.vnet_gateway.type
+                                }
+
+                                output "azure_azure_virtual_gateway_sku" {
+                                  value = azurerm_virtual_network_gateway.vnet_gateway.sku
+                                }
+
+                                output "azure_azure_virtual_gateway_vpn_type" {
+                                  value = azurerm_virtual_network_gateway.vnet_gateway.vpn_type
+                                }
+
+                                output "azure_azure_virtual_gateway_enable_bgp" {
+                                  value = azurerm_virtual_network_gateway.vnet_gateway.enable_bgp
+                                }
+
+                                output "azure_azure_virtual_gateway_location" {
+                                  value = azurerm_virtual_network_gateway.vnet_gateway.location
+                                }
+
+                                output "azure_azure_virtual_gateway_id" {
+                                  value = azurerm_virtual_network_gateway.vnet_gateway.id
+                                }
+
+                                output "azure_virtual_network_name" {
+                                  value = data.azurerm_subnet.subnet.virtual_network_name
+                                }
+
+                                output "azure_public_ip_uuid" {
+                                  value = azurerm_public_ip.public_ip.id 
+                                }
+
+                                output "azure_vnet_gateway_subnet_ip_uuid" {
+                                  value = data.azurerm_subnet.subnet.id
+                                }
+
+                                output "azure_vnet_gateway_public_ip" {
+                                  value = azurerm_public_ip.public_ip.ip_address
+                                }
+
+                                output "azure_vnet_gateway_public_ip_allocation_method" {
+                                  value = azurerm_public_ip.public_ip.allocation_method
+                                }
+
+                                output "azure_vnet_gateway_public_ip_version" {
+                                  value = azurerm_public_ip.public_ip.ip_version
+                                }
+
+                                output "azure_gateway_public_ip_sku" {
+                                  value = azurerm_public_ip.public_ip.sku
+                                }
+
+                                output "azure_vnet_gateway_public_ip_sku_tier" {
+                                  value = azurerm_public_ip.public_ip.sku_tier
+                                }
+
+                                output "azure_vnet_gateway_public_ip_name" {
+                                  value = azurerm_public_ip.public_ip.name
+                                }
+
+                                output "azure_vnet_gateway_subnet_name" {
+                                  value = data.azurerm_subnet.subnet.name
+                                }
+
+                                output "azure_vnet_gateway_subnet_address_prefixes" {
+                                  value = data.azurerm_subnet.subnet.address_prefixes
+                                }
+
+                                variable "az_rg_name" {
+                                    type        = string
+                                }
+                                variable "azure_virtual_network_gateway_name" {
+                                    type        = string
+                                }
+                                variable "azure_subnet_name" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_gateway_type"{
+                                    type        = string
+                                }
+                                variable "azure_public_ip_name" {
+                                    type        = string
+                                }
+                                variable "azure_virtual_network_name" {
+                                    type        = string
+                                }
+                                variable "azure_public_ip_allocated_method" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_gateway_sku"{
+                                    type        = string
+                                }
+                                variable "azure_public_ip_sku" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_gateway_config_name"{
+                                    type        = string
+                                }
+
+                      vars: 
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: azure_virtual_network_name
+                            value: "user-input"
+                          - key: azure_subnet_name
+                            value: "user-input"
+                          - key: azure_virtual_network_gateway_name
+                            value: "user-input"
+                          - key: azure_vnet_gateway_type
+                            value: "ExpressRoute"
+                          - key: azure_public_ip_name
+                            value: "user-input"
+                          - key: azure_public_ip_allocated_method
+                            value: "Static"
+                          - key: azure_vnet_gateway_sku
+                            value: "Standard"
+                          - key: azure_public_ip_sku
+                            value: "Standard"
+                          - key: azure_vnet_gateway_config_name
+                            value: "user-input"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurevnetname
+                toFieldPath: spec.forProvider.vars[1].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azuregatewaysubnetname
+                toFieldPath: spec.forProvider.vars[2].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azuregatewayname
+                toFieldPath: spec.forProvider.vars[3].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurepubipname
+                toFieldPath: spec.forProvider.vars[5].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurevnetgatewayconfigname
+                toFieldPath: spec.forProvider.vars[9].value
+        - name: azure-vm
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: azure-vm
+              spec:
+                  forProvider:
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name     = var.az_rg_name
+                                }
+                                data "azurerm_virtual_network" "vnet" {
+                                  name               = var.azure_vnet_name
+                                  resource_group_name  = data.azurerm_resource_group.demo.name
+                                }
+                                data "azurerm_subnet" "subnet" {
+                                  name                 = var.azure_subnet_name
+                                  resource_group_name  = data.azurerm_resource_group.demo.name
+                                  virtual_network_name = data.azurerm_virtual_network.vnet.name
+                                }
+
+                                resource "azurerm_public_ip" "public_ip" {
+                                  name                = var.virtual_machine_public_ip_name
+                                  location            = data.azurerm_resource_group.demo.location
+                                  resource_group_name = data.azurerm_resource_group.demo.name
+                                  allocation_method   = var.azure_public_ip_allocation_method
+                                }
+                                resource "azurerm_network_interface" "az_net_interface" {
+                                  name                = var.azure_network_interface_name
+                                  location            = data.azurerm_resource_group.demo.location
+                                  resource_group_name = data.azurerm_resource_group.demo.name
+
+                                # private ip allocation static or dynamic
+
+                                  ip_configuration {
+                                    name                          = var.azure_ip_configuration_name
+                                    subnet_id                     = data.azurerm_subnet.subnet.id
+                                    private_ip_address_allocation = var.private_ip_allocation
+                                    public_ip_address_id          = azurerm_public_ip.public_ip.id
+                                }
+                                }
+
+                                resource "azurerm_linux_virtual_machine" "az_vir_machine" {
+                                  name                = var.azure_virtual_machine_name
+                                  resource_group_name = data.azurerm_resource_group.demo.name
+                                  location            = data.azurerm_resource_group.demo.location
+                                  size                = var.azure_virtual_machine_size
+                                  admin_username      = var.azure_admin_username
+                                  network_interface_ids = [
+                                    azurerm_network_interface.az_net_interface.id,
+                                  ]
+                                  
+                                  dynamic "admin_ssh_key" {
+                                    for_each = var.azure_public_key
+                                    content {
+                                    username   = var.azure_admin_username
+                                    public_key = admin_ssh_key.value
+                                  }
+                                  }
+
+                                  os_disk {
+                                    caching              = var.azure_disk_cache
+                                    storage_account_type = var.azure_storage_account_type
+                                  }
+
+                                  source_image_reference {
+                                    publisher = var.azure_vm_image_publisher
+                                    offer     = var.azure_vm_image_offer
+                                    sku       = var.azure_vm_image_sku
+                                    version   = var.azure_vm_image_version
+                                  }
+                                }
+
+                                output "azure_virtual_machine_public_ip" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.public_ip_address
+                                }
+
+                                output "azure_virtual_machine_id" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.id
+                                }
+
+                                output "azure_vm_public_username" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.admin_username
+                                }
+
+                                output "azure_vm_name" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.name
+                                }
+
+                                output "azure_vm_nic_interface_id" {
+                                  value = azurerm_network_interface.az_net_interface.id
+                                }
+
+                                output "azure_vm_nic_interface_name" {
+                                  value = azurerm_network_interface.az_net_interface.name
+                                }
+
+                                output "azure_public_ip_address" {
+                                  value = azurerm_public_ip.public_ip.ip_address
+                                }
+
+                                output "azure_private_ip_address" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.private_ip_address
+                                }
+
+                                output "az_vm_admin_ssh_key" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.admin_ssh_key
+                                }
+
+                                output "az_vm_location" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.location
+                                }
+
+                                output "azure_vm_network_interface_ids" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.network_interface_ids
+                                }
+
+                                output "azure_vm_os_disk" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.os_disk
+                                }
+
+                                output "azure_virtual_machine_size" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.size
+                                }
+
+                                output "azure_virtual_machine_source_image_reference" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.source_image_reference
+                                }
+
+                                output "azure_virtual_machine_uuid" {
+                                  value = azurerm_linux_virtual_machine.az_vir_machine.virtual_machine_id
+                                }
+
+                                output "azure_virtual_machine_subnet_name" {
+                                  value = data.azurerm_subnet.subnet.name
+                                }
+
+                                output "azure_virtual_machine_vnet_name" {
+                                  value = data.azurerm_virtual_network.vnet.name
+                                }
+
+                                output "azure_vm_public_ip_sku" {
+                                  value = azurerm_public_ip.public_ip.sku
+                                }
+
+                                output "azure_vm_public_ip_sku_tier" {
+                                  value = azurerm_public_ip.public_ip.sku_tier
+                                }
+
+                                output "azure_vm_public_ip_version" {
+                                  value = azurerm_public_ip.public_ip.ip_version
+                                }
+
+                                variable "az_rg_name" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_name" {
+                                    type        = string
+                                }
+                                variable "azure_subnet_name" {
+                                    type        = string
+                                }
+                                variable "azure_network_interface_name"{
+                                    type        = string
+                                }
+                                variable "virtual_machine_public_ip_name" {
+                                    type        = string
+                                }
+                                variable "azure_public_ip_allocation_method" {
+                                    type        = string
+                                }
+                                variable "private_ip_allocation" {
+                                    type        = string
+                                }
+                                variable "azure_ip_configuration_name"{
+                                    type        = string
+                                }
+                                variable "azure_virtual_machine_name" {
+                                    type        = string
+                                }
+                                variable "azure_virtual_machine_size"{
+                                    type        = string
+                                }
+                                variable "azure_admin_username" {
+                                    type        = string
+                                }
+                                variable "azure_disk_cache" {
+                                    type        = string
+                                }
+                                variable "azure_storage_account_type" {
+                                    type        = string
+                                }
+                                variable "azure_vm_image_publisher"{
+                                    type        = string
+                                }
+                                variable "azure_vm_image_offer" {
+                                    type        = string
+                                }
+                                variable "azure_vm_image_sku" {
+                                    type        = string
+                                }
+                                variable "azure_vm_image_version" {
+                                    type        = string
+                                }
+                                variable "azure_public_key" {
+                                    type        = list(string)
+                                }
+
+                      vars: 
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: azure_vnet_name
+                            value: "user-input"
+                          - key: azure_subnet_name
+                            value: "user-input"
+                          - key: azure_network_interface_name
+                            value: "user-input"
+                          - key: virtual_machine_public_ip_name
+                            value: "user-input"
+                          - key: azure_public_ip_allocation_method
+                            value: "Static"
+                          - key: private_ip_allocation
+                            value: "Dynamic"
+                          - key: azure_ip_configuration_name
+                            value: "user-input"
+                          - key: azure_virtual_machine_name
+                            value: "user-input"
+                          - key: azure_virtual_machine_size
+                            value: "Standard_DS1_v2"
+                          - key: azure_admin_username
+                            value: "aesuser10"
+                          - key: azure_disk_cache
+                            value: "ReadWrite"
+                          - key: azure_storage_account_type
+                            value: "Premium_LRS"
+                          - key: azure_vm_image_publisher
+                            value: "Canonical"
+                          - key: azure_vm_image_offer
+                            value: "0001-com-ubuntu-server-focal"
+                          - key: azure_vm_image_sku
+                            value: "20_04-lts-gen2"
+                          - key: azure_vm_image_version
+                            value: "20.04.202004230"
+                          - key: azure_public_key
+                            value: |-
+                                ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCuFEVK9WKR/qxUybznzhOjG+DZB0me7mF4rqizd7YcfBErDZDp9wGRpWUVvFSHTNxPEHdfPRbSRDvBc1GyUaFVPNp/YuKHdH+49f+6h7oxV+D1tZKjv6gKqGDrVZlizBpdHS7MwkXyJFcJyYRG/o0tG7M4ERqj34ESBUCGoF9FCoLmVUKJlXu1Q4wJnOaYFsgsML3yi7U41/Q9AIISDT4i+vtWd7fCeT/UkjI56+Xn+nfM84e4TasA7ftytSTH5AU/60i7ayw9zTrp+VK/3Kdbax3Azj442t0CbLVHz0/SRAtepuW/nvr3kh1IbIHdK/8rz+Yb5d+57iMdnbPdKg7l aarna@aarna-Latitude-7410"]
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurevnetname
+                toFieldPath: spec.forProvider.vars[1].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azuresubnetname
+                toFieldPath: spec.forProvider.vars[2].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurenetworkinterfacename
+                toFieldPath: spec.forProvider.vars[3].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.virtualmachinepublicipname
+                toFieldPath: spec.forProvider.vars[4].value 
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azureipconfigurationname
+                toFieldPath: spec.forProvider.vars[7].value 
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azurevirtualmachinename
+                toFieldPath: spec.forProvider.vars[8].value
+        - name: azure-gatewat-conn
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                    crossplane.io/external-name: azure-gateway-conn
+              spec:
+                  forProvider:
+                      applyArgs:
+                            - -lock=false
+                      initArgs:
+                            - -lock=false
+                      planArgs:
+                            - -lock=false
+                      destroyArgs:
+                            - -lock=false
+                      module: |
+                                data "azurerm_resource_group" "demo" {
+                                  name     = var.az_rg_name
+                                }
+
+                                data "azurerm_express_route_circuit" "exp_circuit" {
+                                  name                  = var.azure_exp_circuit_name
+                                  resource_group_name   = data.azurerm_resource_group.demo.name
+                                }
+
+                                data "azurerm_virtual_network_gateway" "vnet_gateway" {
+                                  name                = var.azure_vnet_gateway_name
+                                  resource_group_name   = data.azurerm_resource_group.demo.name
+                                  
+                                }
+
+                                resource "azurerm_virtual_network_gateway_connection" "vnet_gw_conn" {
+                                  name                            = var.azure_vnet_gateway_connection_name
+                                  location                        = data.azurerm_resource_group.demo.location
+                                  resource_group_name             = data.azurerm_resource_group.demo.name
+
+                                  type                            = var.azure_vnet_gateway_connection_type
+                                  virtual_network_gateway_id      = data.azurerm_virtual_network_gateway.vnet_gateway.id
+                                  express_route_circuit_id        = data.azurerm_express_route_circuit.exp_circuit.id
+                                }
+
+                                output "azure_exp_vnet_gateway_connection_name" {
+                                    value = azurerm_virtual_network_gateway_connection.vnet_gw_conn.name
+                                }
+
+                                output "azure_exp_vnet_gateway_connection_id" {
+                                    value = azurerm_virtual_network_gateway_connection.vnet_gw_conn.id
+                                }
+
+                                output "azure_exp_vnet_gateway_connection_mode" {
+                                    value = azurerm_virtual_network_gateway_connection.vnet_gw_conn.connection_mode
+                                }
+
+                                output "azure_exp_vnet_gateway_connection_gateway_bypass" {
+                                    value = azurerm_virtual_network_gateway_connection.vnet_gw_conn.express_route_gateway_bypass
+                                }
+
+                                output "azure_exp_vnet_gateway_connection_location" {
+                                    value = azurerm_virtual_network_gateway_connection.vnet_gw_conn.location
+                                }
+
+                                output "azure_exp_vnet_gateway_connection_vnet_gateway_name" {
+                                    value = data.azurerm_virtual_network_gateway.vnet_gateway.name
+                                }
+
+                                variable "az_rg_name" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_gateway_name" {
+                                    type        = string
+                                }
+                                variable "azure_exp_circuit_name" {
+                                    type        = string
+                                }
+                                variable "azure_vnet_gateway_connection_name"{
+                                    type        = string
+                                }
+                                variable "azure_vnet_gateway_connection_type"{
+                                    type        = string
+                                }
+
+                      vars: 
+                          - key: az_rg_name
+                            value: "user-input"
+                          - key: azure_vnet_gateway_name
+                            value: "user-input"
+                          - key: azure_exp_circuit_name
+                            value: "user-input"
+                          - key: azure_vnet_gateway_connection_name
+                            value: "user-input"
+                          - key: azure_vnet_gateway_connection_type
+                            value: "ExpressRoute"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-azure
+          patches:
+              - type: PatchSet
+                patchSetName: resource-group-name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azuregatewayname
+                toFieldPath: spec.forProvider.vars[1].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.expressroutename
+                toFieldPath: spec.forProvider.vars[2].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.azuregatewayconnname
+                toFieldPath: spec.forProvider.vars[3].value
+        

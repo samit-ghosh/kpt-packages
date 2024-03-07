@@ -1,0 +1,99 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+    name: fabric-connection
+    annotations:
+        crossplane.io/external-name: fabric-connection
+spec:
+    forProvider:
+        module: |
+            data "equinix_fabric_service_profiles" "service_profiles" {
+              filter {
+                property = "/name"
+                operator = "="
+                values   = ["Azure ExpressRoute"]
+              }
+            }
+            resource "equinix_fabric_connection" "token2azure" {
+              name = var.eqx_fabric_connection_name
+              type = "EVPL_VC"
+              notifications {
+                type   = "ALL"
+                emails = var.eqx_fabric_connection_notifications
+              }
+              bandwidth = var.eqx_fabric_connection_speed
+              a_side {
+                service_token {
+                  type = "VC_TOKEN"
+                  uuid = var.eqx_fabric_connection_a_side_service_token
+                }
+              }
+              z_side {
+                access_point {
+                  peering_type = "PRIVATE"
+                  type = "SP"
+                  authentication_key = var.eqx_fabric_connection_authentication_key
+                  profile {
+                    type = "L2_PROFILE"
+                    uuid = data.equinix_fabric_service_profiles.service_profiles.id
+                  }
+                  location {
+                    metro_code = var.eqx_fabric_seller_metro_code
+                  }
+                }
+              }
+            }
+
+            # terraform outputs
+
+            output "eqx_fabric_connection_id" {
+              value = equinix_fabric_connection.token2azure.id
+              }
+            output "eqx_fabric_connection_uuid" {
+              value = equinix_fabric_connection.token2azure.id
+              }
+            output "eqx_fabric_connection_state" {
+              value = equinix_fabric_connection.token2azure.state
+              }
+            output "eqx_fabric_connection_a_side" {
+              value = equinix_fabric_connection.token2azure.a_side
+              }
+            output "eqx_fabric_connection_z_side" {
+              value = equinix_fabric_connection.token2azure.z_side
+              }
+
+            # terraform variables
+            variable "eqx_fabric_connection_name" {
+                type = string
+            }
+            variable "eqx_fabric_connection_notifications" {
+                type = list(string)
+            }
+            variable "eqx_fabric_connection_speed" {
+                type = number
+            }
+            variable "eqx_fabric_connection_a_side_service_token" {
+                type = string
+            }
+            variable "eqx_fabric_connection_authentication_key" {
+                type = string
+            }
+            variable "eqx_fabric_seller_metro_code" {
+                type = string
+            }
+        vars:
+          - key: eqx_fabric_connection_name
+            value: "az-fab-con-1"
+          - key: eqx_fabric_seller_metro_code
+            value: "DA"
+          - key: eqx_fabric_connection_notifications
+            value: '["tamilselvan@aarnanetworks.com"]'
+          - key: eqx_fabric_connection_speed
+            value: "50"
+          - key: eqx_fabric_connection_a_side_service_token
+            value: "ef3fd0ff-c95b-417a-acf8-9b5e87b1f8d0"
+          - key: eqx_fabric_connection_authentication_key
+            value: "51b406c6-7979-4519-89bc-ecd5ac5e6708"
+        source: Inline
+    providerConfigRef:
+        name: terraform-eqx

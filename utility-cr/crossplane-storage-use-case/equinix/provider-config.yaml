@@ -1,0 +1,49 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+    name: terraform-eqx
+spec:
+    credentials:
+    # Filename has to comply with below naming convention:
+    # - Files named exactly terraform.tfvars or terraform.tfvars.json.
+    # - Any files with names ending in .auto.tfvars or .auto.tfvars.json.
+      - filename: terraform.tfvars.json
+        source: Secret
+        secretRef:
+            name: eqx-secret
+            namespace: crossplane-system
+            key: creds
+    configuration: |
+                    terraform {
+                        required_providers {
+                            equinix = {
+                                source = "equinix/equinix"
+                                version = "1.13.0"
+                            }
+                            metal = {
+                                source = "equinix/metal"
+                                version = "3.3.0"
+                            }
+                        }
+                        backend "kubernetes" {
+                            secret_suffix     = "providerconfig-eqx"
+                            namespace         = "crossplane-system"
+                            in_cluster_config = true
+                            }
+                    }
+
+                    variable "auth_token" {
+                        type  = string
+                    }
+
+                     variable "client_id" {
+                        type  = string
+                    }
+                    variable "client_secret" {
+                        type  = string
+                    }
+                     provider "equinix" {
+                        auth_token = var.auth_token
+                        client_id = var.client_id
+                        client_secret = var.client_secret
+                    }

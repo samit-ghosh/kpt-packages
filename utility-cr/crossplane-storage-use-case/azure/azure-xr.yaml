@@ -1,0 +1,23 @@
+apiVersion: aarnanetworks.com/v1alpha1
+kind: AzureTerraform
+metadata:
+    name: azure-resources
+    annotations: 
+        crossplane.io/external-name: azure-resources
+spec:
+    resourcegroupname: "test-rg-02"
+    regionname: "west US"
+    servicekey: "76"
+    expressroutename: "test-exp-rt-02"
+    peerasn: "65432"
+    azurevnetname: "test-vnet-02"
+    azuresubnetname: "test-subnet-02"
+    azuregatewaysubnetname : "GatewaySubnet"
+    azuregatewayname: "test-gateway-02"
+    azurepubipname: "test-pub-ip-104"
+    azurevnetgatewayconfigname : "config-test-02"
+    azurenetworkinterfacename: "test-interface-02"
+    virtualmachinepublicipname: "test-pub-ip-105"
+    azureipconfigurationname: "test-ip-config-02"
+    azurevirtualmachinename: "testvm02"
+    azuregatewayconnname: "test-conn-02"
