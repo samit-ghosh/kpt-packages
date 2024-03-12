@@ -2,15 +2,15 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: azure-creds
-  namespace: upbound-system
+  namespace: crossplane-system
 type: Opaque
 stringData:
   "credentials": |-
     {
-      "clientId": "",
-      "clientSecret": "",
-      "tenantId": "",
-      "subscriptionId": "" 
+      "clientId": "clientId",
+      "clientSecret": "clientSecret",
+      "tenantId": "tenantId",
+      "subscriptionId": "subscriptionId" 
     }
 ---
 apiVersion: tf.upbound.io/v1beta1
@@ -25,7 +25,7 @@ spec:
     - filename: terraform.tfvars.json
       source: Secret
       secretRef:
-        namespace: upbound-system
+        namespace: crossplane-system
         name: azure-creds
         key: credentials
   configuration: |
@@ -39,7 +39,7 @@ spec:
           
           backend "kubernetes" {
             secret_suffix     = "providerconfig-azure-westeurope"
-            namespace         = "upbound-system"
+            namespace         = "crossplane-system"
             in_cluster_config = true
           }
         }

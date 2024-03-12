@@ -1,0 +1,112 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: storageterraforms.aarnanetworks.com
+spec:
+  group: aarnanetworks.com
+  names:
+    kind: StorageTerraform
+    plural: storageterraforms
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              azureresourcegroupname:
+                type: string
+              azureregionname:
+                type: string
+              azureexpressroutename:
+                type: string
+              azureservicekey:
+                type: string
+              azurepeeringlocation:
+                type: string
+              azurepeerasn:
+                type: string
+              azurepeeringprimaryaddressprefix:
+                type: string
+              azurepeeringsecondaryaddressprefix:
+                type: string
+              azurepeeringvlanid:
+                type: string
+              azureasnnumber:
+                type: number
+              azurevnetname:
+                type: string
+              azurevnetaddressspace:
+                type: string
+              azurevmsubnetname:
+                type: string
+              azurevmsubnetaddressspace:
+                type: string
+              azuregatewaysubnetname:
+                type: string
+              azuregatewaysubnetaddressspace:
+                type: string
+              azuregatewayname:
+                type: string
+              azuregatewaypublicname:
+                type: string
+              azurevnetgatewayconfigname:
+                type: string
+              azurenetworkinterfacename:
+                type: string
+              virtualmachinepublicipname:
+                type: string
+              azureipconfigurationname:
+                type: string
+              azurevirtualmachinename:
+                type: string
+              azurevirtualmachineusername:
+                type: string
+              azurevirtualmachineuserpublickey:
+                type: string
+              azuregatewayconnname:
+                type: string
+              metalmetrocode:
+                type: string
+              metalvrfuuid:
+                type: string
+              metalprojectid:
+                type: string
+              metalvlan:
+                type: string
+              metalvlanuuid:
+                type: string
+              metalreservedipblockuuid:
+                type: string
+              metalgatewayuuid:
+                type: string
+              metalvirtualcircuitname:
+                type: string
+              fabricportname:
+                type: string
+              connectionspeedinmbps:
+                type: string
+              bgpsecretkey:
+                type: string
+              metalconnectionuuid:
+                type: string
+              metalvrfname:
+                type: string
+              metalvrfipranges:
+                type: string
+              metalreservedipblocknetwork:
+                type: string
+              metalreservedipblockcidr:
+                type: string
+              fabricconnectionname:
+                type: string
+            required:
+            - azureresourcegroupname
+            - azureregionname
+            - metalmetrocode
+            - metalprojectid
+            - bgpsecretkey
