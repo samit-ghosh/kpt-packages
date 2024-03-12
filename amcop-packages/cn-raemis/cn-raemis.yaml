@@ -53,7 +53,7 @@ spec:
             - name: WFE_PASSWORD
               value: mypassword
             - name: AAI_IP
-              value: aai
+              value: aai.amcop-system.svc.cluster.local
             - name: AAI_PORT
               value: "8443"
             - name: WFE_ASYNC_RESP_TIMEOUT
@@ -66,6 +66,10 @@ spec:
               value: WFTopic
             - name: WFE_HTTPS
               value: "1"
+            - name: MINIO_S3_IP
+              value: amcop-minio-hl.amcop-system.svc.cluster.local
+            - name: MINIO_S3_PORT
+              value: "9000"
           ports:
             - name: http
               containerPort: 8099
