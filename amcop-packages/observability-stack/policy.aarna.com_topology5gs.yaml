@@ -141,7 +141,6 @@ spec:
                 - cnInfo
                 - day0
                 - dayN
-                - pvsInfo
                 - s3Info
                 - vendor
                 type: object
@@ -163,6 +162,8 @@ spec:
                 - password
                 - username
                 type: object
+              metalServerName:
+                type: string
               ranEmsConfig:
                 properties:
                   cirServerName:
@@ -382,6 +383,79 @@ spec:
                     type: array
                 required:
                 - vmDetails
+                type: object
+              vServers:
+                properties:
+                  vServerData:
+                    items:
+                      properties:
+                        cpus:
+                          type: integer
+                        disk-size-mb:
+                          type: integer
+                        image-path:
+                          type: string
+                        memory-size-mb:
+                          type: integer
+                        network:
+                          type: string
+                        operational-status:
+                          type: string
+                        p-interfaces:
+                          properties:
+                            p-interface:
+                              items:
+                                properties:
+                                  interface-id:
+                                    type: integer
+                                  interface-name:
+                                    type: string
+                                  interface-name2:
+                                    type: string
+                                  interface-type:
+                                    type: string
+                                  selflink:
+                                    type: string
+                                required:
+                                - interface-id
+                                - interface-name
+                                - interface-name2
+                                - interface-type
+                                type: object
+                              type: array
+                          type: object
+                        resource-pool:
+                          type: string
+                        resource-version:
+                          type: string
+                        selflink:
+                          type: string
+                        server-id:
+                          type: string
+                        vserver-id:
+                          type: string
+                        vserver-name:
+                          type: string
+                        vserver-name2:
+                          type: string
+                        vserver-selflink:
+                          type: string
+                      required:
+                      - cpus
+                      - disk-size-mb
+                      - image-path
+                      - memory-size-mb
+                      - network
+                      - operational-status
+                      - resource-pool
+                      - server-id
+                      - vserver-id
+                      - vserver-name
+                      - vserver-name2
+                      type: object
+                    type: array
+                required:
+                - vServerData
                 type: object
               workflowName:
                 type: string
