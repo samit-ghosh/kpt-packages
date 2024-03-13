@@ -1,0 +1,55 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+    name: azureterraforms.aarnanetworks.com
+spec:
+    group: aarnanetworks.com
+    names:
+        kind: AzureTerraform
+        plural: azureterraforms
+    versions:
+        - name: v1alpha1
+          served: true
+          referenceable: true
+          schema:
+              openAPIV3Schema:
+                  type: object
+                  properties:
+                      spec:
+                          type: object
+                          properties:
+                              resourcegroupname:
+                                  type: string
+                              regionname:
+                                  type: string
+                              expressroutename:
+                                  type: string
+                              servicekey:
+                                  type: string
+                              peerasn:
+                                  type: string
+                              azurevnetname:
+                                  type: string
+                              azuresubnetname:
+                                  type: string
+                              azuregatewaysubnetname:
+                                  type: string
+                              azuregatewayname:
+                                  type: string
+                              azurepubipname:
+                                  type: string
+                              azurevnetgatewayconfigname:
+                                  type: string
+                              azurenetworkinterfacename:
+                                  type: string
+                              virtualmachinepublicipname:
+                                  type: string
+                              azureipconfigurationname:
+                                  type: string
+                              azurevirtualmachinename:
+                                  type: string
+                              azuregatewayconnname:
+                                  type: string
+                          required:
+                              - resourcegroupname
+                              - regionname

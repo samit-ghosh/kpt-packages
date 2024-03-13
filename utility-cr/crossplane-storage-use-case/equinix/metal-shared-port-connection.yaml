@@ -1,0 +1,131 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+    name: metal-connection
+    annotations:
+        crossplane.io/external-name: metal-connection
+spec:
+    forProvider:
+        module: |
+            resource "equinix_metal_connection" "metal_shared_connection" {
+              name            = var.eqx_metal_connection_name
+              project_id      = var.eqx_metal_project_id
+              metro           = var.eqx_metal_metro_code
+              redundancy      = var.eqx_metal_connection_redundancy
+              type            = var.eqx_metal_connection_type
+              mode            = var.eqx_metal_connection_mode
+              speed           = var.eqx_metal_connection_speed
+              service_token_type = var.eqx_metal_connection_service_token_type
+              vlans              = [76]
+              }
+            # terrafrom outputs 
+
+            output "eqx_metal_connection_tags" {
+              value = equinix_metal_connection.metal_shared_connection.tags
+            }
+
+            output "eqx_metal_connection_facility" {
+              value = equinix_metal_connection.metal_shared_connection.facility
+            }
+
+            output "eqx_metal_connection_uuid" {
+              value = equinix_metal_connection.metal_shared_connection.id
+            }
+
+            output "eqx_metal_connection_metro" {
+              value = equinix_metal_connection.metal_shared_connection.metro
+            }
+
+            output "eqx_metal_connection_mode" {
+              value = equinix_metal_connection.metal_shared_connection.mode
+            }
+
+            output "eeqx_metal_connection_name" {
+              value = equinix_metal_connection.metal_shared_connection.name
+            }
+
+            output "eqx_metal_connection_organization_id" {
+              value = equinix_metal_connection.metal_shared_connection.organization_id
+            }
+
+            output "eqx_metal_connection_ports" {
+              value = equinix_metal_connection.metal_shared_connection.ports
+            }
+
+            output "eqx_metal_connection_project_id" {
+              value = equinix_metal_connection.metal_shared_connection.project_id
+            }
+
+            output "eqx_metal_connection_redundancy" {
+              value = equinix_metal_connection.metal_shared_connection.redundancy
+            }
+
+            output "eqx_metal_connection_status" {
+              value = equinix_metal_connection.metal_shared_connection.status
+            }
+
+            output "eqx_metal_connection_service_tokens" {
+              value = equinix_metal_connection.metal_shared_connection.service_tokens[0].id
+            }
+
+            output "eqx_metal_connection_type" {
+              value = equinix_metal_connection.metal_shared_connection.type
+            }
+
+            output "eqx_metal_connection_speed" {
+              value = equinix_metal_connection.metal_shared_connection.speed
+            }
+
+            output "eqx_metal_connection_vlans" {
+              value = equinix_metal_connection.metal_shared_connection.vlans
+            }
+
+              # terrafrom variables
+
+              variable "eqx_metal_project_id" {
+                type        = string
+              }
+                variable "eqx_metal_metro_code" {
+                type        = string
+              }
+                variable "eqx_metal_connection_name" {
+                type        = string
+              }
+                variable "eqx_metal_connection_redundancy" {
+                type        = string
+              }
+              variable "eqx_metal_connection_type" {
+                type        = string
+              }
+              variable "eqx_metal_connection_mode" {
+                type        = string
+              }
+              variable "eqx_metal_connection_service_token_type" {
+                type        = string
+              }
+              #variable "eqx_metal_connection_vlans" {
+              #  type        = list(number)
+              #}
+              variable "eqx_metal_connection_speed" {
+                type        = string
+              }
+        vars:
+            - key: eqx_metal_project_id
+              value: "2dbed96e-8240-4c9d-a6ad-d0e33fc56971"
+            - key: eqx_metal_metro_code
+              value: "da"
+            - key: eqx_metal_connection_name
+              value: "aes-shared-metal-conn-1"
+            - key: eqx_metal_connection_redundancy
+              value: "primary"
+            - key: eqx_metal_connection_type
+              value: "shared"
+            - key: eqx_metal_connection_mode
+              value: "standard"
+            - key: eqx_metal_connection_service_token_type
+              value: "a_side"
+            - key: eqx_metal_connection_speed
+              value: "50Mbps"
+        source: Inline
+    providerConfigRef:
+        name: terraform-eqx

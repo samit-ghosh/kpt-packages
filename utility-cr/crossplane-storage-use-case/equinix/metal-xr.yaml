@@ -1,0 +1,14 @@
+apiVersion: aarnanetworks.com/v1alpha1
+kind: MetalTerraform
+metadata:
+    name: metal-resources
+    annotations: 
+        crossplane.io/external-name: metal-resources
+spec:
+    metalmetrocode: "da"
+    metalprojectid: "2dbed96e-8240-4c9d-a6ad-d0e33fc56971"
+    metalvlan: "76"
+    metalvrfuuid: "user-input"
+    metalvlanuuid: "user-input"
+    metalreservedipblockuuid: "user-input"
+    metalgatewayuuid: "user-input"

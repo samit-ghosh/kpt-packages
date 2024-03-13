@@ -1,0 +1,39 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+    name: metalterraforms.aarnanetworks.com
+spec:
+    group: aarnanetworks.com
+    names:
+        kind: MetalTerraform
+        plural: metalterraforms
+    versions:
+        - name: v1alpha1
+          served: true
+          referenceable: true
+          schema:
+              openAPIV3Schema:
+                  type: object
+                  properties:
+                      spec:
+                          type: object
+                          properties:
+                              metalmetrocode:
+                                  type: string
+                              metalvrfuuid:
+                                  type: string
+                              metalprojectid:
+                                  type: string
+                              metalvlan:
+                                  type: string
+                              metalvlanuuid:
+                                  type: string
+                              metalreservedipblockuuid:
+                                  type: string
+                              metalgatewayuuid:
+                                  type: string
+                              metalvrflocalasn:
+                                  type: string
+                          required:
+                              - metalmetrocode
+                              - metalprojectid

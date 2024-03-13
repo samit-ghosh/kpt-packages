@@ -1,0 +1,411 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+    name: metal-resources
+    annotations:
+        crossplane.io/external-name: equinix-metal-resources
+spec:
+    compositeTypeRef:
+        apiVersion: aarnanetworks.com/v1alpha1
+        kind: MetalTerraform
+    patchSets:
+        - name: metal-project-id
+          patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.metalprojectid
+                toFieldPath: spec.forProvider.vars[0].value
+        - name: metal-metro-code
+          patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.metalmetrocode
+                toFieldPath: spec.forProvider.vars[1].value
+    resources:
+        - name: metal-vlan
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                      crossplane.io/external-name: metal-vlan
+              spec:
+                  forProvider:
+                      module: |
+                          resource "equinix_metal_vlan" "vlan1" {
+                            metro       = var.eqx_metal_metro_code
+                            project_id  = var.eqx_metal_project_id
+                            description = var.eqx_metal_vlan_description
+                            vxlan       = var.eqx_metal_vlan_id
+                          }
+
+                          # terrafrom outputs 
+
+                          output "eqx_metal_vlan" {
+                                value = equinix_metal_vlan.vlan1.vxlan
+                            }
+
+                            output "eqx_metal_project_id" {
+                                value = var.eqx_metal_project_id
+                            }
+
+                            output "eqx_metal_metro_code" {
+                                value = var.eqx_metal_metro_code
+                            }
+
+                            output "eqx_metal_vlan_description" {
+                                value = equinix_metal_vlan.vlan1.description
+                            }
+
+                            output "eqx_metal_vlan_uuid" {
+                              value = equinix_metal_vlan.vlan1.id
+                            }
+
+                            # terrafrom variables
+
+                            variable "eqx_metal_project_id" {
+                              description = "eqx metal project id"
+                              type        = string
+                            }
+                              variable "eqx_metal_metro_code" {
+                              description = "eqx metal metro code"
+                              type        = string
+                            }
+                              variable "eqx_metal_vlan_description" {
+                              description = "eqx metal vlan description"
+                              type        = string
+                            }
+                              variable "eqx_metal_vlan_id" {
+                              description = "eqx metal vlan id"
+                              type        = number
+                            }
+                      vars:
+                          - key: eqx_metal_project_id
+                            value: "user-input"
+                          - key: eqx_metal_metro_code
+                            value: "user-input"
+                          - key: eqx_metal_vlan_description
+                            value: "aes metal vlan creation using CR"
+                          - key: eqx_metal_vlan_id
+                            value: "user-input"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-eqx
+          patches:
+              - type: PatchSet
+                patchSetName: metal-project-id
+              - type: PatchSet
+                patchSetName: metal-metro-code
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.metalvlan
+                toFieldPath: spec.forProvider.vars[3].value
+              - type: ToCompositeFieldPath
+                fromFieldPath: status.atProvider.outputs.eqx_metal_vlan_uuid
+                toFieldPath: spec.metalvlanuuid
+        - name: metal-vrf
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                      crossplane.io/external-name: metal-vrf
+              spec:
+                  forProvider:
+                      module: |
+                          resource "equinix_metal_vrf" "metal_vrf" {
+                            description = var.eqx_metal_vrf_description
+                            name        = var.eqx_metal_vrf_name
+                            metro       = var.eqx_metal_metro_code
+                            project_id  = var.eqx_metal_project_id
+                            local_asn   = var.eqx_metal_vrf_local_asn
+                            ip_ranges   = var.eqx_metal_ip_ranges
+                          }
+
+                          output eqx_metal_vrf_uuid {
+                              value = equinix_metal_vrf.metal_vrf.id
+                          }
+
+                          output eqx_metal_vrf_description {
+                              value = equinix_metal_vrf.metal_vrf.description
+                          }
+
+                          output eqx_metal_vrf_name {
+                              value = equinix_metal_vrf.metal_vrf.name
+                          }
+
+                          output eqx_metal_vrf_metro {
+                              value = equinix_metal_vrf.metal_vrf.metro
+                          }
+
+                          output eqx_metal_vrf_project_id {
+                              value = equinix_metal_vrf.metal_vrf.project_id
+                          }
+
+                          output eqx_metal_vrf_local_asn {
+                              value = equinix_metal_vrf.metal_vrf.local_asn
+                          }
+
+                          output eqx_metal_ip_ranges {
+                              value = equinix_metal_vrf.metal_vrf.ip_ranges
+                          }
+
+                          # terrafrom variables
+
+                           variable "eqx_metal_vrf_description" {
+                            description = "eqx metal vrf description"
+                            type        = string
+                          }
+                            variable "eqx_metal_ip_ranges" {
+                            description = "eqx metal vrf ip ranges"
+                            type        = list(string)
+                          }
+                            variable "eqx_metal_vrf_name" {
+                            description = "eqx metal vrf name"
+                            type        = string
+                          }
+                            variable "eqx_metal_metro_code" {
+                            description = "eqx metal metro code"
+                            type        = string
+                          }
+                            variable "eqx_metal_project_id" {
+                            description = "eqx metal project id"
+                            type        = string
+                          }
+                            variable "eqx_metal_vrf_local_asn" {
+                            description = "vrf local asn"
+                            type        = string
+                          }
+                      vars:
+                          - key: eqx_metal_project_id
+                            value: "user-input"
+                          - key: eqx_metal_metro_code
+                            value: "user-input"
+                          - key: eqx_metal_vrf_description
+                            value: "aes metal vrf creation using CR"
+                          - key: eqx_metal_vrf_name
+                            value: "aes-metal-vrf"
+                          - key: eqx_metal_vrf_local_asn
+                            value: "65432"
+                          - key: eqx_metal_ip_ranges
+                            value: '["10.0.0.0/8", "172.16.0.0/16", "192.168.0.0/24"]'
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-eqx
+          patches:
+              - type: PatchSet
+                patchSetName: metal-project-id
+              - type: PatchSet
+                patchSetName: metal-metro-code
+              - type: ToCompositeFieldPath
+                fromFieldPath: status.atProvider.outputs.eqx_metal_vrf_uuid
+                toFieldPath: spec.metalvrfuuid
+        - name: metal-res-ip-block
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                      crossplane.io/external-name: metal-res-ip-block
+              spec:
+                  forProvider:
+                      module: |
+                          resource "equinix_metal_reserved_ip_block" "vrf_gw_ipv4_block" {
+                              description = var.eqx_metal_ip_block_description
+                              project_id  = var.eqx_metal_project_id
+                              metro       = var.eqx_metal_metro_code
+                              type        = "vrf"
+                              vrf_id      = var.eqx_metal_vrf_uuid
+                              cidr        = var.eqx_metal_reserved_ip_block_cidr
+                              network     = var.eqx_metal_reserved_ip_block_network
+                          }
+
+                          # terrafrom  output declaration
+
+                          output "eqx_metal_reserved_ip_block_uuid" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.id
+                          }
+
+                          output "eqx_metal_reserved_ip_block_cidr_notation" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.cidr_notation
+                          }
+
+                          output "eqx_metal_reserved_ip_block_network" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.network
+                          }
+
+                          output "eqx_metal_reserved_ip_block_cidr" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.cidr
+                          }
+
+                          output "eqx_metal_reserved_ip_block_address_family" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.address_family
+                          }
+
+                          output "eqx_metal_reserved_ip_block_public" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.public
+                          }
+
+                          output "eqx_metal_reserved_ip_block_global" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.global
+                          }
+
+                          output "eqx_metal_vrf_uuid" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.vrf_id
+                          }
+
+                          output "eqx_metal_reserved_ip_block_type" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.type
+                          }
+
+                          output "eqx_metal_reserved_ip_block_netmask" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.netmask
+                          }
+
+                          output "eqx_metal_reserved_ip_block_gateway" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.gateway
+                          }
+
+                          output "eqx_metal_reserved_ip_block_address" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.address
+                          }
+
+                          output "eqx_metal_reserved_ip_block_wait_for_state" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.wait_for_state
+                          }
+
+                          output "eqx_metal_reserved_ip_block_quantity" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.quantity
+                          }
+
+                          output "eqx_metal_reserved_ip_block_tags" {
+                              value = equinix_metal_reserved_ip_block.vrf_gw_ipv4_block.tags
+                          }
+
+                          # terrafrom variable declaration
+
+                          variable "eqx_metal_vrf_uuid" {
+                              description = " metal vrf uuid"
+                              type        = string
+                          }
+                          variable "eqx_metal_metro_code" {
+                              description = "metal metro code"
+                              type        = string
+                          }
+                          variable "eqx_metal_project_id" {
+                              description = "metal project id"
+                              type        = string
+                          }
+                          variable "eqx_metal_ip_block_description" {
+                              description = "metal ip block description"
+                              type        = string
+                          }
+                          variable "eqx_metal_reserved_ip_block_cidr" {
+                              description = "metal ip block cidr"
+                              type        = number
+                          }
+                          variable "eqx_metal_reserved_ip_block_network" {
+                              description = "metal ip block network"
+                              type        = string
+                          }
+                      vars:
+                          - key: eqx_metal_project_id
+                            value: "user-input"
+                          - key: eqx_metal_metro_code
+                            value: "user-input"
+                          - key: eqx_metal_ip_block_description
+                            value: "aes metal vrf creation using CR"
+                          - key: eqx_metal_vrf_uuid
+                            value: "uuid"
+                          - key: eqx_metal_reserved_ip_block_cidr
+                            value: "29"
+                          - key: eqx_metal_reserved_ip_block_network
+                            value: "172.16.4.0"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-eqx
+          patches:
+              - type: PatchSet
+                patchSetName: metal-project-id
+              - type: PatchSet
+                patchSetName: metal-metro-code
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.metalvrfuuid
+                toFieldPath: spec.forProvider.vars[3].value
+              - type: ToCompositeFieldPath
+                fromFieldPath: status.atProvider.outputs.eqx_metal_reserved_ip_block_uuid
+                toFieldPath: spec.metalreservedipblockuuid
+        - name: metal-gateway
+          base:
+              apiVersion: tf.upbound.io/v1beta1
+              kind: Workspace
+              metadata:
+                  annotations:
+                      crossplane.io/external-name: metal-gateway
+              spec:
+                  forProvider:
+                      module: |
+                          resource "equinix_metal_gateway" "metal_vrf_gateway" {
+                          project_id        = var.eqx_metal_project_id
+                          vlan_id           = var.eqx_metal_vlan_uuid
+                          ip_reservation_id = var.eqx_metal_reserved_ip_block_uuid
+                          }
+
+                          # terrafrom output
+                          output "eqx_metal_gateway_state" {
+                              value = equinix_metal_gateway.metal_vrf_gateway.state
+                          }
+
+                          output "eqx_metal_gateway_vrf_uuid" {
+                              value = equinix_metal_gateway.metal_vrf_gateway.vrf_id
+                          }
+
+                          output "eqx_metal_gateway_uuid" {
+                              value = equinix_metal_gateway.metal_vrf_gateway.id
+                          }
+
+                          output "eqx_metal_gateway_private_ipv4_subnet_size" {
+                              value = equinix_metal_gateway.metal_vrf_gateway.private_ipv4_subnet_size
+                          }
+
+                          output "eqx_metal_gateway_ip_reservation_id" {
+                              value = equinix_metal_gateway.metal_vrf_gateway.ip_reservation_id
+                          }
+
+                          output "eqx_metal_vlan_uuid" {
+                            value = var.eqx_metal_vlan_uuid
+                          }
+
+                          # terrafrom variables
+                          variable "eqx_metal_project_id" {
+                              description = " metal vrf uuid"
+                              type        = string
+                          }
+                          variable "eqx_metal_vlan_uuid" {
+                              description = "metal metro code"
+                              type        = string
+                          }
+                          variable "eqx_metal_reserved_ip_block_uuid" {
+                              description = "metal project id"
+                              type        = string
+                          }
+                      vars:
+                          - key: eqx_metal_project_id
+                            value: "user-input"
+                          - key: eqx_metal_vlan_uuid
+                            value: "user-input"
+                          - key: eqx_metal_reserved_ip_block_uuid
+                            value: "user-input"
+                      source: Inline
+                  providerConfigRef:
+                      name: terraform-eqx
+          patches:
+              - type: PatchSet
+                patchSetName: metal-project-id
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.metalvlanuuid
+                toFieldPath: spec.forProvider.vars[1].value
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.metalreservedipblockuuid
+                toFieldPath: spec.forProvider.vars[2].value
+              - type: ToCompositeFieldPath
+                fromFieldPath: status.atProvider.outputs.eqx_metal_gateway_ip_reservation_id
+                toFieldPath: spec.metalgatewayuuid
+        

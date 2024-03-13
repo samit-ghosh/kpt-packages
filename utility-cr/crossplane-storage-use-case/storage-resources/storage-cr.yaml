@@ -1,0 +1,44 @@
+apiVersion: aarnanetworks.com/v1alpha1
+kind: StorageTerraform
+metadata:
+  name: storage-resources
+  annotations:
+    crossplane.io/external-name: storage-resources
+spec:
+  connectionspeedinmbps: "50"
+  azureresourcegroupname: "aes-test-rg-1"
+  azureregionname: "west US"
+  azureexpressroutename: "test-exp-rt-1"
+  azurepeeringlocation: "Dallas"
+  azurepeerasn: "65432"
+  azurepeeringprimaryaddressprefix: "172.18.0.0/30"
+  azurepeeringsecondaryaddressprefix: "172.19.0.0/30"
+  azurepeeringvlanid: "345"
+  azurevnetname: "aes-vnet-1"
+  azurevnetaddressspace: "10.50.0.0/16"
+  azurevmsubnetname: "aes-vnet-vm-subnet"
+  azurevmsubnetaddressspace: "10.50.4.0/24"
+  azuregatewaysubnetname: "GatewaySubnet"
+  azuregatewaysubnetaddressspace: "10.50.5.0/27"
+  azuregatewayname: "aes-vnet-gateway"
+  azuregatewaypublicname: "aes-vnet-gw-public-ip"
+  azurevnetgatewayconfigname: "aes-vnet-gw-config"
+  azurenetworkinterfacename: "aes-vm-nic"
+  virtualmachinepublicipname: "aes-vm-public-ip"
+  azureipconfigurationname: "aes-ip-config"
+  azurevirtualmachinename: "aesvm"
+  azurevirtualmachineusername: "azureuser"
+  azurevirtualmachineuserpublickey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDD+lr0wdk22Z3m5XF14Idh6JHLHYKgQ1ThFrzByR0seF7sKDChHAWKp8qaNopNnKoOUsopaVGNdkm885WkJo3CPZi6Wo1dBJzmFVZV1bxXKoU4MIFVmbsXwBwvAr38rtrIE5aKufo/RIhPdvSmUSsWnK0MW9ldSoaTOhuV7OAw5kNJlkgT/C4VWGva3VsNA4L30PRPiUjMLekwOitPSKuoIW+dq33+yb08kquGDseW4fHuZN+I0W/fQiEpR8KuhfJZzlmkN1qJ9RT8uxZefCZrVuwI8eDKCfGaOltWE0IHFwfwgS/AdKXGt3cfXNYOz4GUmMpECX/VOwmhv095JAlQB5vkSKCvfcjjwgCFOG2Dm78jqVinFDlE7suB+t52gv60l7YGAQ3x7ONteZVZTzb1OmmtC9GT1FEIrBK9f+UEBxDjxOc2KxUns99y7fddvZgmpZnjmor8vD8mMoSMDzuZyfP2sFwPRR363YFJASSxMSQIKeTfwu3Px1SNFBtz7oU= tamilselvan@aarna"
+  azuregatewayconnname: "aes-vnet-gw-connection"
+  metalmetrocode: "da"
+  metalprojectid: "2dbed96e-8240-4c9d-a6ad-d0e33fc56971"
+  metalvlan: "76"
+  bgpsecretkey: "secretkey"
+  metalvrfname: "aes-metal-vrf"
+  metalvirtualcircuitname: "aes-metal-vc"
+  fabricconnectionname: "aes-fabric-conn"
+  # the metal vrf ip ranges should be string by comma seperated
+  metalvrfipranges: "10.0.0.0/8,172.16.0.0/16,192.168.0.0/24"
+  # the reserved ip block should be within the vrf ip ranges
+  metalreservedipblockcidr: "29"
+  metalreservedipblocknetwork: "172.16.0.0"
