@@ -132,3 +132,33 @@ spec:
   instanceSelector:
     matchLabels:
       app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-switch-alarm
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/Switch_Alarm_Dashboard-1710488254270.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-switch-fm-table
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/Switch_FM_Table-1710487034573.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
