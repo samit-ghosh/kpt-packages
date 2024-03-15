@@ -1,0 +1,673 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "prometheus",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 15,
+      "options": {
+        "content": "<img src=\"https://onedrive.live.com/embed?resid=A1A305B33D38C5E8%21253&authkey=%21AJ6_IQ3RnhjCOkI&width=1229&height=97\" width=\"1229\" height=\"97\" />",
+        "mode": "html"
+      },
+      "pluginVersion": "9.1.6",
+      "type": "text"
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "",
+              "url": "/grafana/b7c0d306-abbd-11ee-9ae8-3a9dc26f5f69/d/5_DwiyjVz/acp-alarm-tables?orgId=1&viewPanel=13"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": "prometheus",
+          "editorMode": "code",
+          "expr": "alert_csr",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total Alarms",
+      "type": "stat"
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-red",
+            "mode": "fixed"
+          },
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Criritcal Alarms",
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzsa/switch_fm_table?orgId=1&from=1710466495759&to=1710488095759&viewPanel=18"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 11
+      },
+      "id": 8,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": "prometheus",
+          "editorMode": "code",
+          "expr": "alert_csr{Severity=\"critical\"}",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Switch Alarms - Critical",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-orange",
+            "mode": "fixed"
+          },
+          "links": [
+            {
+              "targetBlank": false,
+              "title": "Major Alarms",
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzsa/switch_fm_table?orgId=1&from=1710466531957&to=1710488131957&viewPanel=19"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 6,
+        "y": 11
+      },
+      "id": 10,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": "prometheus",
+          "editorMode": "code",
+          "expr": "alert_csr{Severity=\"major\"} OR on() vector(0)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Swithch Alarms - Major",
+      "type": "stat"
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-yellow",
+            "mode": "fixed"
+          },
+          "links": [
+            {
+              "targetBlank": false,
+              "title": "Minor Alarms",
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzsa/switch_fm_table?orgId=1&from=1710466590640&to=1710488190640&viewPanel=20"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 12,
+        "y": 11
+      },
+      "id": 13,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": "prometheus",
+          "editorMode": "code",
+          "expr": "alert_csr{Severity=\"minor\"} OR on() vector(0)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Switch Alarms - Minor",
+      "type": "stat"
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "light-yellow",
+            "mode": "fixed"
+          },
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Warning Alarms",
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzsa/switch_fm_table?orgId=1&from=1710466620339&to=1710488220339&viewPanel=21"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 18,
+        "y": 11
+      },
+      "id": 11,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": "prometheus",
+          "editorMode": "code",
+          "expr": "alert_csr{Severity=\"warning\"} OR on() vector(0)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Switch Alarms - Warnings",
+      "type": "stat"
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 102
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alarmTypeID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 135
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nodeName"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 239
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 23,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": "prometheus",
+          "editorMode": "code",
+          "expr": "alert_csr{}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Switch Alarms -All-Alarms",
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": {
+            "join": [
+              "AlarmReportedtime",
+              "AlarmSeverity",
+              "Description",
+              "EventClass",
+              "EventTime",
+              "IPAddress",
+              "NotificationType",
+              "Resource",
+              "Severity",
+              "TypeId",
+              "__name__",
+              "instance",
+              "job"
+            ],
+            "value": "AlarmClear"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "AlarmReportedtime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "AlarmSeverity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "EventClass": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "EventTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "IPAddress": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "NotificationType": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Resource": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "TypeId": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "__name__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmChangedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmReportingTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmState": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmType": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alarmTypeID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "alert_severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "customer": {
+                "aggregations": []
+              },
+              "description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "false": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "nodeName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "severity": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceName": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceRaisedTime": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "sourceType": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "alarmChangedTime": true,
+              "alarmID": false,
+              "alert_severity": true,
+              "instance": true,
+              "job": true,
+              "nodeName": false,
+              "sourceName": true,
+              "sourceType": true
+            },
+            "indexByName": {
+              "alarmChangedTime": 4,
+              "alarmID": 0,
+              "alarmReportingTime": 3,
+              "alarmState": 12,
+              "alarmType": 1,
+              "alarmTypeID": 10,
+              "alert_severity": 11,
+              "customer": 8,
+              "description": 13,
+              "instance": 5,
+              "job": 6,
+              "nodeName": 7,
+              "severity": 2,
+              "sourceName": 9,
+              "sourceRaisedTime": 15,
+              "sourceType": 14
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Switch_Alarm_Dashboard",
+  "uid": "hHvVrt94kxxss",
+  "version": 3,
+  "weekStart": ""
+}
