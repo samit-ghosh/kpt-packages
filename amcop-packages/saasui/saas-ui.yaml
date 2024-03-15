@@ -36,7 +36,7 @@ spec:
     spec:
       initContainers:
         - name: saas-init
-          image: jacobaarna/saasinit:latest
+          image: amcopnightly/saas-db-init:v4.0-2024-03-14
           imagePullPolicy: Always
       containers:
         - name: aes-frontend
