@@ -34,7 +34,7 @@ spec:
     isDefault: false
     name: amcop-robin
     type: prometheus
-    url: http://10.2.0.50:32240
+    url: http://10.2.0.43:32240
   instanceSelector:
     matchLabels:
       app: amcop-grafana
