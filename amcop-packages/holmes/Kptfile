@@ -5,10 +5,4 @@ metadata:
   annotations:
     config.kubernetes.io/local-config: "true"
 info:
-  description: holmes package
-pipeline:
-  mutators:
-    - name: Set namespace
-      image: gcr.io/kpt-fn/set-namespace:v0.4.1
-      configMap:
-        namespace: amcop-system
+  description: sample description

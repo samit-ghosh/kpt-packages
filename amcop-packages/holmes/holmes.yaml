@@ -1,47 +1,27 @@
+############## Holmes Component YAML for Manual deployment ####################
 # Source: fault-management-helm/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fault-management-config
-  namespace: amcop-system
+  namespace: test-tenant
 data:
   application.properties: |
     server.port=9797
-    sdnr.client=http://sdnr.amcop-system.svc.cluster.local:8181/
-    sdnr.client.username=admin
-    sdnr.client.password=Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U
-    sdnr.persist.get_all_nodes=120000
-
-    #spring.data.elasticsearch.repositories.enabled=true
-    elasticsearch.client.uris=http://sdnrdb.amcop-system.svc.cluster.local:9200/faultcurrent-v7/_search
-    ## Testing only
-    spring.datasource.hikari.connectionTimeout=20000
-    spring.datasource.hikari.maximumPoolSize=5
-
     ## PostgreSQL
-    spring.datasource.url=jdbc:postgresql://postgresql.amcop-system.svc.cluster.local:5432/holmes
-    #spring.datasource.url=jdbc:postgresql://postgresql.amcop-system.svc.cluster.local:5431/holmes
+    spring.datasource.url=jdbc:postgresql://postgresql.test-tenant.svc.cluster.local:5432/holmes
+    #spring.datasource.url=jdbc:postgresql://postgresql.test-tenant.svc.cluster.local:5431/holmes
     spring.datasource.username=holmes
     spring.datasource.password=holmespwd
-
     # create and drop table, good for testing, production set to none or comment it
     #spring.jpa.hibernate.ddl-auto=create-drop
-
-    ##Rule Adapter Host
-    ruleadapter.client=http://rule-adapter-helm.amcop-system.svc.cluster.local:8080/
-    keycloak.server.url=http://keycloak-service.amcop-system.svc.cluster.local:8080/
-    keycloak.realm.name=master
-    keycloak.realm.client_id=admin-cli
-    keycloak.realm.cli.username=admin
-    keycloak.realm.cli.password=admin
-    keycloak.realm.cli.grant_type=password
 ---
 # Source: fault-management-helm/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: fault-management-helm
-  namespace: amcop-system
+  namespace: test-tenant
   labels:
     app.kubernetes.io/name: fault-management-helm
     app.kubernetes.io/instance: fault-management-helm
@@ -55,47 +35,6 @@ spec:
   selector:
     app.kubernetes.io/name: fault-management-helm
     app.kubernetes.io/instance: fault-management-helm
----
-# Source: fault-management-helm/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: fault-management-helm
-  namespace: amcop-system
-  labels:
-    app.kubernetes.io/name: fault-management-helm
-    app.kubernetes.io/instance: fault-management-helm
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: fault-management-helm
-      app.kubernetes.io/instance: fault-management-helm
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: fault-management-helm
-        app.kubernetes.io/instance: fault-management-helm
-    spec:
-      initContainers:
-        - name: wait-for-svc-before-starup
-          image: busybox
-          command: ["sh", "-c", "until timeout 1 nc -z postgresql.amcop-system.svc.cluster.local 5432 > /dev/null; do echo Waiting for master.; sleep 1; done"]
-      volumes:
-        - name: fault-management-config
-          configMap:
-            name: fault-management-config
-      containers:
-        - name: fault-management-helm
-          image: "amcop/faultprovider:v3.5.01122024"
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - mountPath: /var/opt/faultprovider/config
-              name: fault-management-config
-          ports:
-            - name: http
-              containerPort: 9797
-
 ################################[ HOLMES_ENGINE_MANAGEMENT ]################################
 ---
 # Source: holmes-engine-managment/charts/postgress/templates/secret.yaml
@@ -103,7 +42,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: postgres-secrets
-  namespace: amcop-system
+  namespace: test-tenant
 data:
   postgresql-password: "aG9sbWVzcHdk"
   repmgr-password: "aG9sbWVzcHdk"
@@ -113,7 +52,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: pgpool-secrets
-  namespace: amcop-system
+  namespace: test-tenant
 data:
   admin-password: "SFRzaVZxYjdSZQ=="
 ---
@@ -122,29 +61,25 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-configmap
-  namespace: amcop-system
+  namespace: test-tenant
 data:
   pre-stop.sh: |-
     #!/bin/bash
     set -o errexit
     set -o pipefail
     set -o nounset
-
     # Debug section
     exec 3>&1
     exec 4>&2
-
     # Load Libraries
     . /opt/bitnami/scripts/liblog.sh
     . /opt/bitnami/scripts/libpostgresql.sh
     . /opt/bitnami/scripts/librepmgr.sh
-
     # Auxiliary functions
     is_new_primary_ready() {
         return_value=1
         currenty_primary_node="$(repmgr_get_primary_node)"
         currenty_primary_host="$(echo $currenty_primary_node | awk '{print $1}')"
-
         info "$currenty_primary_host != $REPMGR_NODE_NETWORK_NAME"
         if [[ $(echo $currenty_primary_node | wc -w) -eq 2 ]] && [[ "$currenty_primary_host" != "$REPMGR_NODE_NETWORK_NAME" ]]; then
             info "New primary detected, leaving the cluster..."
@@ -154,9 +89,7 @@ data:
         fi
         return $return_value
     }
-
     export MODULE="pre-stop-hook"
-
     if [[ "${BITNAMI_DEBUG}" == "true" ]]; then
         info "Bash debug is on"
     else
@@ -164,19 +97,14 @@ data:
         exec 1>/dev/null
         exec 2>/dev/null
     fi
-
     # Load PostgreSQL & repmgr environment variables
     . /opt/bitnami/scripts/postgresql-env.sh
-
     postgresql_enable_nss_wrapper
-
     # Prepare env vars for managing roles
     primary_node="$(repmgr_get_primary_node)"
     primary_host="$(echo $primary_node | awk '{print $1}')"
-
     # Stop postgresql for graceful exit.
     postgresql_stop
-
     if [[ "$primary_host" == "$REPMGR_NODE_NETWORK_NAME" ]]; then
         info "Primary node need to wait for a new primary node before leaving the cluster"
         retry_while is_new_primary_ready 10 5
@@ -189,7 +117,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dmaapconfig
-  namespace: amcop-system
+  namespace: test-tenant
 data:
   cfy.json: |
     {
@@ -197,15 +125,21 @@ data:
       "streams_publishes": {
         "dcae_cl_out": {
           "dmaap_info": {
-            "topic_url": "http://dmaap.amcop-system.svc.cluster.local:3904/events/unauthenticated.DCAE_CL_OUTPUT"
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Output1"
           },
           "type": "message_router"
         }
       },
       "streams_subscribes": {
-        "ves_fault": {
+        "ran_alarm": {
           "dmaap_info": {
-            "topic_url": "http://dmaap.amcop-system.svc.cluster.local:3904/events/unauthenticated.SEC_FAULT_OUTPUT"
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_RAN_Alarms1"
+          },
+          "type": "message_router"
+        },
+        "core_alarm": {
+          "dmaap_info": {
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Core_Alarms1"
           },
           "type": "message_router"
         }
@@ -213,14 +147,12 @@ data:
     }
   ControlLoop-VOLTE-2179b738-fd36-4843-a71a-a8c24c70c55b.drl: |
     package org.onap.holmes.droolsRule;
-
     import org.onap.holmes.common.dmaap.DmaapService;
     import org.onap.holmes.common.api.stat.VesAlarm;
     import org.onap.holmes.common.aai.CorrelationUtil;
     import org.onap.holmes.common.dmaap.entity.PolicyMsg;
     import org.onap.holmes.common.utils.SpringContextUtil;
     import org.onap.holmes.common.utils.DroolsLog;
-
     rule "Relation_analysis_Rule"
     salience 200
     no-loop true
@@ -241,7 +173,6 @@ data:
             $child.setParentId($root.getEventId());
             update($child);
     end
-
     rule "root_has_child_handle_Rule"
     salience 150
     no-loop true
@@ -257,7 +188,6 @@ data:
             $root.setRootFlag(1);
             update($root);
     end
-
     rule "root_no_child_handle_Rule"
     salience 100
     no-loop true
@@ -275,7 +205,6 @@ data:
             $root.setRootFlag(1);
             update($root);
     end
-
     rule "root_cleared_handle_Rule"
     salience 100
     no-loop true
@@ -289,7 +218,6 @@ data:
             dmaapService.publishPolicyMsg(policyMsg, "dcae_cl_out");
             retract($root);
     end
-
     rule "child_handle_Rule"
     salience 100
     no-loop true
@@ -308,29 +236,12 @@ data:
         }
     ]
 ---
-# Source: holmes-engine-managment/templates/configmap_job.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: dmaapconfigjob
-  namespace: amcop-system
-data:
-  curule: |
-    {
-      "ruleName": "CG RAN Cellsetup failure",
-      "loopControlName": "Cellsetup failure",
-      "description": "This rule is designed for the correlation analysis for the Cellsetup failure use case.",
-      "content": "package org.onap.holmes.droolsRule1;\nimport java.util.*\nimport org.onap.holmes.engine.db.AlarmInfoDaoService;\nimport org.onap.holmes.common.api.stat.VesAlarm;\nimport org.onap.holmes.common.aai.CorrelationUtil;\nimport org.onap.holmes.common.utils.DroolsLog;\nimport org.onap.holmes.common.utils.SpringContextUtil;\nrule \"Relation_analysis_Rule\"\nsalience 200\nwhen\n$root : VesAlarm(alarmIsCleared == 0,$sourceId: sourceId, sourceId != null && !sourceId.equals(\"\"),$sourceName: sourceName, sourceName != null && !sourceName.equals(\"\"), specificProblem matches (\".*Cell setup failures.*\"),$eventId: eventId)\n$child : VesAlarm(alarmIsCleared == 0,eventId != $eventId, parentId == null,specificProblem matches (\".*F1AP link bounce Alarm.*\"),sourceName == $sourceName)\nthen\nDroolsLog.printInfo(\"Correlation Identified: Root: ID=\" + $root.getEventId() + \", Event Name=\" + $root.getSpecificProblem() +\"; Child: ID=\" + $child.getEventId() + \", Event Name=\" + $child.getSpecificProblem());\n $root.setRootFlag(1);$child.setParentId($root.getEventId());\nupdate($child);update($root)\nAlarmInfoDaoService alarmInfoDaoService = SpringContextUtil.getBean(AlarmInfoDaoService.class);\nalarmInfoDaoService.saveAlarmActive($root);\nalarmInfoDaoService.saveAlarmActive($child);\nend\nrule \"root_has_child_handle_Rule\"\nsalience 100\nwhen\n$child : VesAlarm(alarmIsCleared == 1,specificProblem matches (\".*F1AP link bounce Alarm.*\"))\nthen\nDroolsLog.printInfo(\" Child alarm is cleared: Alarm: ID=\" + $child.getEventId() + \", Event Name=\" + $child.getEventName());\nAlarmInfoDaoService alarmInfoDaoService = SpringContextUtil.getBean(AlarmInfoDaoService.class);alarmInfoDaoService.saveAlarmHistory($child);VesAlarm ves_mv_to_history = alarmInfoDaoService.queryClearedRelatedAlarm($child);alarmInfoDaoService.saveAlarmHistory(ves_mv_to_history);alarmInfoDaoService.deleteAlarmCleared(ves_mv_to_history);\nend\nrule \"root_cleared_handle_Rule\"\nsalience 50\nwhen\n$root : VesAlarm(alarmIsCleared == 1, specificProblem matches (\".*Cell setup failures.*\"))\nthen\nDroolsLog.printInfo(\"Parent alarm is cleared: Alarm: ID=\" + $root.getEventId() + \", Event Name=\" + $root.getEventName());\nAlarmInfoDaoService alarmInfoDaoService = SpringContextUtil.getBean(AlarmInfoDaoService.class);List<VesAlarm> childlist = alarmInfoDaoService.queryAllClearedChildAlarms($root);if(childlist.isEmpty()){alarmInfoDaoService.saveAlarmHistory($root);VesAlarm ves_mv_to_history = alarmInfoDaoService.queryClearedRelatedAlarm($root);alarmInfoDaoService.saveAlarmHistory(ves_mv_to_history);alarmInfoDaoService.deleteAlarmCleared(ves_mv_to_history);}else{System.out.println(\"Parent has child alarms not been cleared, Please check and take corrective action\");}\nend",
-      "creator": "self",
-      "enabled": 1
-    }
----
 # Source: holmes-engine-managment/charts/postgress/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: postgres-headless-svc
-  namespace: amcop-system
+  namespace: test-tenant
 spec:
   type: ClusterIP
   clusterIP: None
@@ -347,7 +258,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgresql
-  namespace: amcop-system
+  namespace: test-tenant
 spec:
   type: ClusterIP
   sessionAffinity: None
@@ -364,7 +275,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: amcop-system
+  namespace: test-tenant
   name: holmes
 spec:
   type: NodePort
@@ -386,7 +297,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pgpool-deployment
-  namespace: amcop-system
+  namespace: test-tenant
 spec:
   replicas: 1
   selector:
@@ -477,7 +388,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: holmes
-  namespace: amcop-system
+  namespace: test-tenant
   labels:
     app: holmes
 spec:
@@ -494,7 +405,7 @@ spec:
         - name: wait-for-svc-before-starup
           # image: postgres:9.5
           image: busybox
-          command: ["sh", "-c", "until timeout 1 nc -z postgresql 5432 > /dev/null; do echo Waiting for master.; sleep 30; done"]
+          command: ["sh", "-c", "until (timeout 1 nc -z postgresql 5432 > /dev/null) && (timeout 1 nc -z dmaap.test-tenant.svc.cluster.local 3904 > /dev/null); do echo Waiting for master and dmaap.; sleep 30; done"]
           # command: ["pg_isready", "-h", " postgresql", "-p", "5432", "-U", "postgresql"]
       containers:
         - name: emt
@@ -547,7 +458,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres-sts
-  namespace: amcop-system
+  namespace: test-tenant
 spec:
   serviceName: postgres-headless-svc
   replicas: 3
@@ -691,220 +602,3 @@ spec:
           requests:
             storage: "2Gi"
         storageClassName: local-path
----
-# Source: holmes-engine-managment/templates/job.yaml
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: "holmes-engine-managment"
-  namespace: amcop-system
-  labels:
-    app.kubernetes.io/managed-by: "Helm"
-    app.kubernetes.io/instance: "holmes-engine-managment"
-  annotations:
-    # This is what defines this resource as a hook. Without this line, the
-    # job is considered part of the release.
-    "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "-5"
-    "helm.sh/hook-delete-policy": hook-succeeded
-spec:
-  backoffLimit: 2
-  template:
-    metadata:
-      name: "holmes-engine-managment"
-      labels:
-        app.kubernetes.io/managed-by: "Helm"
-        app.kubernetes.io/instance: "holmes-engine-managment"
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: post-install-job
-          image: amcop/holmes-engine-management:v3.5.01122024
-          command:
-            - "/bin/bash"
-            - "-ec"
-            - "for i in {1..5}; do sleep 60 && curl -v -X PUT -H 'Content-Type: application/json'  -d @/opt/hemtopics/curule  holmes.amcop-system.svc.cluster.local:9101/api/holmes-rule-mgmt/v1/rule || break; done"
-            # - "#!/bin/sh"
-          # - " sleep 60 && "
-          volumeMounts:
-            - mountPath: /opt/hemtopics
-              name: dmaapvol
-              # - mountPath: /opt/hrmrules/
-              #   name: dmaapvol
-      volumes:
-        - name: dmaapvol
-          configMap:
-            name: dmaapconfigjob
----
-# Source: rule-adapter-helm/templates/deployment.yaml
-volumeClaimTemplates:
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: ruleadapter-pvc
-  namespace: amcop-system
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
-  storageClassName: local-path
-  volumeMode: Filesystem
----
-# Source: rule-adapter-helm/templates/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: rule-adapter-helm
-  namespace: amcop-system
-  labels:
-    app.kubernetes.io/name: rule-adapter-helm
-    app.kubernetes.io/instance: rule-adapter-helm
-spec:
-  type: ClusterIP
-  ports:
-    - port: 8080
-      targetPort: http
-      protocol: TCP
-      name: http
-      # nodePort:
-  selector:
-    app.kubernetes.io/name: rule-adapter-helm
-    app.kubernetes.io/instance: rule-adapter-helm
----
-# Source: rule-adapter-helm/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: rule-adapter-helm
-  namespace: amcop-system
-  labels:
-    app.kubernetes.io/name: rule-adapter-helm
-    app.kubernetes.io/instance: rule-adapter-helm
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: rule-adapter-helm
-      app.kubernetes.io/instance: rule-adapter-helm
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: rule-adapter-helm
-        app.kubernetes.io/instance: rule-adapter-helm
-    spec:
-      volumes:
-        - name: ruleadapter-pvc
-          persistentVolumeClaim:
-            claimName: ruleadapter-pvc
-      containers:
-        - name: rule-adapter-helm
-          image: "amcop/rule-adapter:v3.5.01122024"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "SMO_URL"
-              value: "sdnr.amcop-system.svc.cluster.local"
-            - name: "PORT"
-              value: "8080"
-            - name: "SDNR_PORT"
-              value: "8181"
-            - name: "SDNR_USERNAME"
-              value: "admin"
-            - name: "SDNR_PASS"
-              value: "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U"
-            - name: "sdnr_ip"
-              value: "sdnr.amcop-system.svc.cluster.local"
-            - name: "RULEPATH"
-              value: "/data/rules.json"
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          volumeMounts:
-            - mountPath: "/data"
-              name: ruleadapter-pvc
-              ################################[ SMO UI ]################################
-################################[ SMO UI ]################################
----
-# Source: smo-ui/templates/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: smo-ui
-  namespace: amcop-system
-  labels:
-    app.kubernetes.io/name: smo-ui
-    app.kubernetes.io/instance: smo-ui
-spec:
-  type: NodePort
-  ports:
-    - port: 3000
-      nodePort: 31065
-      name: http
-  selector:
-    app.kubernetes.io/name: smo-ui
-    app.kubernetes.io/instance: smo-ui
----
-# Source: smo-ui/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: smo-ui
-  namespace: amcop-system
-  labels:
-    app.kubernetes.io/name: smo-ui
-    app.kubernetes.io/instance: smo-ui
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: smo-ui
-      app.kubernetes.io/instance: smo-ui
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: smo-ui
-        app.kubernetes.io/instance: smo-ui
-    spec:
-      containers:
-        - name: smo-ui
-          image: "amcop/smo-ui:v3.5.01122024"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "REACT_APP_CORRELATED_URL"
-              value: "http://fault-management-helm.amcop-system.svc.cluster.local"
-            - name: "REACT_APP_CORRELATED_PORT"
-              value: "9797"
-            - name: "REACT_APP_ALARMLOGS_URL"
-              value: "http://fault-management-helm.amcop-system.svc.cluster.local"
-            - name: "REACT_APP_ALARMLOGS_PORT"
-              value: "9797"
-            - name: "REACT_APP_VIEW_RULE_API"
-              value: "http://fault-management-helm.amcop-system.svc.cluster.local:9797/viewrules"
-            - name: "REACT_APP_EDIT_RULE_API"
-              value: "http://fault-management-helm.amcop-system.svc.cluster.local:9797/editrule"
-            - name: "REACT_APP_ALARMS_COUNT_PORT"
-              value: "9797"
-            - name: "REACT_APP_ALARMS_COUNT_URL"
-              value: "http://fault-management-helm.amcop-system.svc.cluster.local"
-            - name: "REACT_APP_VERIFY_TOKEN_URL"
-              value: "http://fault-management-helm.amcop-system.svc.cluster.local"
-            - name: "REACT_APP_VERIFY_TOKEN_PORT"
-              value: "9797"
-            - name: HOST_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
-            - name: "REACT_APP_FAULT_PROVIDER_URL"
-              value: "http://fault-management-helm.amcop-system.svc.cluster.local:9797"
-            - name: "REACT_APP_RULE_ADAPTER_URL"
-              value: "http://rule-adapter-helm.amcop-system.svc.cluster.local:8080"
-            - name: "REACT_APP_SDNR_URL"
-              value: "http://sdnr.amcop-system.svc.cluster.local:8181"
-            - name: "REACT_APP_LOGIN_REDIRECT_URL"
-              value: "http://$(HOST_IP):30181/odlux/index.html"
-          ports:
-            - name: http
-              containerPort: 3000
-          resources: {}
