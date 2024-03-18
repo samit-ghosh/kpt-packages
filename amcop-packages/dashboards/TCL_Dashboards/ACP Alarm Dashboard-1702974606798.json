@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -24,15 +20,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 20,
+  "id": 41,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_AMCOP-OBSERVABILITY-LOKI}"
-      },
+      "datasource": "prometheus",
       "gridPos": {
         "h": 4,
         "w": 24,
@@ -48,10 +41,7 @@
       "type": "text"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -61,7 +51,7 @@
             {
               "targetBlank": true,
               "title": "",
-              "url": "/grafana/07a4e1ca-99b9-11ee-b5ed-d6dd6ddc5036/d/5_DwiyjVz/acp-alarm-tables?orgId=1&from=1702945143769&to=1702966743769&viewPanel=13"
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzdd/acp-alarm-tables?orgId=1&viewPanel=13"
             }
           ],
           "mappings": [],
@@ -105,12 +95,10 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_severity{})",
+          "expr": "count(alert_severity{alarmState=\"Raised\"}) - count(alert_severity{alarmState=\"Cleared\"}) OR on() vector(0)",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
@@ -119,10 +107,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -133,7 +118,7 @@
             {
               "targetBlank": true,
               "title": "Criritcal Alarms",
-              "url": "/grafana/07a4e1ca-99b9-11ee-b5ed-d6dd6ddc5036/d/5_DwiyjVz/acp-alarm-tables?orgId=1&from=1702945169765&to=1702966769766&viewPanel=12"
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzdd/acp-alarm-tables?orgId=1&viewPanel=12"
             }
           ],
           "mappings": [],
@@ -178,14 +163,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_severity{severity=\"Critical\"})",
-          "interval": "",
-          "key": "Q-36b1d3fa-4dc3-4df9-a64b-4667d6fbd72e-0",
+          "expr": "count(alert_severity{alarmState=\"Raised\", severity=\"Critical\"}) - count(alert_severity{alarmState=\"Cleared\", severity=\"Critical\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -196,10 +176,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -210,7 +187,7 @@
             {
               "targetBlank": true,
               "title": "Major Alarms",
-              "url": "/grafana/07a4e1ca-99b9-11ee-b5ed-d6dd6ddc5036/d/5_DwiyjVz/acp-alarm-tables?orgId=1&from=1702945217272&to=1702966817272&viewPanel=14"
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzdd/acp-alarm-tables?orgId=1&viewPanel=14"
             }
           ],
           "mappings": [],
@@ -255,14 +232,10 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_severity{severity=\"Major\"})",
-          "interval": "",
-          "key": "Q-36b1d3fa-4dc3-4df9-a64b-4667d6fbd72e-0",
+          "expr": "count(alert_severity{alarmState=\"Raised\", severity=\"Major\"}) - count(alert_severity{alarmState=\"Cleared\", severity=\"Major\"}) OR on() vector(0)",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
@@ -271,10 +244,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -285,7 +255,7 @@
             {
               "targetBlank": true,
               "title": "Minor Alarms",
-              "url": "/grafana/07a4e1ca-99b9-11ee-b5ed-d6dd6ddc5036/d/5_DwiyjVz/acp-alarm-tables?orgId=1&from=1702945241509&to=1702966841509&viewPanel=15"
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzdd/acp-alarm-tables?orgId=1&viewPanel=15"
             }
           ],
           "mappings": [],
@@ -330,14 +300,10 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_severity{severity=\"Minor\"})",
-          "interval": "",
-          "key": "Q-36b1d3fa-4dc3-4df9-a64b-4667d6fbd72e-0",
+          "expr": "count(alert_severity{alarmState=\"Raised\", severity=\"Minor\"}) - count(alert_severity{alarmState=\"Cleared\", severity=\"Minor\"}) OR on() vector(0)\n",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
@@ -346,10 +312,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -360,7 +323,7 @@
             {
               "targetBlank": true,
               "title": "Warning Alarms",
-              "url": "/grafana/07a4e1ca-99b9-11ee-b5ed-d6dd6ddc5036/d/5_DwiyjVz/acp-alarm-tables?orgId=1&from=1702945268287&to=1702966868287&viewPanel=16"
+              "url": "/grafana/5357b7e1-e134-11ee-873d-9a9a75c6a633/d/5_DwiyjVzdd/acp-alarm-tables?orgId=1&viewPanel=16"
             }
           ],
           "mappings": [],
@@ -405,14 +368,10 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_severity{severity=\"Warning\"})",
-          "interval": "",
-          "key": "Q-36b1d3fa-4dc3-4df9-a64b-4667d6fbd72e-0",
+          "expr": "count(alert_severity{alarmState=\"Raised\", severity=\"Info\"}) - count(alert_severity{alarmState=\"Cleared\", severity=\"Info\"}) OR on() vector(0)",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
@@ -421,10 +380,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -479,36 +435,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "NodeName"
+              "options": "nodeName"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 221
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "AlarmID"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 129
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "AlarmReportingTime"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 261
+                "value": 239
               }
             ]
           }
@@ -520,7 +452,7 @@
         "x": 0,
         "y": 18
       },
-      "id": 18,
+      "id": 23,
       "options": {
         "footer": {
           "fields": "",
@@ -535,17 +467,14 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "alert_severity{}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "RAN Alarms -All-Alarms",
+      "title": "ACP Alarms -All-Alarms",
       "transformations": [
         {
           "id": "joinByLabels",
@@ -671,24 +600,7 @@
               "sourceRaisedTime": 15,
               "sourceType": 14
             },
-            "renameByName": {
-              "alarmChangedTime": "AlarmChangedTime",
-              "alarmID": "AlarmID",
-              "alarmReportingTime": "AlarmReportingTime",
-              "alarmState": "AlarmState",
-              "alarmType": "AlarmType",
-              "alarmTypeID": "AlarmTypeID",
-              "alert_severity": "Alert_severity",
-              "customer": "Customer",
-              "description": "Description",
-              "instance": "Instance",
-              "job": "Job",
-              "nodeName": "NodeName",
-              "severity": "Severity",
-              "sourceName": "SourceName",
-              "sourceRaisedTime": "SourceRaisedTime",
-              "sourceType": "SourceType"
-            }
+            "renameByName": {}
           }
         }
       ],
@@ -703,13 +615,13 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "ACP Alarm Dashboard",
-  "uid": "hHvVrt94k",
-  "version": 10,
+  "uid": "hHvVrt94kcc",
+  "version": 2,
   "weekStart": ""
 }

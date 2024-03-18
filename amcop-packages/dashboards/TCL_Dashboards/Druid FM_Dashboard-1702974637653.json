@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -24,15 +20,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 22,
+  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_AMCOP-OBSERVABILITY-LOKI}"
-      },
+      "datasource":  "prometheus",
       "gridPos": {
         "h": 4,
         "w": 24,
@@ -48,10 +41,7 @@
       "type": "text"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -106,13 +96,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_Druid{})",
-          "hide": false,
+          "expr": "count(alert_Druid{alarmState=\"Raised\"}) - count(alert_Druid{alarmState=\"Cleared\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -122,10 +108,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -181,13 +164,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_Druid{EventInfoChar2=\"critical\"})",
-          "hide": false,
+          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Critical\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Critical\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -198,10 +177,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -257,13 +233,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_Druid{EventInfoChar2=\"major\"})",
-          "hide": false,
+          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Major\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Major\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -274,10 +246,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -333,13 +302,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_Druid{EventInfoChar2=\"minor\"})",
-          "hide": false,
+          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Minor\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Minor\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -350,10 +315,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -409,13 +371,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_Druid{EventInfoChar2=\"warning\"})",
-          "hide": false,
+          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"warning\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"warning\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -425,10 +383,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -484,14 +439,10 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "Count(alert_Druid{EventInfoChar2=\"info\"})",
-          "interval": "",
-          "key": "Q-36b1d3fa-4dc3-4df9-a64b-4667d6fbd72e-0",
+          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Info\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Info\"}) OR on() vector(0)",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
@@ -500,10 +451,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -529,104 +477,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "ID"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 90
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Eventy Severity"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 120
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "EventInfoChar3"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 352
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "EventType"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 141
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "instance"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 141
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "ObjClass"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 238
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "EventTime"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 266
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Event Description"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 646
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 11,
@@ -634,7 +485,7 @@
         "x": 0,
         "y": 18
       },
-      "id": 23,
+      "id": 27,
       "options": {
         "footer": {
           "fields": "",
@@ -647,46 +498,41 @@
         "sortBy": [
           {
             "desc": false,
-            "displayName": "Eventy Severity"
+            "displayName": "Event Severity"
           }
         ]
       },
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
-          "editorMode": "builder",
+          "datasource": "prometheus",
+          "editorMode": "code",
           "expr": "alert_Druid",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Druid_Alarms",
+      "title": "Core_All-Alarms",
       "transformations": [
         {
           "id": "joinByLabels",
           "options": {
-            "join": [
-              "EventTime",
-              "EventType",
-              "ID",
-              "ObjClass",
-              "instance",
-              "EventInfoChar3",
-              "EventInfoInt1",
-              "EventInfoChar2"
-            ],
-            "value": "AddText"
+            "value": "instance"
           }
         },
         {
           "id": "groupBy",
           "options": {
             "fields": {
+              "AddText": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "EventInfoChar1": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
               "EventInfoChar2": {
                 "aggregations": [],
                 "operation": "groupby"
@@ -715,7 +561,19 @@
                 "aggregations": [],
                 "operation": "groupby"
               },
-              "Value": {
+              "ObjID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "__name__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "critical": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "info": {
                 "aggregations": [],
                 "operation": "groupby"
               },
@@ -723,7 +581,11 @@
                 "aggregations": [],
                 "operation": "groupby"
               },
-              "raemis Raemis 5.2.6.0-1 repos rev d974ae4 starting ...": {
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "warning": {
                 "aggregations": [],
                 "operation": "groupby"
               }
@@ -735,24 +597,34 @@
           "options": {
             "excludeByName": {
               "EventInfoInt1": true,
-              "Value": true,
-              "raemis Raemis 5.2.6.0-1 repos rev d974ae4 starting ...": true
+              "ID": true,
+              "ObjID": true,
+              "__name__": true,
+              "job": true
             },
             "indexByName": {
-              "EventInfoChar2": 2,
-              "EventInfoChar3": 7,
-              "EventInfoInt1": 6,
+              "AddText": 10,
+              "EventInfoChar1": 8,
+              "EventInfoChar2": 1,
+              "EventInfoChar3": 9,
+              "EventInfoInt1": 11,
               "EventTime": 0,
-              "EventType": 3,
-              "ID": 1,
-              "ObjClass": 5,
-              "Value": 9,
-              "instance": 4,
-              "raemis Raemis 5.2.6.0-1 repos rev d974ae4 starting ...": 8
+              "EventType": 2,
+              "ID": 3,
+              "ObjClass": 4,
+              "ObjID": 5,
+              "__name__": 6,
+              "job": 7
             },
             "renameByName": {
-              "EventInfoChar2": "Eventy Severity",
-              "EventInfoChar3": "Event Description"
+              "AddText": "Additional Info",
+              "EventInfoChar1": "Alarm Impact",
+              "EventInfoChar2": "Event Severity",
+              "EventInfoChar3": "Alarm Description",
+              "EventTime": "Event Time",
+              "EventType": "Event Type",
+              "ObjClass": "Alarm Class",
+              "ObjID": ""
             }
           }
         }
@@ -775,6 +647,6 @@
   "timezone": "",
   "title": "Druid FM_Dashboard",
   "uid": "hHvVrt94kdd",
-  "version": 16,
+  "version": 3,
   "weekStart": ""
 }

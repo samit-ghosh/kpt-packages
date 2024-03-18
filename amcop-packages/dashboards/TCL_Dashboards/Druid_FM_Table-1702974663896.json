@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -24,15 +20,71 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 21,
+  "id": 42,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
+      "datasource":  "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
       },
+      "gridPos": {
+        "h": 7,
+        "w": 22,
+        "x": 0,
+        "y": 0
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": "prometheus",
+          "editorMode": "code",
+          "expr": "count(alert_Druid{alarmState=\"Raised\"}) - count(alert_Druid{alarmState=\"Cleared\"}) ",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Active Alarms",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -64,7 +116,7 @@
         "h": 11,
         "w": 23,
         "x": 0,
-        "y": 0
+        "y": 7
       },
       "id": 14,
       "options": {
@@ -86,11 +138,8 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
-          "editorMode": "builder",
+          "datasource":  "prometheus",
+          "editorMode": "code",
           "expr": "alert_Druid",
           "legendFormat": "__auto",
           "range": true,
@@ -216,10 +265,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -251,7 +297,7 @@
         "h": 11,
         "w": 23,
         "x": 0,
-        "y": 11
+        "y": 18
       },
       "id": 13,
       "options": {
@@ -262,16 +308,19 @@
           ],
           "show": false
         },
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Event Severity"
+          }
+        ]
       },
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
-          "editorMode": "builder",
+          "datasource":  "prometheus",
+          "editorMode": "code",
           "expr": "alert_Druid{EventInfoChar2=\"critical\"}",
           "legendFormat": "__auto",
           "range": true,
@@ -397,10 +446,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -432,7 +478,7 @@
         "h": 11,
         "w": 23,
         "x": 0,
-        "y": 22
+        "y": 29
       },
       "id": 17,
       "options": {
@@ -454,10 +500,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
           "expr": "alert_Druid{EventInfoChar2=\"major\"}",
           "legendFormat": "__auto",
@@ -584,10 +627,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -603,7 +643,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -618,7 +659,7 @@
         "h": 11,
         "w": 23,
         "x": 0,
-        "y": 33
+        "y": 40
       },
       "id": 19,
       "options": {
@@ -640,10 +681,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
           "expr": "alert_Druid{EventInfoChar2=\"minor\"}",
           "legendFormat": "__auto",
@@ -770,10 +808,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -789,7 +824,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -804,7 +840,7 @@
         "h": 11,
         "w": 23,
         "x": 0,
-        "y": 44
+        "y": 51
       },
       "id": 15,
       "options": {
@@ -826,11 +862,8 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
-          "editorMode": "builder",
+          "datasource":  "prometheus",
+          "editorMode": "code",
           "expr": "alert_Druid{EventInfoChar2=\"warning\"}",
           "legendFormat": "__auto",
           "range": true,
@@ -956,10 +989,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -975,7 +1005,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -990,7 +1021,7 @@
         "h": 11,
         "w": 23,
         "x": 0,
-        "y": 55
+        "y": 62
       },
       "id": 16,
       "options": {
@@ -1012,11 +1043,8 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
-          "editorMode": "builder",
+          "datasource":  "prometheus",
+          "editorMode": "code",
           "expr": "alert_Druid{EventInfoChar2=\"info\"}",
           "legendFormat": "__auto",
           "range": true,
@@ -1155,7 +1183,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Druid_FM_Table",
-  "uid": "yTWxWWOIk",
-  "version": 29,
+  "uid": "yTWxWWOIkdd",
+  "version": 2,
   "weekStart": ""
 }

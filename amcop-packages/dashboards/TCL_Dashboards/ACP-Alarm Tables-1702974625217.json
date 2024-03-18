@@ -5,7 +5,7 @@
         "builtIn": 1,
         "datasource": {
           "type": "grafana",
-          "uid": "-- Grafana --"
+          "uid": "-- Grafana Ta-"
         },
         "enable": true,
         "hide": true,
@@ -24,15 +24,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 16,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -79,10 +76,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count(alert_severity{alarmState=\"Raised\"}) - count(alert_severity{alarmState=\"Cleared\"})",
           "range": true,
@@ -94,10 +88,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -184,10 +175,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "alert_severity{}",
           "range": true,
@@ -327,10 +315,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -381,18 +366,6 @@
                 "value": 135
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "alarmState"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 130
-              }
-            ]
           }
         ]
       },
@@ -417,10 +390,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "alert_severity{severity=\"Critical\"}",
           "range": true,
@@ -555,10 +525,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -632,10 +599,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "alert_severity{severity=\"Major\"}",
           "range": true,
@@ -770,10 +734,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -847,10 +808,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "alert_severity{severity=\"Minor\"}",
           "range": true,
@@ -985,10 +943,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "LKiFAROIz"
-      },
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1062,10 +1017,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "LKiFAROIz"
-          },
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "alert_severity{severity=\"Warning\"}",
           "range": true,
@@ -1200,7 +1152,6 @@
       "type": "table"
     }
   ],
-  "refresh": false,
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -1215,6 +1166,6 @@
   "timezone": "",
   "title": "ACP-Alarm Tables",
   "uid": "5_DwiyjVz",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }
