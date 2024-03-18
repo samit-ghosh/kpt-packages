@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -24,15 +20,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 37,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -41,7 +34,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Throughput(Mbps)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -68,6 +61,7 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "max": 300,
           "min": 0,
@@ -109,24 +103,27 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
           "expr": "CARR_PDSCHMCSDist_1_1_0{senderName=\"DU\"} * DRB_UEVolDl / DRB_UETimeDl",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "DRB UE Throughput Downlink (kbps)",
+      "title": "DRB UE Throughput Downlink",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [],
+            "fields": {}
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -135,7 +132,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Throughput(Mbps)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -162,6 +159,7 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "max": 300,
           "min": 0,
@@ -203,24 +201,18 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
           "expr": "CARR_PDSCHMCSDist_1_1_0{senderName=\"DU\"} * DRB_UEVolUl / DRB_UETimeUl",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "DRB UE Throughput Uplink (kbps)",
+      "title": "DRB UE Throughput Uplink",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -229,7 +221,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Throughput(Mbps)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -256,6 +248,7 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -295,24 +288,18 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "builder",
           "expr": "(DRB_CellVolDl{senderName=\"DU\"} * 1000) / DRB_CellTimeDl",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "DRB Cell Throughput Downlink (kbps)",
+      "title": "DRB Cell Throughput Downlink",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -321,7 +308,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Throughput(Mbps)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -348,6 +335,7 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -387,24 +375,18 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "builder",
           "expr": "(DRB_CellVolUl{senderName=\"DU\"} * 1000) / DRB_CellTimeUl",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "DRB Cell Throughput Uplink (kbps)",
+      "title": "DRB Cell Throughput Uplink",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -413,7 +395,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Usage(%)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -440,6 +422,7 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "max": 100,
           "min": 0,
@@ -456,7 +439,7 @@
               }
             ]
           },
-          "unit": "Mbps"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -482,24 +465,18 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "builder",
           "expr": "RRU_PrbTotDl{senderName=\"DU\"}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "DL Total PRB Usage (%)",
+      "title": "DL Total PRB Usage",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -508,7 +485,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Usage(%)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -535,6 +512,7 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "max": 100,
           "min": 0,
@@ -551,7 +529,7 @@
               }
             ]
           },
-          "unit": "Mbps"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -576,10 +554,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "builder",
           "expr": "RRU_PrbTotUl{senderName=\"DU\"}",
           "range": true,
@@ -590,10 +565,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -602,7 +574,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Availability Time (%)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -634,7 +606,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -642,29 +615,20 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "none"
         },
         "overrides": [
           {
-            "__systemRef": "hideSeriesFrom",
             "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "{instance=\"smo-handler:8080\", job=\"smo-handler\", measObjInstId=\"ME-Id=DU-av1901-f0886c01329e-1,Cell=1\", senderName=\"DU\"}"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
+              "id": "byName",
+              "options": "ran1"
             },
             "properties": [
               {
-                "id": "custom.hideFrom",
+                "id": "color",
                 "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
+                  "fixedColor": "green",
+                  "mode": "fixed"
                 }
               }
             ]
@@ -686,31 +650,35 @@
           "showLegend": false
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "none",
           "sort": "none"
         }
       },
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "(100*(1440 -(OAM_CellUnavailabilityFault + OAM_CellUnavailabilityManual)))/1440",
+          "expr": "(100*(1440 -(OAM_CellUnavailabilityFault{senderName=\"DU\"} + OAM_CellUnavailabilityManual{senderName=\"DU\"})))/1440",
           "range": true,
           "refId": "A"
         }
       ],
       "title": "Cell Availability Time (Total)",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {}
+        },
+        {
+          "id": "renameByRegex",
+          "options": {}
+        }
+      ],
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -719,7 +687,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "No: of connections",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -746,12 +714,14 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -784,12 +754,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "builder",
-          "expr": "RRC_ConnMax{senderName=\"DU\"}",
+          "expr": "RRC_ConnMax",
           "range": true,
           "refId": "A"
         }
@@ -798,10 +765,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -810,7 +774,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "Latency(Sec)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -837,12 +801,14 @@
               "mode": "off"
             }
           },
+          "displayName": "ran1",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -875,12 +841,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
+          "datasource":  "prometheus",
           "editorMode": "builder",
-          "expr": "DRB_RlcSduLatencyDl_QoSX{senderName=\"DU\"}",
+          "expr": "sum by (instance) (sum by (metric) ({__name__=~\"DRB_RlcSduLatencyDl_QoS[1-9][0-9]*\"}))",
           "range": true,
           "refId": "A"
         }
@@ -889,7 +852,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -897,13 +860,13 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "PM_Dashboard",
-  "uid": "8435b5b3-5a54-4aad-8564-d05e40517e67",
-  "version": 4,
+  "uid": "8435b5b3-5a5s",
+  "version": 2,
   "weekStart": ""
 }

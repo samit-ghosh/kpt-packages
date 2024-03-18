@@ -20,7 +20,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 24,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -443,6 +443,66 @@
                 "value": 239
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 493
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ReportedTime"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 222
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AlarmText"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 606
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TypeId"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 125
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AlarmClear"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 103
+              }
+            ]
           }
         ]
       },
@@ -462,7 +522,12 @@
           "show": false
         },
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "AlarmSeverity"
+          }
+        ]
       },
       "pluginVersion": "9.1.6",
       "targets": [
@@ -474,7 +539,7 @@
           "refId": "A"
         }
       ],
-      "title": "Switch Alarms -All-Alarms",
+      "title": "L3 Switch-All-Alarms",
       "transformations": [
         {
           "id": "joinByLabels",
@@ -619,6 +684,11 @@
           "id": "organize",
           "options": {
             "excludeByName": {
+              "EventClass": true,
+              "NotificationType": true,
+              "Severity": true,
+              "TypeId": false,
+              "__name__": true,
               "alarmChangedTime": true,
               "alarmID": false,
               "alert_severity": true,
@@ -646,7 +716,28 @@
               "sourceRaisedTime": 15,
               "sourceType": 14
             },
-            "renameByName": {}
+            "renameByName": {
+              "AlarmReportedtime": "ReportedTime",
+              "AlarmSeverity": "Severity",
+              "Description": "AlarmText",
+              "false": "AlarmClear"
+            }
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "ReportedTime",
+                "Severity",
+                "AlarmText",
+                "EventTime",
+                "Resource",
+                "AlarmClear",
+                "TypeId"
+              ]
+            }
           }
         }
       ],
@@ -668,6 +759,6 @@
   "timezone": "",
   "title": "Switch_Alarm_Dashboard",
   "uid": "hHvVrt94kxxss",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }

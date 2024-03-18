@@ -3,10 +3,6 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -29,10 +25,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -128,10 +121,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -219,10 +209,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -310,10 +297,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -401,10 +385,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -491,10 +472,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -590,10 +568,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -687,10 +662,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -775,10 +747,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
