@@ -340,7 +340,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: shashidharpatil/bootstrap-cluster:latest
+        image: amcopnightly/secret-controller:v4.0-2024-03-18
         livenessProbe:
           httpGet:
             path: /healthz
