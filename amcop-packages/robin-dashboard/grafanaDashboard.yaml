@@ -42,3 +42,4 @@ spec:
   instanceSelector:
     matchLabels:
       app: amcop-grafana
+

@@ -1,0 +1,17 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: amcop-grafana-datasource-robin
+  namespace: tenant
+spec:
+  datasource:
+    access: proxy
+    editable: true
+    isDefault: false
+    name: amcop-robin
+    type: prometheus
+    url: http://10.2.0.43:32240 # kpt-set: ${robinurl}
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+
