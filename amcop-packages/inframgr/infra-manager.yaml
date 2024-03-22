@@ -23,6 +23,7 @@ data:
       "port":           "9051",
       "ironicImageDir": "/opt/metal3-dev-env/ironic/html/images",
       "ironicHost":     "ironic:80",
+      "ironicDHCPSubnet": "10.2.0.0/25",
       "aaiAddress":     "http://aai:8443/aai/v23",
       "aaiUsername":    "AAI",
       "aaiPassword":    "AAI",
