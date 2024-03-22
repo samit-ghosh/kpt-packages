@@ -2,7 +2,7 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
   name: amcop-grafana-datasource-robin
-  namespace: tenant
+  namespace: tenant # kpt-set: ${namespace}
 spec:
   datasource:
     access: proxy
