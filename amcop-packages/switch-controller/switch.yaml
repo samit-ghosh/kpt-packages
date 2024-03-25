@@ -1,0 +1,65 @@
+# Source: ocnos-csr/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocnos-csr-svc
+  labels:
+    app: ocnos-csr
+spec:
+  type: NodePort
+  ports:
+    - port: 9099
+      targetPort: 9099
+      nodePort:
+      protocol: TCP
+      name: http
+  selector:
+    app: ocnos-csr
+---
+# Source: ocnos-csr/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocnos-csr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ocnos-csr
+  template:
+    metadata:
+      labels:
+        app: ocnos-csr
+    spec:
+      #hostNetwork: true
+      containers:
+        - name: ocnos-csr
+          image: amcopnightly/aarna-ocnos-csr:dev-0.0.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: LOG_LEVEL
+              value: "DEBUG"
+            - name: OCNOS_DEFAULT_USERNAME
+              value: "ocnos"
+            - name: OCNOS_PASSWORD
+              value: "ocnos"
+            - name: AAI_IP
+              value: "aai.amcop-system.svc.cluster.local"
+            - name: AAI_PORT
+              value: "8443"
+            - name: AAI_USERNAME
+              value: "AAI"
+            - name: AAI_PASSWORD
+              value: "AAI"
+            - name: KAFKA_IP
+              value: "kafka1.demo-test.svc.cluster.local"
+            - name: KAFKA_PORT
+              value: "9092"
+            - name: MINIO_S3_IP
+              value: "amcop-minio-hl.amcop-system.svc.cluster.local"
+            - name: MINIO_S3_PORT
+              value: "9000"
+          ports:
+            - name: http
+              containerPort: 9099
+              protocol: TCP
