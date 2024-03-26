@@ -409,7 +409,7 @@ spec:
           # command: ["pg_isready", "-h", " postgresql", "-p", "5432", "-U", "postgresql"]
       containers:
         - name: emt
-          image: amcop/holmes-engine-management:v3.5.01122024
+          image: amcopnightly/holmes-engine-management:v4.0-2024-03-26
           imagePullPolicy: IfNotPresent
           env:
             - name: URL_JDBC
@@ -428,7 +428,7 @@ spec:
             - mountPath: /opt/hemtopics
               name: dmaapvol
         - name: rmt
-          image: amcop/holmes-rule-management:v3.5.01122024
+          image: amcopnightly/holmes-rule-management:v4.0-2024-03-26
           imagePullPolicy: IfNotPresent
           env:
             - name: URL_JDBC
