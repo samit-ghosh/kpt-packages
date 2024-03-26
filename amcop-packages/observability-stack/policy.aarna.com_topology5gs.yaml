@@ -581,15 +581,17 @@ spec:
               topologyResources:
                 additionalProperties:
                   properties:
-                    resoruceStatus:
+                    kind:
                       type: string
-                    resourceLocation:
+                    location:
                       type: string
-                    resourceName:
+                    name:
                       type: string
-                    resourceType:
+                    status:
                       type: string
-                    resourceURL:
+                    type:
+                      type: string
+                    uRL:
                       type: string
                   type: object
                 type: object
