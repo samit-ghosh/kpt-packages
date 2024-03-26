@@ -164,6 +164,21 @@ spec:
                 type: object
               metalServerName:
                 type: string
+              nwDevice:
+                items:
+                  properties:
+                    deviceType:
+                      type: string
+                    devicesScope:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - deviceType
+                  - devicesScope
+                  - name
+                  type: object
+                type: array
               ranEmsConfig:
                 properties:
                   cirServerName:
@@ -200,6 +215,31 @@ spec:
                     type: object
                   metalServerName:
                     type: string
+                  pvsInfo:
+                    items:
+                      properties:
+                        targets:
+                          items:
+                            type: string
+                          type: array
+                        upstream:
+                          properties:
+                            Package:
+                              type: string
+                            Repo:
+                              type: string
+                            Revision:
+                              type: string
+                          required:
+                          - Package
+                          - Repo
+                          - Revision
+                          type: object
+                      required:
+                      - targets
+                      - upstream
+                      type: object
+                    type: array
                   ranEmsEndpoint:
                     type: string
                   ranEmsGnbBootstrapProvisioning:
@@ -460,8 +500,6 @@ spec:
               workflowName:
                 type: string
             required:
-            - cnConfig
-            - ranEmsConfig
             - tenant
             - workflowName
             type: object
@@ -540,6 +578,21 @@ spec:
               observedGeneration:
                 format: int32
                 type: integer
+              topologyResources:
+                additionalProperties:
+                  properties:
+                    resoruceStatus:
+                      type: string
+                    resourceLocation:
+                      type: string
+                    resourceName:
+                      type: string
+                    resourceType:
+                      type: string
+                    resourceURL:
+                      type: string
+                  type: object
+                type: object
             required:
             - observedGeneration
             type: object
