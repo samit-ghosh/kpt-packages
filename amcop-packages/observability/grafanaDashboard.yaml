@@ -91,6 +91,51 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
+  name: amcop-grafana-dashboard-robin-cluster-alerts
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-robin"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/robin_cluster_alerts_embed.json?ref_type=heads"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-robin-cluster-monitor
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-robin"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/robin_cluster_monitor-embed.json?ref_type=heads"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-robin-cluster-overview
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-robin"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/robin_cluster_embed.json?ref_type=heads"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
   name: amcop-grafana-dashboard-switch-alarm
   namespace: tenant
 spec:
