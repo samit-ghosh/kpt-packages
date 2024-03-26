@@ -327,7 +327,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: amcopnightly/bootstrap-cluster:v4.0-2024-03-18
+        image: shashidharpatil/bootstrap-cluster:latest
         livenessProbe:
           httpGet:
             path: /healthz
