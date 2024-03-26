@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ocnos-csr-svc
+  name: switch-controller-svc
   labels:
     app: ocnos-csr
 spec:
@@ -20,7 +20,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ocnos-csr
+  name: switch-controller
 spec:
   replicas: 1
   selector:
