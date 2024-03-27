@@ -75,6 +75,12 @@ rules:
   verbs:
   - '*'
 - apiGroups:
+  - porch.kpt.dev
+  resources:
+    - '*'
+  verbs:
+    - '*'
+- apiGroups:
   - infra.nephio.org
   resources:
   - '*'
