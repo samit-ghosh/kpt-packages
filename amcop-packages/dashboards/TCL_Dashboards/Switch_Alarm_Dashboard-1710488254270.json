@@ -1,4 +1,5 @@
 {
+ 
   "annotations": {
     "list": [
       {
@@ -20,12 +21,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 24,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": "prometheus",
+      "datasource":  "prometheus",
       "gridPos": {
         "h": 4,
         "w": 24,
@@ -41,7 +42,7 @@
       "type": "text"
     },
     {
-      "datasource": "prometheus",
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -95,9 +96,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": "prometheus",
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "alert_csr",
+          "expr": "count (alert_csr) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -107,7 +108,7 @@
       "type": "stat"
     },
     {
-      "datasource": "prometheus",
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -163,20 +164,20 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": "prometheus",
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "alert_csr{Severity=\"critical\"}",
+          "expr": "count (alert_csr{Severity=\"critical\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Switch Alarms - Critical",
+      "title": "Critical",
       "transformations": [],
       "type": "stat"
     },
     {
-      "datasource": "prometheus",
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -232,19 +233,19 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": "prometheus",
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "alert_csr{Severity=\"major\"} OR on() vector(0)",
+          "expr": "count(alert_csr{Severity=\"major\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Swithch Alarms - Major",
+      "title": "Major",
       "type": "stat"
     },
     {
-      "datasource": "prometheus",
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -300,19 +301,19 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": "prometheus",
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "alert_csr{Severity=\"minor\"} OR on() vector(0)",
+          "expr": "count(alert_csr{Severity=\"major\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Switch Alarms - Minor",
+      "title": "Minor",
       "type": "stat"
     },
     {
-      "datasource": "prometheus",
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -368,19 +369,19 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": "prometheus",
+          "datasource":  "prometheus",
           "editorMode": "code",
-          "expr": "alert_csr{Severity=\"warning\"} OR on() vector(0)",
+          "expr": "count(alert_csr{Severity=\"warning\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Switch Alarms - Warnings",
+      "title": "Warnings",
       "type": "stat"
     },
     {
-      "datasource": "prometheus",
+      "datasource":  "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -532,7 +533,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource": "prometheus",
+          "datasource":  "prometheus",
           "editorMode": "code",
           "expr": "alert_csr{}",
           "range": true,
@@ -758,7 +759,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Switch_Alarm_Dashboard",
-  "uid": "hHvVrt94kxxss",
+  "uid": "hHvVrt94kxxs",
   "version": 2,
   "weekStart": ""
 }
