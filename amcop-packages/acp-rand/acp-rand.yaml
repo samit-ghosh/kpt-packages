@@ -58,6 +58,10 @@ spec:
           value: souser
         - name: WFE_PASSWORD
           value: mypassword
+        - name: DMAAP_IP
+          value: dmaap
+        - name: DMAAP_PORT
+          value: "3904"
         - name: AAI_IP
           value: aai.amcop-system.svc.cluster.local
         - name: AAI_PORT
