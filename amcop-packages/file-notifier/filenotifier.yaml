@@ -1,0 +1,55 @@
+# Source: filenotifier/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: filenotifier-svc
+  namespace: amcop-system
+  labels:
+    app: filenotifier
+spec:
+  type: NodePort
+  ports:
+    - port: 8089
+      targetPort: 5000
+      nodePort: 30243
+      protocol: TCP
+      name: fn-port
+  selector:
+    app: filenotifier
+---
+# Source: filenotifier/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filenotifier
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filenotifier
+  template:
+    metadata:
+      labels:
+        app: filenotifier
+    spec:
+      #hostNetwork: true
+      containers:
+        - name: filenotifier
+          image: amcopnightly/aarna-file-notifier:dev-0.0.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DMAAP_TOPIC
+              value: "RAN_PM_Topic"
+            - name: AAI_IP
+              value: "10.2.0.10"
+            - name: AAI_Port
+              value: "31991"
+            - name: AAI_USERNAME
+              value: "AAI"
+            - name: AAI_PASSWORD
+              value: "AAI"
+          ports:
+            - name: fn-port
+              containerPort: 5000
+              protocol: TCP
