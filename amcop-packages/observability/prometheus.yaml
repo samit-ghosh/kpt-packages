@@ -50,22 +50,38 @@ metadata:
 spec:
   namespaceSelector:
     any: false
-    matchNames: [tenant] # TODO : remove this hardcode value
+    matchNames:
+      - tenant # kpt-set: ${orgid}
   selector:
     matchExpressions:
       - key: app
-        operator: Exists
+        operator: In
+        values:
+          - fmpm
+  endpoints:
+    - targetPort: 2112
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: amcop-service-monitor1
+  namespace: tenant
+  labels:
+    app: amcop-service-monitor
+spec:
+  namespaceSelector:
+    any: false
+    matchNames:
+      - tenant # kpt-set: ${orgid}
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - smo-handler
   endpoints:
     - port: http
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: additional-scrape-configs
-  namespace: tenant
-data:
-  #  TODO : how to remove this hard coding ?
-  prometheus-additional.yaml: LSBqb2JfbmFtZTogZm1wbQogIHN0YXRpY19jb25maWdzOgogIC0gdGFyZ2V0czogWydmbXBtOjIxMTInXQoKLSBqb2JfbmFtZTogc21vLWhhbmRsZXIKICBtZXRyaWNzX3BhdGg6ICcvYWN0dWF0b3IvcHJvbWV0aGV1cycKICBzdGF0aWNfY29uZmlnczoKICAtIHRhcmdldHM6IFsnc21vLWhhbmRsZXI6ODA4MCdd
+
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
@@ -73,13 +89,10 @@ metadata:
   name: prometheus-amcop-prometheus
   namespace: tenant
 spec:
-  additionalScrapeConfigs:
-    key: prometheus-additional.yaml
-    name: additional-scrape-configs
   remoteWrite:
     - headers:
-        X-Scope-OrgID: tenant  # kpt-set: ${orgid}
-      url: http://cortex-distributor.amcop-system:8080/api/prom/push
+        X-Scope-OrgID: tenant # kpt-set: ${orgid}
+      url: http://cortex-distributor.amcop-system.svc.cluster.local:8080/api/prom/push
   scrapeInterval: 30s
   serviceAccountName: prometheus
   serviceMonitorSelector:
