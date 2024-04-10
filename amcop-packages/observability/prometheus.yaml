@@ -81,6 +81,7 @@ spec:
           - smo-handler
   endpoints:
     - port: http
+      path: /actuator/prometheus
 
 ---
 apiVersion: monitoring.coreos.com/v1
