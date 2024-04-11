@@ -126,6 +126,12 @@ rules:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - ipinfusion.ocnos.com
+  resources:
+  - '*'
+  verbs:
+  - '*'
 ---
 # Source: infra-manager/templates/clusterrolebinding.yaml
 kind: ClusterRoleBinding
