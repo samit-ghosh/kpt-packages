@@ -51,7 +51,7 @@ spec:
     isDefault: false
     name: amcop-robin
     type: prometheus
-    url: http://10.2.0.43:32240 # kpt-set: ${robinurl}
+    url: http://10.2.0.41:32240 # kpt-set: ${robinurl}
   instanceSelector:
     matchLabels:
       app: amcop-grafana
