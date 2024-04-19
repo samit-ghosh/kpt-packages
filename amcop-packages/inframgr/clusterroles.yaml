@@ -18,6 +18,18 @@ rules:
     verbs:
       - '*'
   - apiGroups:
+    - configsync.gke.io
+    resources:
+    - RootSync
+    verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
       - policy.aarna.com
     resources:
       - topology5gs
