@@ -65,6 +65,18 @@ rules:
   verbs:
   - '*'
 - apiGroups:
+  - configsync.gke.io
+  resources:
+  - rootsyncs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - config.porch.kpt.dev
   resources:
   - packagevariants
