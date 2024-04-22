@@ -1,3 +1,4 @@
+---
 ############## Holmes Component YAML for Manual deployment ####################
 # Source: fault-management-helm/templates/configmap.yaml
 apiVersion: v1
@@ -123,23 +124,17 @@ data:
     {
       "services_calls": {},
       "streams_publishes": {
-        "dcae_cl_out": {
+        "correlation_output": {
           "dmaap_info": {
-            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Output1"
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Correlation_Output_Topic"
           },
           "type": "message_router"
         }
       },
       "streams_subscribes": {
-        "ran_alarm": {
+        "correlation_input": {
           "dmaap_info": {
-            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_RAN_Alarms1"
-          },
-          "type": "message_router"
-        },
-        "core_alarm": {
-          "dmaap_info": {
-            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Core_Alarms1"
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Correlation_Input_Topic"
           },
           "type": "message_router"
         }
@@ -286,9 +281,9 @@ spec:
     - name: rmt
       port: 9101
       targetPort: 9101
-      # - name: postgress
-      #   port: 5432
-      #   targetPort: 5432
+    # - name: postgress
+    #   port: 5432
+    #   targetPort: 5432
   selector:
     app: holmes
 ---
@@ -405,7 +400,12 @@ spec:
         - name: wait-for-svc-before-starup
           # image: postgres:9.5
           image: busybox
-          command: ["sh", "-c", "until (timeout 1 nc -z postgresql 5432 > /dev/null) && (timeout 1 nc -z dmaap.test-tenant.svc.cluster.local 3904 > /dev/null); do echo Waiting for master and dmaap.; sleep 30; done"]
+          command:
+            [
+              "sh",
+              "-c",
+              "until (timeout 1 nc -z postgresql 5432 > /dev/null) && (timeout 1 nc -z dmaap.test-tenant.svc.cluster.local 3904 > /dev/null); do echo Waiting for master and dmaap.; sleep 30; done",
+            ]
           # command: ["pg_isready", "-h", " postgresql", "-p", "5432", "-U", "postgresql"]
       containers:
         - name: emt
@@ -446,8 +446,8 @@ spec:
           volumeMounts:
             - mountPath: /opt/hemtopics
               name: dmaapvol
-              # - mountPath: /opt/hrmrules/
-              #   name: dmaapvol
+          # - mountPath: /opt/hrmrules/
+          #   name: dmaapvol
       volumes:
         - name: dmaapvol
           configMap:
