@@ -67,7 +67,7 @@ rules:
 - apiGroups:
   - configsync.gke.io
   resources:
-  - RootSync
+  - rootsyncs
   verbs:
   - create
   - delete
