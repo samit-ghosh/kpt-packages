@@ -20,19 +20,19 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "gridPos": {
         "h": 4,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 15,
+      "id": 29,
       "options": {
         "content": "<img src=\"https://onedrive.live.com/embed?resid=A1A305B33D38C5E8%21253&authkey=%21AJ6_IQ3RnhjCOkI&width=1229&height=97\" width=\"1229\" height=\"97\" />",
         "mode": "html"
@@ -41,7 +41,7 @@
       "type": "text"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -96,9 +96,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{alarmState=\"Raised\"}) - count(alert_Druid{alarmState=\"Cleared\"}) OR on() vector(0)",
+          "expr": "(count(alert_Druid{EventType=\"alarm_raised\"}) OR on() vector(0)) - count(alert_Druid{EventType=\"alarm_cleared\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -108,7 +108,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -164,9 +164,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Critical\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Critical\"}) OR on() vector(0)",
+          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Critical\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Critical\" }) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -177,7 +177,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -233,9 +233,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Major\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Major\"}) OR on() vector(0)",
+          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Major\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Major\" }) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -246,7 +246,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -302,9 +302,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Minor\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Minor\"}) OR on() vector(0)",
+          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Minor\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Minor\" }) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -315,7 +315,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -371,9 +371,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"warning\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"warning\"}) OR on() vector(0)",
+          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Warning\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Warning\" }) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -383,7 +383,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -439,9 +439,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{alarmState=\"Raised\", severity=\"Info\"}) - count(alert_Druid{alarmState=\"Cleared\", severity=\"Info\"}) OR on() vector(0)",
+          "expr": "(count(alert_Druid {EventType=\"alarm_raised\", EventInfoChar2=\"info\"}) OR on() vector(0) )-(count(alert_Druid {EventType=\"alarm_cleared\", EventInfoChar2=\"info\"}) OR on() vector(0) )",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -497,7 +497,7 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": false,
+            "desc": true,
             "displayName": "Event Severity"
           }
         ]
@@ -632,7 +632,7 @@
       "type": "table"
     }
   ],
-  "refresh": false,
+  "refresh": "30s",
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -640,13 +640,13 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Druid FM_Dashboard",
-  "uid": "hHvVrt94kdd",
+  "uid": "hHvVrt94kdc",
   "version": 3,
   "weekStart": ""
 }
