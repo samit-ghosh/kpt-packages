@@ -18,6 +18,8 @@ kind: ConfigMap
 metadata:
   name: fmpm-config
   namespace: amcop-system
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ConfigMap|amcop-system|fmpm-config'
 data:
   fmpm.conf: |-
     {
@@ -67,6 +69,8 @@ metadata:
   namespace: amcop-system
   labels:
     app: fmpm
+    annotations:
+    internal.kpt.dev/upstream-identifier: '|Service|amcop-system|fmpm'
 spec:
   selector:
     app: fmpm
@@ -97,6 +101,8 @@ kind: Deployment
 metadata:
   name: fmpm
   namespace: amcop-system
+  annotations:
+    internal.kpt.dev/upstream-identifier: apps|Deployment|amcop-system|fmpm
 spec:
   replicas: 1
   selector:
