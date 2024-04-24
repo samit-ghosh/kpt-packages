@@ -20,7 +20,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 15,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -98,7 +98,7 @@
         {
           "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "(count(alert_Druid{EventType=\"alarm_raised\"}) OR on() vector(0)) - count(alert_Druid{EventType=\"alarm_cleared\"}) OR on() vector(0)",
+          "expr": "((count(alert_Druid{EventType=\"alarm_raised\"}) OR on() vector(0))) - (count(alert_Druid{EventType=\"alarm_cleared\"}) OR on() vector(0))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -166,13 +166,13 @@
         {
           "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Critical\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Critical\" }) OR on() vector(0)",
+          "expr": "(count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Critical\" }) OR on() vector(0))-(count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Critical\" }) OR on() vector(0))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Druid_Alarms - Critical",
+      "title": "Core_Alarms - Critical",
       "transformations": [],
       "type": "stat"
     },
@@ -235,13 +235,13 @@
         {
           "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Major\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Major\" }) OR on() vector(0)",
+          "expr": "(count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Major\" }) OR on() vector(0))-(count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Major\" }) OR on() vector(0))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Druid_Alarms - Major",
+      "title": "Core_Alarms - Major",
       "transformations": [],
       "type": "stat"
     },
@@ -304,13 +304,13 @@
         {
           "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Minor\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Minor\" }) OR on() vector(0)",
+          "expr": "(count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Minor\" }) OR on() vector(0))-(count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Minor\" }) OR on() vector(0))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Druid_Alarms-Minor",
+      "title": "Core_Alarms-Minor",
       "transformations": [],
       "type": "stat"
     },
@@ -373,13 +373,13 @@
         {
           "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Warning\" }) OR on() vector(0)-count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Warning\" }) OR on() vector(0)",
+          "expr": "(count(alert_Druid{EventType=\"alarm_raised\",EventInfoChar2=\"Warning\" }) OR on() vector(0))-(count(alert_Druid{EventType=\"alarm_cleared\", EventInfoChar2=\"Warning\" }) OR on() vector(0))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Druid Alarms - Warning",
+      "title": "Core_Alarms - Warning",
       "type": "stat"
     },
     {
@@ -447,7 +447,7 @@
           "refId": "A"
         }
       ],
-      "title": "Druid Alarms - info",
+      "title": "Core Alarms - info",
       "type": "stat"
     },
     {
@@ -647,6 +647,6 @@
   "timezone": "",
   "title": "Druid FM_Dashboard",
   "uid": "hHvVrt94kdc",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
