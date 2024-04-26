@@ -1,5 +1,4 @@
 {
- 
   "annotations": {
     "list": [
       {
@@ -21,28 +20,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 5,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource":  "prometheus",
-      "gridPos": {
-        "h": 4,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 15,
-      "options": {
-        "content": "<img src=\"https://onedrive.live.com/embed?resid=A1A305B33D38C5E8%21253&authkey=%21AJ6_IQ3RnhjCOkI&width=1229&height=97\" width=\"1229\" height=\"97\" />",
-        "mode": "html"
-      },
-      "pluginVersion": "9.1.6",
-      "type": "text"
-    },
-    {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -76,7 +59,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 0
       },
       "id": 21,
       "options": {
@@ -96,7 +79,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count (alert_csr) OR on() vector(0)",
           "legendFormat": "__auto",
@@ -108,7 +91,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -143,7 +126,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 11
+        "y": 7
       },
       "id": 8,
       "links": [],
@@ -164,7 +147,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count (alert_csr{Severity=\"critical\"}) OR on() vector(0)",
           "legendFormat": "__auto",
@@ -177,7 +160,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -212,7 +195,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 11
+        "y": 7
       },
       "id": 10,
       "links": [],
@@ -233,7 +216,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count(alert_csr{Severity=\"major\"}) OR on() vector(0)",
           "legendFormat": "__auto",
@@ -245,7 +228,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -280,7 +263,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 11
+        "y": 7
       },
       "id": 13,
       "links": [],
@@ -301,9 +284,9 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
-          "expr": "count(alert_csr{Severity=\"major\"}) OR on() vector(0)",
+          "expr": "count(alert_csr{Severity=\"minor\"}) OR on() vector(0)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -313,7 +296,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -348,7 +331,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 11
+        "y": 7
       },
       "id": 11,
       "links": [],
@@ -369,7 +352,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "count(alert_csr{Severity=\"warning\"}) OR on() vector(0)",
           "legendFormat": "__auto",
@@ -381,7 +364,7 @@
       "type": "stat"
     },
     {
-      "datasource":  "prometheus",
+      "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -511,7 +494,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 14
       },
       "id": 23,
       "options": {
@@ -533,7 +516,7 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "datasource":  "prometheus",
+          "datasource": "prometheus",
           "editorMode": "code",
           "expr": "alert_csr{}",
           "range": true,
@@ -745,7 +728,7 @@
       "type": "table"
     }
   ],
-  "refresh": false,
+  "refresh": "30s",
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -753,7 +736,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
