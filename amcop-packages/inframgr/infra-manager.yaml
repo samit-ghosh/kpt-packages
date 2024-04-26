@@ -34,7 +34,15 @@ data:
       "kafkaServicePort": "9092",
       "RobinPackageS3Path": "robin/software",
       "gitHost": "http://gitea.gitea.svc.cluster.local",
-      "gitPort": "3000"
+      "gitPort": "3000",
+      "s3BucketName": "customer-abc",
+      "s3SecretName": "testsecret",
+      "sftpSecretName": "sftpsecret",
+      "ranDay0Config": ["day0-config.json","day0-gnb-list.csv"],
+      "ranDayNConfig": ["dayN-config.json"],
+      "coreDay0Config": ["raemis_day0_cfg.json"],
+      "coreDayNConfig": ["raemis_dayN_cfg.json"],
+      "sftpInfo": {"ipV4":"1.1.1.1","ipV6":"2.2.2.2"}
     }
 ---
 # Source: infra-manager/templates/clusterrole.yaml
