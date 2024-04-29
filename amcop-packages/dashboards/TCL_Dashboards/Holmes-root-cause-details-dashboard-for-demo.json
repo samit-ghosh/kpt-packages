@@ -1,0 +1,346 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Root Cause and Related Events",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 15,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "panels": [],
+      "title": "Root Cause Details",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "641dbadd-7714-4380-93b9-14a3366ec08a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "641dbadd-7714-4380-93b9-14a3366ec08a"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "alert_fault{eventId=\"$rcid\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Root Cause",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Value": true,
+              "__name__": true,
+              "instance": true,
+              "job": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "Value": 23,
+              "__name__": 9,
+              "alarmCondition": 10,
+              "alarmInterfaceA": 21,
+              "domain": 11,
+              "eventCategory": 22,
+              "eventId": 1,
+              "eventName": 3,
+              "eventSeverity": 4,
+              "eventSourceType": 6,
+              "eventType": 2,
+              "instance": 12,
+              "job": 13,
+              "lastEpochMicrosec": 14,
+              "nfNamingCode": 15,
+              "priority": 16,
+              "reportingEntityId": 17,
+              "reportingEntityName": 18,
+              "sequence": 19,
+              "sourceId": 7,
+              "sourceName": 8,
+              "specificProblem": 5,
+              "startEpochMicrosec": 20
+            },
+            "renameByName": {
+              "nfNamingCode": "Network Segment"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 6,
+      "panels": [],
+      "title": "Related Faults",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "641dbadd-7714-4380-93b9-14a3366ec08a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 8,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "641dbadd-7714-4380-93b9-14a3366ec08a"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "alert_fault{eventId=~\"$relids\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Related Alarms",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "__name__": true,
+              "instance": true,
+              "job": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "Value": 21,
+              "__name__": 9,
+              "alarmCondition": 11,
+              "domain": 10,
+              "eventId": 1,
+              "eventName": 3,
+              "eventSeverity": 4,
+              "eventSourceType": 6,
+              "eventType": 2,
+              "instance": 12,
+              "job": 13,
+              "lastEpochMicrosec": 14,
+              "nfNamingCode": 15,
+              "priority": 16,
+              "reportingEntityId": 17,
+              "reportingEntityName": 18,
+              "sequence": 19,
+              "sourceId": 7,
+              "sourceName": 8,
+              "specificProblem": 5,
+              "startEpochMicrosec": 20
+            },
+            "renameByName": {
+              "nfNamingCode": "Network Segment"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "definition": "$__url_query(rcid)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "rcid",
+        "options": [],
+        "query": "$__url_query(rcid)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "641dbadd-7714-4380-93b9-14a3366ec08a"
+        },
+        "definition": "correlated_event{rootCauseEventId=\"$rcid\"}",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "relids",
+        "options": [],
+        "query": {
+          "query": "correlated_event{rootCauseEventId=\"$rcid\"}",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": ".*relatedEventId=\"(.*?)\".*",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Root Cause Details",
+  "uid": "XjGCFC-Sz",
+  "version": 9,
+  "weekStart": ""
+}
