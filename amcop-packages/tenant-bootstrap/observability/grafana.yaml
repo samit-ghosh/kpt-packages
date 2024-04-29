@@ -1,0 +1,44 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: amcop-grafana
+  namespace: tenant
+  labels:
+    app: amcop-grafana
+spec:
+  config:
+    server:
+      root_url: http://amcop-grafana.tenant/grafana/uuid/ # kpt-set: http://amcop-grafana.${orgid}/grafana/${tenantID}/
+      serve_from_sub_path: "true"
+    security:
+      allow_embedding: "true"
+      admin_user: admin
+      admin_password: admin
+    log:
+      mode: "console"
+    auth:
+      disable_login_form: "false"
+    auth.proxy:
+      enabled: "true"
+      auto_sign_up: "true"
+      header_name: X-WEBAUTH-USER
+  service:
+    spec:
+      type: ClusterIP
+  deployment:
+    spec:
+      template:
+        spec:
+          volumes:
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: amcop-grafana-pvc
+  persistentVolumeClaim:
+    spec:
+      storageClassName: local-path
+      volumeMode: Filesystem
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi

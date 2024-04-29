@@ -1,0 +1,86 @@
+# Source: rand/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: acp-rand
+  namespace: amcop-system
+  labels:
+    app: rand
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8085
+    targetPort: 8085
+    protocol: TCP
+    name: http
+  selector:
+    app: rand
+---
+# Source: rand/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acp-rand
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rand
+  template:
+    metadata:
+      labels:
+        app: rand
+    spec:
+      #hostNetwork: true
+      containers:
+      - name: rand-acp
+        image: amcopnightly/aarna-ran-acp:v4.0-2024-02-21
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: RAND_LOG_LEVEL
+          value: DEBUG
+        - name: ACP_VM_IP
+          value: 10.2.0.28
+        - name: ACP_VM_PORT
+          value: "443"
+        - name: ACP_ENABLED
+          value: "1"
+        - name: EMS_USERNAME
+          value: AARNA
+        - name: EMS_PASSWORD
+          value: Aarna@123
+        - name: WFE_IP
+          value: camunda
+        - name: WFE_PORT
+          value: "8443"
+        - name: WFE_USERNAME
+          value: souser
+        - name: WFE_PASSWORD
+          value: mypassword
+        - name: DMAAP_IP
+          value: dmaap
+        - name: DMAAP_PORT
+          value: "3904"
+        - name: AAI_IP
+          value: aai.amcop-system.svc.cluster.local
+        - name: AAI_PORT
+          value: "8443"
+        - name: WFE_ASYNC_RESP_TIMEOUT
+          value: "1500000"
+        - name: KAFKA_IP
+          value: kafka1
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: WFE_STATUS_TOPIC
+          value: WFTopic
+        - name: WFE_HTTPS
+          value: "1"
+        - name: MINIO_IP
+          value: amcop-minio-hl.amcop-system.svc.cluster.local
+        - name: MINIO_PORT
+          value: "9000"
+        ports:
+        - name: http
+          containerPort: 8085
+          protocol: TCP

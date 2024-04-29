@@ -1,0 +1,361 @@
+# Source: topology-controller/templates/rbac/service_account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: topology-controller
+  labels:
+    app.kubernetes.io/name: serviceaccount
+    app.kubernetes.io/instance: topology-controller
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: topology5g
+    app.kubernetes.io/part-of: topology5g
+    app.kubernetes.io/managed-by: Helm
+  namespace: default
+---
+# Source: topology-controller/templates/rbac/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: topology-manager-role
+  namespace: default
+rules:
+- apiGroups:
+  - policy.aarna.com
+  resources:
+  - topology5gs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - policy.aarna.com
+  resources:
+  - topology5gs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - policy.aarna.com
+  resources:
+  - topology5gs/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+# Source: topology-controller/templates/rbac/role_binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: topology-manager-rolebinding
+    app.kubernetes.io/instance: topology-manager-rolebinding
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: topology5g
+    app.kubernetes.io/part-of: topology5g
+    app.kubernetes.io/managed-by: Helm
+  name: topology-manager-rolebinding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: topology-manager-role
+subjects:
+- kind: ServiceAccount
+  name: topology-controller
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: default # kpt-set: ${crb-replace}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: topology-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: topology-controller
+  namespace: default
+---
+# Source: topology-controller/templates/rbac/leader_election_role.yaml
+# permissions to do leader election.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/name: role
+    app.kubernetes.io/instance: leader-election-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: topology5g
+    app.kubernetes.io/part-of: topology5g
+    app.kubernetes.io/managed-by: Helm
+  name: topology-leader-election-role
+  namespace: default
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+# Source: topology-controller/templates/rbac/leader_election_role_binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: rolebinding
+    app.kubernetes.io/instance: leader-election-rolebinding
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: topology5g
+    app.kubernetes.io/part-of: topology5g
+    app.kubernetes.io/managed-by: Helm
+  name: topology-leader-election-rolebinding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: topology-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: topology-controller
+  namespace: default
+---
+# Source: topology-controller/templates/rbac/auth_proxy_service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: topology-controller
+    app.kubernetes.io/name: service
+    app.kubernetes.io/instance: topology-controller-metrics-service
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: topology5g
+    app.kubernetes.io/part-of: topology5g
+    app.kubernetes.io/managed-by: Helm
+  name: topology-controller-metrics-service
+  namespace: default
+spec:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: https
+  selector:
+    control-plane: topology-controller
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: topology-controller-configmap
+  namespace: default
+data:
+  aai_address: http://aai.amcop-system
+  aai_port: "8443"
+  camunda_address: https://camunda
+  camunda_port: "8443"
+  kafka_broker: kafka1:9092
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: topology-controller-secret
+  namespace: default
+stringData:
+  aai_username: AAI
+  aai_password: AAI
+  camunda_username: souser
+  camunda_password: mypassword
+---
+# Source: topology-controller/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: topology-controller
+  namespace: default
+  labels:
+    helm.sh/chart: topology-controller-0.1.0
+    app.kubernetes.io/name: topology-controller
+    app.kubernetes.io/instance: topology-controller
+    app.kubernetes.io/version: 1.16.0
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: topology-controller
+    app.kubernetes.io/instance: topology-controller
+---
+# Source: topology-controller/templates/manager/manager.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: topology-controller
+  namespace: default
+  labels:
+    control-plane: topology-controller
+    app.kubernetes.io/name: deployment
+    app.kubernetes.io/instance: topology-controller
+    app.kubernetes.io/component: manager
+    app.kubernetes.io/created-by: topology5g
+    app.kubernetes.io/part-of: topology5g
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      control-plane: topology-controller
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: topology-controller
+    spec:
+      # TODO(user): Uncomment the following code to configure the nodeAffinity expression
+      # according to the platforms which are supported by your solution.
+      # It is considered best practice to support multiple architectures. You can
+      # build your manager image using the makefile target docker-buildx.
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         - matchExpressions:
+      #           - key: kubernetes.io/arch
+      #             operator: In
+      #             values:
+      #               - amd64
+      #               - arm64
+      #               - ppc64le
+      #               - s390x
+      #           - key: kubernetes.io/os
+      #             operator: In
+      #             values:
+      #               - linux
+      securityContext:
+        runAsNonRoot: true
+        # TODO(user): For common cases that do not require escalating privileges
+        # it is recommended to ensure that all your Pods/Containers are restrictive.
+        # More info: https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted
+        # Please uncomment the following code if your project does NOT have to work on old Kubernetes
+        # versions < 1.19 or on vendors versions which do NOT support this field by default (i.e. Openshift < 4.11 ).
+        # seccompProfile:
+        #   type: RuntimeDefault
+      containers:
+      - command:
+        - /manager
+        args:
+        - --leader-elect
+        image: amcopnightly/topology5g:v4.0-2024-02-20
+        env:
+        - name: AAIADDRESS
+          valueFrom:
+            configMapKeyRef:
+              name: topology-controller-configmap
+              key: aai_address
+        - name: AAIPORT
+          valueFrom:
+            configMapKeyRef:
+              name: topology-controller-configmap
+              key: aai_port
+        - name: AAIUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: topology-controller-secret
+              key: aai_username
+        - name: AAIPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: topology-controller-secret
+              key: aai_password
+        - name: CAMUNDAADDRESS
+          valueFrom:
+            configMapKeyRef:
+              name: topology-controller-configmap
+              key: camunda_address
+        - name: CAMUNDAPORT
+          valueFrom:
+            configMapKeyRef:
+              name: topology-controller-configmap
+              key: camunda_port
+        - name: CAMUNDAUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: topology-controller-secret
+              key: camunda_username
+        - name: CAMUNDAPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: topology-controller-secret
+              key: camunda_password
+        - name: KAFKABROKER
+          valueFrom:
+            configMapKeyRef:
+              name: topology-controller-configmap
+              key: kafka_broker
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        name: manager
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        # TODO(user): Configure the resources accordingly based on the project requirements.
+        # More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+      serviceAccountName: topology-controller
+      terminationGracePeriodSeconds: 10

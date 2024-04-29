@@ -1,0 +1,299 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mr-api
+  namespace: amcop-system
+data:
+  MsgRtrApi.properties: |
+    # LICENSE_START=======================================================
+    #  org.onap.dmaap
+    #  ================================================================================
+    #  Copyright © 2020 Nordix Foundation. All rights reserved.
+    #  Copyright © 2017 AT&T Intellectual Property. All rights reserved.
+    #  ================================================================================
+    #  Licensed under the Apache License, Version 2.0 (the "License");
+    #  you may not use this file except in compliance with the License.
+    #  You may obtain a copy of the License at
+    #        http://www.apache.org/licenses/LICENSE-2.0
+    #
+    #  Unless required by applicable law or agreed to in writing, software
+    #  distributed under the License is distributed on an "AS IS" BASIS,
+    #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    #  See the License for the specific language governing permissions and
+    #  limitations under the License.
+    #  ============LICENSE_END=========================================================
+    #
+    #  ECOMP is a trademark and service mark of AT&T Intellectual Property.
+    #
+    ###############################################################################
+    ###############################################################################
+    ##
+    ## Cambria API Server config
+    ##
+    ## Default values are shown as commented settings.
+    ##
+    ###############################################################################
+    ##
+    ## HTTP service
+    ##
+    ## 3904 is standard as of 7/29/14.
+    #
+    ## Zookeeper Connection
+    ##
+    ## Both Cambria and Kafka make use of Zookeeper.
+    ##
+    #config.zk.servers=172.18.1.1
+    config.zk.servers=zookeeper:2181
+
+    #config.zk.root=/fe3c/cambria/config
+
+
+    ###############################################################################
+    ##
+    ## Kafka Connection
+    ##
+    ##        Items below are passed through to Kafka's producer and consumer
+    ##        configurations (after removing "kafka.")
+    ##        if you want to change request.required.acks it can take this one value
+    #kafka.metadata.broker.list=localhost:9092,localhost:9093
+    kafka.metadata.broker.list=kafka1:9092
+    ##kafka.request.required.acks=-1
+    #kafka.client.zookeeper=${config.zk.servers}
+    consumer.timeout.ms=100
+    zookeeper.connection.timeout.ms=6000
+    zookeeper.session.timeout.ms=20000
+    zookeeper.sync.time.ms=2000
+    auto.commit.interval.ms=1000
+    fetch.message.max.bytes =1000000
+    auto.commit.enable=false
+
+    #(backoff*retries > zksessiontimeout)
+    kafka.rebalance.backoff.ms=10000
+    kafka.rebalance.max.retries=6
+
+
+    ###############################################################################
+    ##
+    ##        Secured Config
+    ##
+    ##        Some data stored in the config system is sensitive -- API keys and secrets,
+    ##        for example. to protect it, we use an encryption layer for this section
+    ##        of the config.
+    ##
+    ## The key is a base64 encode AES key. This must be created/configured for
+    ## each installation.
+    #cambria.secureConfig.key=
+    ##
+    ## The initialization vector is a 16 byte value specific to the secured store.
+    ## This must be created/configured for each installation.
+    #cambria.secureConfig.iv=
+
+    ## Southfield Sandbox
+    cambria.secureConfig.key=b/7ouTn9FfEw2PQwL0ov/Q==
+    cambria.secureConfig.iv=wR9xP5k5vbz/xD0LmtqQLw==
+    authentication.adminSecret=fe3cCompound
+    #cambria.secureConfig.key[pc569h]=YT3XPyxEmKCTLI2NK+Sjbw==
+    #cambria.secureConfig.iv[pc569h]=rMm2jhR3yVnU+u2V9Ugu3Q==
+
+
+    ###############################################################################
+    ##
+    ## Consumer Caching
+    ##
+    ##        Kafka expects live connections from the consumer to the broker, which
+    ##        obviously doesn't work over connectionless HTTP requests. The Cambria
+    ##        server proxies HTTP requests into Kafka consumer sessions that are kept
+    ##        around for later re-use. Not doing so is costly for setup per request,
+    ##        which would substantially impact a high volume consumer's performance.
+    ##
+    ##        This complicates Cambria server failover, because we often need server
+    ##        A to close its connection before server B brings up the replacement.
+    ##
+
+    ## The consumer cache is normally enabled.
+    #cambria.consumer.cache.enabled=true
+
+    ## Cached consumers are cleaned up after a period of disuse. The server inspects
+    ## consumers every sweepFreqSeconds and will clean up any connections that are
+    ## dormant for touchFreqMs.
+    #cambria.consumer.cache.sweepFreqSeconds=15
+    cambria.consumer.cache.touchFreqMs=120000
+    ##stickforallconsumerrequests=false
+    ## The cache is managed through ZK. The default value for the ZK connection
+    ## string is the same as config.zk.servers.
+    #cambria.consumer.cache.zkConnect=${config.zk.servers}
+
+    ##
+    ## Shared cache information is associated with this node's name. The default
+    ## name is the hostname plus the HTTP service port this host runs on. (The
+    ## hostname is determined via InetAddress.getLocalHost ().getCanonicalHostName(),
+    ## which is not always adequate.) You can set this value explicitly here.
+    ##
+    #cambria.api.node.identifier=<use-something-unique-to-this-instance>
+
+    #cambria.rateLimit.maxEmptyPollsPerMinute=30
+    #cambria.rateLimitActual.delay.ms=10
+
+    ###############################################################################
+    ##
+    ## Metrics Reporting
+    ##
+    ##        This server can report its metrics periodically on a topic.
+    ##
+    #metrics.send.cambria.enabled=true
+    #metrics.send.cambria.topic=cambria.apinode.metrics                                  #msgrtr.apinode.metrics.dmaap
+    #metrics.send.cambria.sendEverySeconds=60
+
+    cambria.consumer.cache.zkBasePath=/fe3c/cambria/consumerCache
+    consumer.timeout=17
+    default.partitions=3
+    default.replicas=3
+    ##############################################################################
+    #100mb
+    maxcontentlength=10000
+
+
+    ##############################################################################
+    #AAF Properties
+    msgRtr.namespace.aaf=org.onap.dmaap.mr.topic
+    msgRtr.topicfactory.aaf=org.onap.dmaap.mr.topicFactory|:org.onap.dmaap.mr.topic:
+    enforced.topic.name.AAF=org.onap.dmaap.mr
+    forceAAF=false
+    transidUEBtopicreqd=false
+    defaultNSforUEB=org.onap.dmaap.mr
+    ##############################################################################
+    #Mirror Maker Agent
+
+    msgRtr.mirrormakeradmin.aaf=org.onap.dmaap.mr.mirrormaker|*|admin
+    msgRtr.mirrormakeruser.aaf=org.onap.dmaap.mr.mirrormaker|*|user
+    msgRtr.mirrormakeruser.aaf.create=org.onap.dmaap.mr.topicFactory|:org.onap.dmaap.mr.topic:
+    msgRtr.mirrormaker.timeout=15000
+    msgRtr.mirrormaker.topic=org.onap.dmaap.mr.mirrormakeragent
+    msgRtr.mirrormaker.consumergroup=mmagentserver
+    msgRtr.mirrormaker.consumerid=1
+
+    kafka.max.poll.interval.ms=300000
+    kafka.heartbeat.interval.ms=60000
+    kafka.session.timeout.ms=240000
+    kafka.max.poll.records=1000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mr-log
+  namespace: amcop-system
+data:
+  logback.xml: "<!--\n    ============LICENSE_START=======================================================\n    Copyright © 2020 Nordix Foundation. All rights reserved.\n    Copyright © 2019 AT&T Intellectual Property. All rights reserved.\n    ================================================================================\n    Licensed under the Apache License, Version 2.0 (the \"License\");\n    you may not use this file except in compliance with the License.\n    You may obtain a copy of the License at\n          http://www.apache.org/licenses/LICENSE-2.0\n\n    Unless required by applicable law or agreed to in writing, software\n    distributed under the License is distributed on an \"AS IS\" BASIS,\n    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n    See the License for the specific language governing permissions and\n    limitations under the License.\n    ============LICENSE_END=========================================================\n-->\n\n<configuration scan=\"true\" scanPeriod=\"3 seconds\" debug=\"false\">\n  <contextName>${module.ajsc.namespace.name}</contextName>\n  <jmxConfigurator />\n  <property name=\"logDirectory\" value=\"${AJSC_HOME}/log\" />\n  <appender name=\"STDOUT\" class=\"ch.qos.logback.core.ConsoleAppender\">\n    <filter class=\"ch.qos.logback.classic.filter.LevelFilter\">\n      <level>ERROR</level>\n      <onMatch>ACCEPT</onMatch>\n      <onMismatch>DENY</onMismatch>\n    </filter>\n    <encoder>\n      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{1024} - %msg%n\n      </pattern>\n    </encoder>\n  </appender>\n\n  <appender name=\"INFO\" class=\"ch.qos.logback.core.ConsoleAppender\">\n    <filter class=\"ch.qos.logback.classic.filter.LevelFilter\">\n      <level>INFO</level>\n      <onMatch>ACCEPT</onMatch>\n      <onMismatch>DENY</onMismatch>\n    </filter>\n  </appender>\n\n  <appender name=\"DEBUG\" class=\"ch.qos.logback.core.ConsoleAppender\">\n\n    <encoder>\n      <pattern>\"%d [%thread] %-5level %logger{1024} - %msg%n\"</pattern>\n    </encoder>\n  </appender>\n\n  <appender name=\"ERROR\" class=\"ch.qos.logback.core.ConsoleAppender\"> class=\"ch.qos.logback.core.ConsoleAppender\">\n    <filter class=\"ch.qos.logback.classic.filter.LevelFilter\">\n      <level>ERROR</level>\n      <onMatch>ACCEPT</onMatch>\n      <onMismatch>DENY</onMismatch>\n    </filter>\n    <encoder>\n      <pattern>\"%d [%thread] %-5level %logger{1024} - %msg%n\"</pattern>\n    </encoder>\n  </appender>\n\n\n  <!-- Msgrtr related loggers -->\n  <logger name=\"org.onap.dmaap.dmf.mr.service\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.dmf.mr.service.impl\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.resources\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.dmf.mr.resources.streamReaders\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.backends\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.dmf.mr.backends.kafka\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.dmf.mr.backends.memory\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.beans\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.constants\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.exception\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.listener\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.metabroker\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.metrics.publisher\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.dmf.mr.metrics.publisher.impl\" level=\"INFO\" />\n\n\n\n  <logger name=\"org.onap.dmaap.dmf.mr.security\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.dmf.mr.security.impl\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.transaction\" level=\"INFO\" />\n  <logger name=\"com.att.dmf.mr.transaction.impl\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.metabroker\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.dmf.mr.metabroker\" level=\"INFO\" />\n\n  <logger name=\"org.onap.dmaap.dmf.mr.utils\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap.mr.filter\" level=\"INFO\" />\n\n  <!--<logger name=\"com.att.nsa.cambria.*\" level=\"INFO\" />-->\n\n  <!-- Msgrtr loggers in ajsc -->\n  <logger name=\"org.onap.dmaap.service\" level=\"INFO\" />\n  <logger name=\"org.onap.dmaap\" level=\"INFO\" />\n\n\n  <!-- Spring related loggers -->\n  <logger name=\"org.springframework\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"org.springframework.beans\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"org.springframework.web\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"com.blog.spring.jms\" level=\"WARN\" additivity=\"false\" />\n\n  <!-- AJSC Services (bootstrap services) -->\n  <logger name=\"ajsc\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"ajsc.RouteMgmtService\" level=\"INFO\" additivity=\"false\"/>\n  <logger name=\"ajsc.ComputeService\" level=\"INFO\" additivity=\"false\" />\n  <logger name=\"ajsc.VandelayService\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"ajsc.FilePersistenceService\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"ajsc.UserDefinedJarService\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"ajsc.UserDefinedBeansDefService\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"ajsc.LoggingConfigurationService\" level=\"WARN\" additivity=\"false\" />\n\n  <!-- AJSC related loggers (DME2 Registration, csi logging, restlet, servlet\n    logging) -->\n  <logger name=\"ajsc.utils\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"ajsc.utils.DME2Helper\" level=\"INFO\" additivity=\"false\" />\n  <logger name=\"ajsc.filters\" level=\"DEBUG\" additivity=\"false\" />\n  <logger name=\"ajsc.beans.interceptors\" level=\"DEBUG\" additivity=\"false\" />\n  <logger name=\"ajsc.restlet\" level=\"DEBUG\" additivity=\"false\" />\n  <logger name=\"ajsc.servlet\" level=\"DEBUG\" additivity=\"false\" />\n  <logger name=\"com.att\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"com.att.ajsc.csi.logging\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"com.att.ajsc.filemonitor\" level=\"WARN\" additivity=\"false\"/>\n\n  <logger name=\"com.att.nsa.dmaap.util\" level=\"INFO\" additivity=\"false\"/>\n  <logger name=\"com.att.cadi.filter\" level=\"INFO\" additivity=\"false\" />\n\n\n  <!-- Other Loggers that may help troubleshoot -->\n  <logger name=\"net.sf\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"org.apache.commons.httpclient\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"org.apache.commons\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"org.apache.coyote\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"org.apache.jasper\" level=\"WARN\" additivity=\"false\"/>\n\n  <!-- Camel Related Loggers (including restlet/servlet/jaxrs/cxf logging.\n    May aid in troubleshooting) -->\n  <logger name=\"org.apache.camel\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"org.apache.cxf\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"org.apache.camel.processor.interceptor\" level=\"WARN\" additivity=\"false\"/>\n  <logger name=\"org.apache.cxf.jaxrs.interceptor\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"org.apache.cxf.service\" level=\"WARN\" additivity=\"false\" />\n  <logger name=\"org.restlet\" level=\"DEBUG\" additivity=\"false\" />\n  <logger name=\"org.apache.camel.component.restlet\" level=\"DEBUG\" additivity=\"false\" />\n  <logger name=\"org.apache.kafka\" level=\"DEBUG\" additivity=\"false\" />\n  <logger name=\"org.apache.zookeeper\" level=\"INFO\" additivity=\"false\" />\n  <logger name=\"org.I0Itec.zkclient\" level=\"DEBUG\" additivity=\"false\" />\n\n  <!-- logback internals logging -->\n  <logger name=\"ch.qos.logback.classic\" level=\"INFO\" additivity=\"false\"/>\n  <logger name=\"ch.qos.logback.core\" level=\"INFO\" additivity=\"false\" />\n\n  <!-- logback jms appenders & loggers definition starts here -->\n  <!-- logback jms appenders & loggers definition starts here -->\n  <appender name=\"auditLogs\" class=\"ch.qos.logback.core.ConsoleAppender\">\n    <filter class=\"ch.qos.logback.classic.filter.ThresholdFilter\">\n    </filter>\n    <encoder>\n      <pattern>\"%d [%thread] %-5level %logger{1024} - %msg%n\"</pattern>\n    </encoder>\n  </appender>\n  <appender name=\"perfLogs\" class=\"ch.qos.logback.core.ConsoleAppender\">\n    <filter class=\"ch.qos.logback.classic.filter.ThresholdFilter\">\n    </filter>\n    <encoder>\n      <pattern>\"%d [%thread] %-5level %logger{1024} - %msg%n\"</pattern>\n    </encoder>\n  </appender>\n  <appender name=\"ASYNC-audit\" class=\"ch.qos.logback.classic.AsyncAppender\">\n    <queueSize>1000</queueSize>\n    <discardingThreshold>0</discardingThreshold>\n    <appender-ref ref=\"Audit-Record-Queue\" />\n  </appender>\n\n  <logger name=\"AuditRecord\" level=\"INFO\" additivity=\"FALSE\">\n    <appender-ref ref=\"STDOUT\" />\n  </logger>\n  <logger name=\"AuditRecord_DirectCall\" level=\"INFO\" additivity=\"FALSE\">\n    <appender-ref ref=\"STDOUT\" />\n  </logger>\n  <appender name=\"ASYNC-perf\" class=\"ch.qos.logback.classic.AsyncAppender\">\n    <queueSize>1000</queueSize>\n    <discardingThreshold>0</discardingThreshold>\n    <appender-ref ref=\"Performance-Tracker-Queue\" />\n  </appender>\n  <logger name=\"PerfTrackerRecord\" level=\"INFO\" additivity=\"FALSE\">\n    <appender-ref ref=\"ASYNC-perf\" />\n    <appender-ref ref=\"perfLogs\" />\n  </logger>\n  <!-- logback jms appenders & loggers definition ends here -->\n\n  <root level=\"DEBUG\">\n    <appender-ref ref=\"DEBUG\" />\n    <appender-ref ref=\"ERROR\" />\n    <appender-ref ref=\"INFO\" />\n    <appender-ref ref=\"STDOUT\" />\n  </root>\n\n</configuration> \n"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mr-cadi
+  namespace: amcop-system
+data:
+  cadi.properties: |
+    aaf_locate_url=https://aaf-locate:8095
+    aaf_url=https://AAF_LOCATE_URL/onap.org.osaaf.aaf.service:2.1
+    aaf_env=DEV
+    aaf_lur=org.onap.aaf.cadi.aaf.v2_0.AAFLurPerm
+
+    cadi_truststore=/appl/dmaapMR1/etc/org.onap.dmaap.mr.trust.jks
+    cadi_truststore_password=enc:mN6GiIzFQxKGDzAXDOs7b4j8DdIX02QrZ9QOWNRpxV3rD6whPCfizSMZkJwxi_FJ
+
+    cadi_keyfile=/appl/dmaapMR1/etc/org.onap.dmaap.mr.keyfile
+
+    cadi_alias=dmaapmr@mr.dmaap.onap.org
+    cadi_keystore=/appl/dmaapMR1/etc/org.onap.dmaap.mr.p12
+    cadi_keystore_password=enc:_JJT2gAEkRzXla5xfDIHal8pIoIB5iIos3USvZQT6sL-l14LpI5fRFR_QIGUCh5W
+    cadi_x509_issuers=CN=intermediateCA_1, OU=OSAAF, O=ONAP, C=US:CN=intermediateCA_7, OU=OSAAF, O=ONAP, C=US:CN=intermediateCA_9, OU=OSAAF, O=ONAP, C=US
+
+    cadi_loglevel=INFO
+    cadi_protocols=TLSv1.1,TLSv1.2
+    cadi_latitude=37.78187
+    cadi_longitude=-122.26147
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: dmaap
+  name: dmaap
+  namespace: amcop-system
+spec:
+  type: ClusterIP
+  ports:
+  - name: "3904"
+    port: 3904
+  - name: "3905"
+    port: 3905
+  selector:
+    io.kompose.service: dmaap
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: dmaap
+  name: dmaap
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: dmaap
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.network/nonrtric-docker-net: "true"
+        io.kompose.service: dmaap
+    spec:
+      containers:
+      - env:
+        - name: "enableCadi"
+          value: "false"
+        - name: "PATH"
+          value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin"
+        - name: "LANG"
+          value: "C.UTF-8"
+        - name: "JAVA_HOME"
+          value: "/usr/lib/jvm/java-1.8-openjdk"
+        - name: "JAVA_VERSION"
+          value: "8u212"
+        - name: "JAVA_ALPINE_VERSION"
+          value: "8.212.04-r0"
+        image: onap/dmaap-dmaap-mr:1.1.18
+        imagePullPolicy: IfNotPresent
+        name: dmaap-mr
+        ports:
+        - containerPort: 3904
+        - containerPort: 3905
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+        - mountPath: /appl/dmaapMR1/bundleconfig/etc/appprops/MsgRtrApi.properties
+          subPath: MsgRtrApi.properties
+          name: dmaap-claim0
+        - mountPath: /appl/dmaapMR1/bundleconfig/etc/logback.xml
+          subPath: logback.xml
+          name: dmaap-claim1
+        - mountPath: /appl/dmaapMR1/etc/cadi.properties
+          subPath: cadi.properties
+          name: dmaap-claim2
+      restartPolicy: Always
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: dmaap-claim0
+        configMap:
+          name: mr-api
+      - name: dmaap-claim1
+        configMap:
+          name: mr-log
+      - name: dmaap-claim2
+        configMap:
+          name: mr-cadi

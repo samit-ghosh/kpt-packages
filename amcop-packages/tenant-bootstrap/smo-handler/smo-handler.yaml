@@ -1,0 +1,72 @@
+# sdnr Config Map
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: smo-handler-configmap
+  namespace: tenant
+  labels:
+    app: smo-handler
+data:
+  # TODO(prabhjot) need to take this as input along with default value
+  ODL_ADMIN_PASSWORD: Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: tenant
+  name: smo-handler
+  labels:
+    app: smo-handler
+spec:
+  selector:
+    app: smo-handler
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smo-handler
+  namespace: tenant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smo-handler
+  template:
+    metadata:
+      labels:
+        app: smo-handler
+    spec:
+      containers:
+      - name: smo-handler
+        image: amcopnightly/smo-handler:v4.0-2024-02-26
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SMO_HANDLER_ENABLED
+          value: "true"
+        - name: CONNECTION_STATUS_UPDATE_TASK_ENABLED
+          value: "false"
+        - name: CONNECTION_STATUS_UPDATE_TASK_INTERVAL
+          value: "180000"
+        - name: SDNR_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: ODL_ADMIN_PASSWORD
+              name: smo-handler-configmap
+        - name: DR_DEPLOYMENT_NAME
+          value: dmaap-dr-prov
+        - name: DR_DEPLOYMENT_PORT
+          value: "8480"
+        - name: PMDATA_CLEAR_INTERVAL
+          value: "90000"
+        - name: PMDATA_CLEAR_ENABLED
+          value: "false"
+        - name: PMDATA_KPI_FILTERS_ENABLED
+          value: "true"

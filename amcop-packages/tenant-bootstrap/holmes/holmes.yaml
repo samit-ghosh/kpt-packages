@@ -1,0 +1,604 @@
+############## Holmes Component YAML for Manual deployment ####################
+# Source: fault-management-helm/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fault-management-config
+  namespace: test-tenant
+data:
+  application.properties: |
+    server.port=9797
+    ## PostgreSQL
+    spring.datasource.url=jdbc:postgresql://postgresql.test-tenant.svc.cluster.local:5432/holmes
+    #spring.datasource.url=jdbc:postgresql://postgresql.test-tenant.svc.cluster.local:5431/holmes
+    spring.datasource.username=holmes
+    spring.datasource.password=holmespwd
+    # create and drop table, good for testing, production set to none or comment it
+    #spring.jpa.hibernate.ddl-auto=create-drop
+---
+# Source: fault-management-helm/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fault-management-helm
+  namespace: test-tenant
+  labels:
+    app.kubernetes.io/name: fault-management-helm
+    app.kubernetes.io/instance: fault-management-helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9797
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: fault-management-helm
+    app.kubernetes.io/instance: fault-management-helm
+################################[ HOLMES_ENGINE_MANAGEMENT ]################################
+---
+# Source: holmes-engine-managment/charts/postgress/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secrets
+  namespace: test-tenant
+data:
+  postgresql-password: "aG9sbWVzcHdk"
+  repmgr-password: "aG9sbWVzcHdk"
+---
+# Source: holmes-engine-managment/charts/postgress/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pgpool-secrets
+  namespace: test-tenant
+data:
+  admin-password: "SFRzaVZxYjdSZQ=="
+---
+# Source: holmes-engine-managment/charts/postgress/templates/configmaps.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configmap
+  namespace: test-tenant
+data:
+  pre-stop.sh: |-
+    #!/bin/bash
+    set -o errexit
+    set -o pipefail
+    set -o nounset
+    # Debug section
+    exec 3>&1
+    exec 4>&2
+    # Load Libraries
+    . /opt/bitnami/scripts/liblog.sh
+    . /opt/bitnami/scripts/libpostgresql.sh
+    . /opt/bitnami/scripts/librepmgr.sh
+    # Auxiliary functions
+    is_new_primary_ready() {
+        return_value=1
+        currenty_primary_node="$(repmgr_get_primary_node)"
+        currenty_primary_host="$(echo $currenty_primary_node | awk '{print $1}')"
+        info "$currenty_primary_host != $REPMGR_NODE_NETWORK_NAME"
+        if [[ $(echo $currenty_primary_node | wc -w) -eq 2 ]] && [[ "$currenty_primary_host" != "$REPMGR_NODE_NETWORK_NAME" ]]; then
+            info "New primary detected, leaving the cluster..."
+            return_value=0
+        else
+            info "Waiting for a new primary to be available..."
+        fi
+        return $return_value
+    }
+    export MODULE="pre-stop-hook"
+    if [[ "${BITNAMI_DEBUG}" == "true" ]]; then
+        info "Bash debug is on"
+    else
+        info "Bash debug is off"
+        exec 1>/dev/null
+        exec 2>/dev/null
+    fi
+    # Load PostgreSQL & repmgr environment variables
+    . /opt/bitnami/scripts/postgresql-env.sh
+    postgresql_enable_nss_wrapper
+    # Prepare env vars for managing roles
+    primary_node="$(repmgr_get_primary_node)"
+    primary_host="$(echo $primary_node | awk '{print $1}')"
+    # Stop postgresql for graceful exit.
+    postgresql_stop
+    if [[ "$primary_host" == "$REPMGR_NODE_NETWORK_NAME" ]]; then
+        info "Primary node need to wait for a new primary node before leaving the cluster"
+        retry_while is_new_primary_ready 10 5
+    else
+        info "Standby node doesn't need to wait, leaving the cluster."
+    fi
+---
+# Source: holmes-engine-managment/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dmaapconfig
+  namespace: test-tenant
+data:
+  cfy.json: |
+    {
+      "services_calls": {},
+      "streams_publishes": {
+        "dcae_cl_out": {
+          "dmaap_info": {
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Output1"
+          },
+          "type": "message_router"
+        }
+      },
+      "streams_subscribes": {
+        "ran_alarm": {
+          "dmaap_info": {
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_RAN_Alarms1"
+          },
+          "type": "message_router"
+        },
+        "core_alarm": {
+          "dmaap_info": {
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Core_Alarms1"
+          },
+          "type": "message_router"
+        }
+      }
+    }
+  ControlLoop-VOLTE-2179b738-fd36-4843-a71a-a8c24c70c55b.drl: |
+    package org.onap.holmes.droolsRule;
+    import org.onap.holmes.common.dmaap.DmaapService;
+    import org.onap.holmes.common.api.stat.VesAlarm;
+    import org.onap.holmes.common.aai.CorrelationUtil;
+    import org.onap.holmes.common.dmaap.entity.PolicyMsg;
+    import org.onap.holmes.common.utils.SpringContextUtil;
+    import org.onap.holmes.common.utils.DroolsLog;
+    rule "Relation_analysis_Rule"
+    salience 200
+    no-loop true
+        when
+            $root : VesAlarm(alarmIsCleared == 0,
+                $sourceId: sourceId, sourceId != null && !sourceId.equals(""),
+                $sourceName: sourceName, sourceName != null && !sourceName.equals(""),
+                $startEpochMicrosec: startEpochMicrosec,
+                eventName in ("Fault_MultiCloud_VMFailure"),
+                $eventId: eventId)
+            $child : VesAlarm( eventId != $eventId, parentId == null,
+                CorrelationUtil.getInstance().isTopologicallyRelated(sourceId, $sourceId, $sourceName),
+                eventName in ("Fault_MME_eNodeB out of service alarm"),
+                startEpochMicrosec < $startEpochMicrosec + 60000 && startEpochMicrosec > $startEpochMicrosec - 60000)
+        then
+            DroolsLog.printInfo("===========================================================");
+            DroolsLog.printInfo("Relation_analysis_Rule: rootId=" + $root.getEventId() + ", childId=" + $child.getEventId());
+            $child.setParentId($root.getEventId());
+            update($child);
+    end
+    rule "root_has_child_handle_Rule"
+    salience 150
+    no-loop true
+        when
+            $root : VesAlarm(alarmIsCleared == 0, rootFlag == 0, $eventId: eventId)
+            $child : VesAlarm(eventId != $eventId, parentId == $eventId)
+        then
+            DroolsLog.printInfo("===========================================================");
+            DroolsLog.printInfo("root_has_child_handle_Rule: rootId=" + $root.getEventId() + ", childId=" + $child.getEventId());
+            DmaapService dmaapService = SpringContextUtil.getBean(DmaapService.class);
+            PolicyMsg policyMsg = dmaapService.getPolicyMsg($root, $child, "org.onap.holmes.droolsRule");
+            dmaapService.publishPolicyMsg(policyMsg, "dcae_cl_out");
+            $root.setRootFlag(1);
+            update($root);
+    end
+    rule "root_no_child_handle_Rule"
+    salience 100
+    no-loop true
+        when
+            $root : VesAlarm(alarmIsCleared == 0, rootFlag == 0,
+                sourceId != null && !sourceId.equals(""),
+                sourceName != null && !sourceName.equals(""),
+                eventName in ("Fault_MultiCloud_VMFailure"))
+        then
+            DroolsLog.printInfo("===========================================================");
+            DroolsLog.printInfo("root_no_child_handle_Rule: rootId=" + $root.getEventId());
+            DmaapService dmaapService = SpringContextUtil.getBean(DmaapService.class);
+            PolicyMsg policyMsg = dmaapService.getPolicyMsg($root, null, "org.onap.holmes.droolsRule");
+            dmaapService.publishPolicyMsg(policyMsg, "dcae_cl_out");
+            $root.setRootFlag(1);
+            update($root);
+    end
+    rule "root_cleared_handle_Rule"
+    salience 100
+    no-loop true
+        when
+            $root : VesAlarm(alarmIsCleared == 1, rootFlag == 1)
+        then
+            DroolsLog.printInfo("===========================================================");
+            DroolsLog.printInfo("root_cleared_handle_Rule: rootId=" + $root.getEventId());
+            DmaapService dmaapService = SpringContextUtil.getBean(DmaapService.class);
+            PolicyMsg policyMsg = dmaapService.getPolicyMsg($root, null, "org.onap.holmes.droolsRule");
+            dmaapService.publishPolicyMsg(policyMsg, "dcae_cl_out");
+            retract($root);
+    end
+    rule "child_handle_Rule"
+    salience 100
+    no-loop true
+        when
+            $child : VesAlarm(alarmIsCleared == 1, rootFlag == 0)
+        then
+            DroolsLog.printInfo("===========================================================");
+            DroolsLog.printInfo("child_handle_Rule: childId=" + $child.getEventId());
+            retract($child);
+    end
+  index.json: |
+    [
+        {
+            "closedControlLoopName": "ControlLoop-VOLTE-2179b738-fd36-4843-a71a-a8c24c70c55b",
+            "file": "ControlLoop-VOLTE-2179b738-fd36-4843-a71a-a8c24c70c55b.drl"
+        }
+    ]
+---
+# Source: holmes-engine-managment/charts/postgress/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless-svc
+  namespace: test-tenant
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql
+      protocol: TCP
+  selector:
+    app: postgres
+---
+# Source: holmes-engine-managment/charts/postgress/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+  namespace: test-tenant
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql
+      protocol: TCP
+      nodePort: null
+  selector:
+    app: pgpool
+---
+# Source: holmes-engine-managment/templates/engine-mngmtsvc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: test-tenant
+  name: holmes
+spec:
+  type: NodePort
+  ports:
+    - name: emt
+      port: 9102
+      targetPort: 9102
+    - name: rmt
+      port: 9101
+      targetPort: 9101
+      # - name: postgress
+      #   port: 5432
+      #   targetPort: 5432
+  selector:
+    app: holmes
+---
+# Source: holmes-engine-managment/charts/postgress/templates/pgpool_dep.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgpool-deployment
+  namespace: test-tenant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgpool
+  template:
+    metadata:
+      labels:
+        app: pgpool
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: pgpool
+          image: docker.io/bitnami/pgpool:4.2.3-debian-10-r38
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            runAsUser: 1001
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: PGPOOL_BACKEND_NODES
+              value: 0:postgres-sts-0.postgres-headless-svc:5432,1:postgres-sts-1.postgres-headless-svc:5432,2:postgres-sts-2.postgres-headless-svc:5432
+            - name: PGPOOL_SR_CHECK_USER
+              value: "repmgr"
+            - name: PGPOOL_SR_CHECK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: repmgr-password
+            - name: PGPOOL_SR_CHECK_DATABASE
+              value: "holmes"
+            - name: PGPOOL_ENABLE_LDAP
+              value: "no"
+            - name: PGPOOL_POSTGRES_USERNAME
+              value: "holmes"
+            - name: PGPOOL_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: postgresql-password
+            - name: PGPOOL_ADMIN_USERNAME
+              value: "admin"
+            - name: PGPOOL_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpool-secrets
+                  key: admin-password
+            - name: PGPOOL_ENABLE_LOAD_BALANCING
+              value: "yes"
+            - name: PGPOOL_ENABLE_LOG_CONNECTIONS
+              value: "no"
+            - name: PGPOOL_ENABLE_LOG_HOSTNAME
+              value: "yes"
+            - name: PGPOOL_ENABLE_LOG_PER_NODE_STATEMENT
+              value: "no"
+            - name: PGPOOL_CHILD_LIFE_TIME
+              value: ""
+            - name: PGPOOL_ENABLE_TLS
+              value: "no"
+          ports:
+            - name: postgresql
+              containerPort: 5432
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - /opt/bitnami/scripts/pgpool/healthcheck.sh
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - bash
+                - -ec
+                - PGPASSWORD=${PGPOOL_POSTGRES_PASSWORD} psql -U "holmes" -d "holmes" -h /opt/bitnami/pgpool/tmp -tA -c "SELECT 1" >/dev/null
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+---
+# Source: holmes-engine-managment/templates/engine-mngmt.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: holmes
+  namespace: test-tenant
+  labels:
+    app: holmes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: holmes
+  template:
+    metadata:
+      labels:
+        app: holmes
+    spec:
+      initContainers:
+        - name: wait-for-svc-before-starup
+          # image: postgres:9.5
+          image: busybox
+          command: ["sh", "-c", "until (timeout 1 nc -z postgresql 5432 > /dev/null) && (timeout 1 nc -z dmaap.test-tenant.svc.cluster.local 3904 > /dev/null); do echo Waiting for master and dmaap.; sleep 30; done"]
+          # command: ["pg_isready", "-h", " postgresql", "-p", "5432", "-U", "postgresql"]
+      containers:
+        - name: emt
+          image: amcopnightly/holmes-engine-management:v4.0-2024-03-26
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: URL_JDBC
+              value: "postgresql"
+            - name: MSB_ADDR
+              value: "127.0.0.1"
+            - name: HOST_IP
+              value: "127.0.0.1"
+            - name: MSB_IAG_SERVICE_HOST
+              value: "127.0.0.1"
+            - name: MSB_IAG_SERVICE_PORT
+              value: "10081"
+            - name: ENABLE_ENCRYPT
+              value: "false"
+          volumeMounts:
+            - mountPath: /opt/hemtopics
+              name: dmaapvol
+        - name: rmt
+          image: amcopnightly/holmes-rule-management:v4.0-2024-03-26
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: URL_JDBC
+              value: "postgresql"
+            - name: MSB_ADDR
+              value: "127.0.0.1"
+            - name: HOST_IP
+              value: "127.0.0.1"
+            - name: MSB_IAG_SERVICE_HOST
+              value: "127.0.0.1"
+            - name: MSB_IAG_SERVICE_PORT
+              value: "10081"
+            - name: ENABLE_ENCRYPT
+              value: "false"
+          volumeMounts:
+            - mountPath: /opt/hemtopics
+              name: dmaapvol
+              # - mountPath: /opt/hrmrules/
+              #   name: dmaapvol
+      volumes:
+        - name: dmaapvol
+          configMap:
+            name: dmaapconfig
+---
+# Source: holmes-engine-managment/charts/postgress/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-sts
+  namespace: test-tenant
+spec:
+  serviceName: postgres-headless-svc
+  replicas: 3
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: postgresql
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /pre-stop.sh
+          image: docker.io/bitnami/postgresql-repmgr:9.6.24-debian-10-r72
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            runAsUser: 1001
+          # Auxiliary vars to populate environment variables
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            # PostgreSQL configuration
+            - name: POSTGRESQL_VOLUME_DIR
+              value: "/bitnami/postgresql"
+            - name: PGDATA
+              value: "/bitnami/postgresql/data"
+            - name: POSTGRES_USER
+              value: "holmes"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: postgresql-password
+            - name: POSTGRES_DB
+              value: "holmes"
+            - name: POSTGRESQL_LOG_HOSTNAME
+              value: "true"
+            - name: POSTGRESQL_LOG_CONNECTIONS
+              value: "false"
+            - name: POSTGRESQL_LOG_DISCONNECTIONS
+              value: "false"
+            - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
+              value: "off"
+            - name: POSTGRESQL_CLIENT_MIN_MESSAGES
+              value: "error"
+            - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
+              value: "pgaudit, repmgr"
+            - name: POSTGRESQL_ENABLE_TLS
+              value: "no"
+            # Repmgr configuration
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: REPMGR_UPGRADE_EXTENSION
+              value: "no"
+            - name: REPMGR_PGHBA_TRUST_ALL
+              value: "no"
+            - name: REPMGR_MOUNTED_CONF_DIR
+              value: "/bitnami/repmgr/conf"
+            - name: REPMGR_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: REPMGR_PARTNER_NODES
+              value: postgres-sts-0.postgres-headless-svc.$(REPMGR_NAMESPACE).svc.cluster.local,postgres-sts-1.postgres-headless-svc.$(REPMGR_NAMESPACE).svc.cluster.local,postgres-sts-2.postgres-headless-svc.$(REPMGR_NAMESPACE).svc.cluster.local
+            - name: REPMGR_PRIMARY_HOST
+              value: "postgres-sts-0.postgres-headless-svc.$(REPMGR_NAMESPACE).svc.cluster.local"
+            - name: REPMGR_NODE_NAME
+              value: "$(MY_POD_NAME)"
+            - name: REPMGR_NODE_NETWORK_NAME
+              value: "$(MY_POD_NAME).postgres-headless-svc.$(REPMGR_NAMESPACE).svc.cluster.local"
+            - name: REPMGR_LOG_LEVEL
+              value: "NOTICE"
+            - name: REPMGR_CONNECT_TIMEOUT
+              value: "5"
+            - name: REPMGR_RECONNECT_ATTEMPTS
+              value: "3"
+            - name: REPMGR_RECONNECT_INTERVAL
+              value: "5"
+            - name: REPMGR_USERNAME
+              value: "repmgr"
+            - name: REPMGR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: repmgr-password
+            - name: REPMGR_DATABASE
+              value: "repmgr"
+          ports:
+            - name: postgresql
+              containerPort: 5432
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - bash
+                - -ec
+                - 'PGPASSWORD=$POSTGRES_PASSWORD psql -w -U "holmes" -d "holmes"  -h 127.0.0.1 -c "SELECT 1"'
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                - bash
+                - -ec
+                - 'PGPASSWORD=$POSTGRES_PASSWORD psql -w -U "holmes" -d "holmes"  -h 127.0.0.1 -c "SELECT 1"'
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/postgresql
+            - name: hooks-scripts
+              mountPath: /pre-stop.sh
+              subPath: pre-stop.sh
+      volumes:
+        - name: hooks-scripts
+          configMap:
+            name: postgres-configmap
+            defaultMode: 0755
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "2Gi"
+        storageClassName: local-path

@@ -1,0 +1,76 @@
+# Source: cn-raemis/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cn-raemis-svc
+  namespace: amcop-system
+  labels:
+    app: cn-raemis
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8099
+      targetPort: 8099
+      protocol: TCP
+      name: http
+  selector:
+    app: cn-raemis
+---
+#Source cn-raemis/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cn-raemis
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cn-raemis
+  template:
+    metadata:
+      labels:
+        app: cn-raemis
+    spec:
+      #hostNetwork: true
+      containers:
+        - name: cn-raemis
+          image: amcopnightly/cn-raemis:v4.0-2024-02-21
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CN_LOG_LEVEL
+              value: DEBUG
+            - name: RAEMIS_DEFAULT_USERNAME
+              value: raemis
+            - name: RAEMIS_PASSWORD
+              value: password
+            - name: WFE_IP
+              value: camunda
+            - name: WFE_PORT
+              value: "8443"
+            - name: WFE_USERNAME
+              value: souser
+            - name: WFE_PASSWORD
+              value: mypassword
+            - name: AAI_IP
+              value: aai.amcop-system.svc.cluster.local
+            - name: AAI_PORT
+              value: "8443"
+            - name: WFE_ASYNC_RESP_TIMEOUT
+              value: "1500000"
+            - name: KAFKA_IP
+              value: kafka1
+            - name: KAFKA_PORT
+              value: "9092"
+            - name: WFE_STATUS_TOPIC
+              value: WFTopic
+            - name: WFE_HTTPS
+              value: "1"
+            - name: MINIO_S3_IP
+              value: amcop-minio-hl.amcop-system.svc.cluster.local
+            - name: MINIO_S3_PORT
+              value: "9000"
+          ports:
+            - name: http
+              containerPort: 8099
+              protocol: TCP

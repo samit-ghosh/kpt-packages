@@ -1,0 +1,166 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-pm
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/PM_Dashboard-1702974777606.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-druid-fm
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/Druid%20FM_Dashboard-1702974637653.json?ref_type=heads"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-acp-alarm
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/ACP%20Alarm%20Dashboard-1702974606798.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-acp-alarm-tables
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/ACP-Alarm%20Tables-1702974625217.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-druid-pm
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/Druid-PM-Dashboard-1702974654982.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-druid-fm-table
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/Druid_FM_Table-1702974663896.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-switch-alarm
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/Switch_Alarm_Dashboard-1710488254270.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-switch-fm-table
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-cortex"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/Switch_FM_Table-1710487034573.json"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-robin-cluster-alerts
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-robin"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/robin_cluster_alerts_embed.json?ref_type=heads"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-robin-cluster-monitor
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-robin"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/robin_cluster_monitor-embed.json?ref_type=heads"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: amcop-grafana-dashboard-robin-cluster-overview
+  namespace: tenant
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "amcop-robin"
+  resyncPeriod: 30s
+  url: "https://gitlab.com/aarnanetworks/kpt-packages/-/raw/main/amcop-packages/dashboards/TCL_Dashboards/robin_cluster_embed.json?ref_type=heads"
+  instanceSelector:
+    matchLabels:
+      app: amcop-grafana
+
+

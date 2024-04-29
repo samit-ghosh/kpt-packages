@@ -1,0 +1,121 @@
+# Source: fmpm/templates/configmap.yaml
+#=======================================================================
+# Copyright (c) 2017-2020 Aarna Networks, Inc.
+# All rights reserved.
+# ======================================================================
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#           http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ========================================================================  
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fmpm-config
+  namespace: amcop-system
+data:
+  fmpm.conf: |-
+    {
+     "ownport": "2112",
+     "logLevel": "info",
+     "kafkaConfig": {
+       "brokers": "kafka1:9092",
+       "version": "2.1.1",
+       "group": "CG1",
+       "topics": ["RAN_FM_Topic","RAN_PM_Topic"],
+       "assignor": "range",
+       "oldest": true,
+       "verbose": true
+     },
+     "sftpConfig": {
+       "sftpHost": "10.2.0.10",
+       "sftpPort": 22,
+       "sftpUser": "sftp",
+       "sftpPassword": "Passw9rd",
+       "sftpFilePath": "/home/sftp/pmFiles/CUCP-av1901-f0886c01329e-1_001_20230504T130000-20230504T131500.xml",
+       "pmFilePaser": "smo-handler:8080"
+     }
+    }
+---
+# Source: fmpm/templates/service.yaml
+#=======================================================================
+# Copyright (c) 2017-2020 Aarna Networks, Inc.
+# All rights reserved.
+# ======================================================================
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#           http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ========================================================================  
+# GUI Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fmpm
+  namespace: amcop-system
+  labels:
+    app: fmpm
+spec:
+  selector:
+    app: fmpm
+  type: ClusterIP
+  ports:
+  - name: fmpm
+    port: 2112
+    protocol: TCP
+---
+# Source: fmpm/templates/deployment.yaml
+#=======================================================================
+# Copyright (c) 2017-2020 Aarna Networks, Inc.
+# All rights reserved.
+# ======================================================================
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#           http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ========================================================================  
+# SOL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fmpm
+  namespace: amcop-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fmpm
+  template:
+    metadata:
+      labels:
+        app: fmpm
+    spec:
+      containers:
+        - name: fmpm
+          image: amcopnightly/fm-pm:v4.0-2024-02-21
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 2112
+          volumeMounts:
+            - mountPath: /opt/fmpm/config
+              readOnly: true
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: fmpm-config

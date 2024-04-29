@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vm-provisioner
+  namespace: tenant
+---
+# vm-provisioner-config config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vm-provisioner-config
+  namespace: tenant
+data:
+  vm-provisioner-config.json: "{    \n  \"logLevel\":       \"info\",\n  \"port\":           \"9052\",\n  \"aaiAddress\":     \"http://aai:8443/aai/v23\",\n  \"aaiUsername\":    \"AAI\",\n  \"aaiPassword\":    \"AAI\",\n  \"camundaAddress\": \"camunda:8443\",\n  \"camundaUserName\": \"souser\",\n  \"camundaPassword\": \"mypassword\",\n  \"kafkaServiceName\": \"kafka1\",\n  \"kafkaServicePort\": \"9092\"\n}"
+---
+# vm-provisioner Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vm-provisioner
+  namespace: tenant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vm-provisioner
+  template:
+    metadata:
+      labels:
+        app: vm-provisioner
+    spec:
+      serviceAccountName: vm-provisioner
+      containers:
+        - name: vm-provisioner
+          image: amcopnightly/vm-provisioner:v4.0-2024-02-21
+          imagePullPolicy: Always
+          env: null
+          ports:
+            - containerPort: 9052
+          volumeMounts:
+            - mountPath: /opt/aes/config
+              readOnly: true
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: vm-provisioner-config
