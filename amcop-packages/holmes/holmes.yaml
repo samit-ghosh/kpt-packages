@@ -123,28 +123,24 @@ data:
     {
       "services_calls": {},
       "streams_publishes": {
-        "dcae_cl_out": {
+        "correlation_output": {
           "dmaap_info": {
-            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Output1"
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Correlation_Output_Topic"
           },
           "type": "message_router"
         }
       },
       "streams_subscribes": {
-        "ran_alarm": {
+        "correlation_input": {
           "dmaap_info": {
-            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_RAN_Alarms1"
-          },
-          "type": "message_router"
-        },
-        "core_alarm": {
-          "dmaap_info": {
-            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Test_Core_Alarms1"
+            "topic_url": "http://dmaap.test-tenant.svc.cluster.local:3904/events/Correlation_Input_Topic"
           },
           "type": "message_router"
         }
       }
     }
+
+
   ControlLoop-VOLTE-2179b738-fd36-4843-a71a-a8c24c70c55b.drl: |
     package org.onap.holmes.droolsRule;
     import org.onap.holmes.common.dmaap.DmaapService;
@@ -602,3 +598,4 @@ spec:
           requests:
             storage: "2Gi"
         storageClassName: local-path
+

@@ -28,6 +28,8 @@ data:
        "version": "2.1.1",
        "group": "CG1",
        "topics": ["RAN_FM_Topic","RAN_PM_Topic"],
+       "correlationInputTopic": "Correlation_Input_Topic",
+       "correlationOutputTopic": "Correlation_Output_Topic",
        "assignor": "range",
        "oldest": true,
        "verbose": true
