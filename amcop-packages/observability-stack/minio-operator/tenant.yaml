@@ -49,6 +49,8 @@ spec:
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
+  buckets:
+    - name: amcop-metrics
   mountPath: /export
   subPath: /data
   requestAutoCert: false
@@ -61,3 +63,4 @@ spec:
     anonymous: true
     json: true
     quiet: true
+
