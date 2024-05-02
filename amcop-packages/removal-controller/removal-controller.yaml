@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/name: serviceaccount
     app.kubernetes.io/part-of: removal
   name: removal-controller-controller-manager
-  namespace: amcop-system
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -23,7 +23,7 @@ metadata:
     app.kubernetes.io/name: role
     app.kubernetes.io/part-of: removal
   name: removal-controller-leader-election-role
-  namespace: amcop-system
+  namespace: default
 rules:
 - apiGroups:
   - ""
@@ -126,7 +126,7 @@ metadata:
     app.kubernetes.io/name: rolebinding
     app.kubernetes.io/part-of: removal
   name: removal-controller-leader-election-rolebinding
-  namespace: amcop-system
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -134,7 +134,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: removal-controller-controller-manager
-  namespace: amcop-system
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -154,7 +154,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: removal-controller-controller-manager
-  namespace: amcop-system
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -174,7 +174,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: removal-controller-controller-manager
-  namespace: amcop-system
+  namespace: default
 ---
 apiVersion: v1
 kind: Service
@@ -188,7 +188,7 @@ metadata:
     app.kubernetes.io/part-of: removal
     control-plane: controller-manager
   name: removal-controller-controller-manager-metrics-service
-  namespace: amcop-system
+  namespace: default
 spec:
   ports:
   - name: https
@@ -210,7 +210,7 @@ metadata:
     app.kubernetes.io/part-of: removal
     control-plane: controller-manager
   name: removal-controller-controller-manager
-  namespace: amcop-system
+  namespace: default
 spec:
   replicas: 1
   selector:
