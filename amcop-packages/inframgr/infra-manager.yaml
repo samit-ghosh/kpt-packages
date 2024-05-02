@@ -186,7 +186,8 @@ spec:
       serviceAccountName: infra-manager
       containers:
         - name: infra-manager
-          image: amcopnightly/infra-manager:v4.0-2024-02-21
+          #image: amcopnightly/infra-manager:v4.0-2024-02-21
+          image: infra-manager:dev
           imagePullPolicy: IfNotPresent
           env:
             - name: S3_ACCESS_KEY
